@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 function setup(t) {
-  const dom = new JSDOM(html, { runScripts: 'dangerously', url: 'https://joinjson.com/' });
+  const dom = new JSDOM(html, { runScripts: 'dangerously', url: 'https://www.joinjson.com/' });
   t.after(() => dom.window.close());
   const d = dom.window.document, get = id => d.getElementById(id);
   const merge = () => d.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'Enter', ctrlKey: true }));

@@ -35,6 +35,6 @@ For an already-shared branch, coordinate history cleanup before rewriting commit
 
 Static-only hosting cannot keep a shared API key secret. Deploy the Node backend or an equivalent serverless proxy, and route `/api/ai/chat` to it on the site's origin. Configure the replacement key in your host's secret/environment settings. Use HTTPS and authenticated access at the reverse proxy, plus per-user quotas, to prevent public use of your account's quota. Server IP rate limits alone are not authentication.
 
-For production set `NODE_ENV=production`, `AI_ALLOWED_ORIGIN=https://joinjson.com`, and `AI_ACCESS_CONTROLLED=true` only after authentication is actually enforced. The server refuses production requests without those settings. Bind `HOST` appropriately for your hosting platform.
+For production set `NODE_ENV=production`, `AI_ALLOWED_ORIGIN=https://www.joinjson.com`, and `AI_ACCESS_CONTROLLED=true` only after authentication is actually enforced. The server refuses production requests without those settings. Bind `HOST` appropriately for your hosting platform.
 
 Run `npm test` and `python3 tests/validate.py`. Tests mock Cohere; live access and billing are not tested.

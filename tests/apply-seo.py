@@ -47,10 +47,10 @@ def apply(relative):
   text, count = re.subn(pattern, '<meta ' + kind + '="' + attr + '" content="' + html.escape(value, quote=True) + '">', text, count=1)
   assert count == 1, (relative, attr)
  text = text.replace('content="summary"', 'content="summary_large_image"')
- image = '''<meta property="og:image" content="https://joinjson.com/assets/og-placeholder.svg">
+ image = '''<meta property="og:image" content="https://www.joinjson.com/assets/og-placeholder.svg">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Merge JSON files: join records by ID and review conflicts">
-<meta name="twitter:image" content="https://joinjson.com/assets/og-placeholder.svg">
+<meta name="twitter:image" content="https://www.joinjson.com/assets/og-placeholder.svg">
 <meta name="twitter:image:alt" content="Merge JSON files: join records by ID and review conflicts">
 '''
  text = text.replace('</head>', image + '</head>', 1)
@@ -78,7 +78,7 @@ def apply(relative):
     data['description'] = description
    return '<script type="application/ld+json">' + json.dumps(data, ensure_ascii=False, indent=2) + '</script>'
   text = re.sub(r'<script\s+type="application/ld\+json">(.*?)</script>', schema, text, flags=re.S)
-  website = {'@context':'https://schema.org','@type':'WebSite','name':'joinjson.com','url':'https://joinjson.com/'}
+  website = {'@context':'https://schema.org','@type':'WebSite','name':'joinjson.com','url':'https://www.joinjson.com/'}
   text = text.replace('</head>', '<meta name="google-site-verification" content="[SEARCH CONSOLE VERIFICATION TOKEN]">\n<script type="application/ld+json">' + json.dumps(website) + '</script>\n</head>', 1)
   intro = '''<p data-seo-intro>Use this browser tool to merge JSON files without sending your inputs to a server. You can merge JSON files online by pasting two values or adding files, then review the selected method before exporting. For larger jobs, merge multiple JSON files with explicit ordering and conflict rules in Advanced mode. Join customer records by a shared ID, combine independent lists, or preserve nested fields when merging settings objects. The result includes a conflict report that names the source files, so you can inspect competing values instead of guessing which one survived. Format check flags incompatible shapes and offers fixes near your inputs. Start with a bundled example if you want to understand the workflow before using your own data. Keep original files, review the output, and validate it against the requirements of the application that will consume it.</p>'''
   text = text.replace('<h2>Combine JSON files into one, without losing the story</h2>', '<h2>Combine JSON files into one, without losing the story</h2>\n' + intro, 1)

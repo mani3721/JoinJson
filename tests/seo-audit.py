@@ -13,7 +13,7 @@ from urllib.parse import urlsplit, unquote
 
 ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--origin', default='https://joinjson.com')
+parser.add_argument('--origin', default='https://www.joinjson.com')
 args = parser.parse_args()
 ORIGIN = args.origin.rstrip('/')
 assert ORIGIN.startswith('https://'), 'Canonical origin must use HTTPS'

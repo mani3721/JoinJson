@@ -8,7 +8,7 @@ const source = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 function setup(t, html = source) {
   const workers = new Set(), urls = new Map(); let count = 0;
-  const dom = new JSDOM(html, { runScripts: 'dangerously', url: 'https://joinjson.com/', beforeParse(win) {
+  const dom = new JSDOM(html, { runScripts: 'dangerously', url: 'https://www.joinjson.com/', beforeParse(win) {
     win.Blob = Blob;
     win.URL.createObjectURL = blob => { const url = 'blob:test/' + urls.size; urls.set(url, blob); return url; };
     win.URL.revokeObjectURL = url => urls.delete(url);

@@ -91,8 +91,8 @@ for path, page in pages.items():
             link = attrs.get(key)
             if not link or link.startswith("mailto:"):
                 continue
-            if link.startswith("https://joinjson.com"):
-                link = link[len("https://joinjson.com"):]
+            if link.startswith("https://www.joinjson.com"):
+                link = link[len("https://www.joinjson.com"):]
             if link in ('https://adssettings.google.com/', 'https://policies.google.com/technologies/ads'):
                 continue
             assert not link.startswith(("https:", "http:", "//")), link
@@ -164,10 +164,10 @@ assert 'localStorage' not in ai_source and 'innerHTML' not in ai_source
 ns = {'s': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
 sitemap = ET.fromstring((ROOT / 'sitemap.xml').read_text())
 locations = {n.text for n in sitemap.findall('s:url/s:loc', ns)}
-expected = {'https://joinjson.com/' + (str(p.parent.relative_to(ROOT)) + '/' if p.parent != ROOT else '') for p in pages if p.name != '404.html'}
+expected = {'https://www.joinjson.com/' + (str(p.parent.relative_to(ROOT)) + '/' if p.parent != ROOT else '') for p in pages if p.name != '404.html'}
 assert locations == expected
 assert all(n.text == '2026-10-14' for n in sitemap.findall('s:url/s:lastmod', ns))
-assert 'Sitemap: https://joinjson.com/sitemap.xml' in (ROOT / 'robots.txt').read_text()
+assert 'Sitemap: https://www.joinjson.com/sitemap.xml' in (ROOT / 'robots.txt').read_text()
 print('PASS nine pages: links, fragments, IDs, metadata, FAQ/schema, CSP, sitemap, no network/storage APIs')
 
 blocks = {}

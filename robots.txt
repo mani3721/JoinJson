@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://joinjson.com/sitemap.xml
+Sitemap: https://www.joinjson.com/sitemap.xml

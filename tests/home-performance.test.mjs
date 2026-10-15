@@ -7,7 +7,7 @@ const source = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 for (const production of [false, true]) {
   test(`first-paint safeguards (${production ? 'production' : 'readable'})`, async t => {
     const html = production ? await minifyHome(source) : source;
-    const dom = new JSDOM(html, { runScripts: 'dangerously', url: 'https://joinjson.com/' });
+    const dom = new JSDOM(html, { runScripts: 'dangerously', url: 'https://www.joinjson.com/' });
     t.after(() => dom.window.close());
     const d = dom.window.document;
     // No startup media mutation, duplicate CSS fallback, fonts, or eager vendors.

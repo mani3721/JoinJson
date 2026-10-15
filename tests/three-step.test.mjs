@@ -5,7 +5,7 @@ import { JSDOM } from 'jsdom';
 
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 function setup() {
-  const dom = new JSDOM(html, { runScripts: 'dangerously', url: 'https://joinjson.com/', pretendToBeVisual: true });
+  const dom = new JSDOM(html, { runScripts: 'dangerously', url: 'https://www.joinjson.com/', pretendToBeVisual: true });
   const win = dom.window, doc = win.document;
   const get = id => doc.getElementById(id);
   function set(id, text) { get(id).value = text; get(id).dispatchEvent(new win.Event('input', { bubbles: true })); }

@@ -47,7 +47,7 @@ test('cancelled requests do not return JSON', async () => {
   await assert.rejects(api.fetchJson(api.EXAMPLE_URL, { signal: controller.signal, fetch: async () => new Response('{}') }), /cancelled/);
 });
 function setup() {
-  const dom = new JSDOM(html, { url: 'https://joinjson.com/', runScripts: 'outside-only' });
+  const dom = new JSDOM(html, { url: 'https://www.joinjson.com/', runScripts: 'outside-only' });
   const w = dom.window;
   Object.assign(w, { AbortController, TextDecoder, TextEncoder });
   w.fetch = async () => new Response('[{"id":1}]');

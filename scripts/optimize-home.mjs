@@ -20,7 +20,7 @@ const metadata = `
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="${title.replace('&', '&amp;')}">
 <meta name="twitter:description" content="${description}">
-<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebApplication', name: 'JoinJson', url: 'https://joinjson.com/', description, applicationCategory: 'DeveloperApplication', operatingSystem: 'Any', browserRequirements: 'Requires JavaScript and a modern browser', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, isAccessibleForFree: true })}</script>
+<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebApplication', name: 'JoinJson', url: 'https://www.joinjson.com/', description, applicationCategory: 'DeveloperApplication', operatingSystem: 'Any', browserRequirements: 'Requires JavaScript and a modern browser', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, isAccessibleForFree: true })}</script>
 <script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq })}</script>
 `;
 html = html.replace('<!-- Google CMP placeholder:', metadata + '<!-- Google CMP placeholder:');

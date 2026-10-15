@@ -69,13 +69,13 @@ Regenerate with `npm run audit:headers`, `npm run audit:export`, and `npm run bu
 
 Keep existing canonical routes rather than migrating unnecessarily:
 
-- Tool: `https://joinjson.com/`
-- Homepage guide: `https://joinjson.com/#merge-guide`
-- Detailed guide: `https://joinjson.com/deep-merge-vs-shallow-merge-json/`
-- About: `https://joinjson.com/about/`
-- Contact: `https://joinjson.com/contact/`
-- Privacy: `https://joinjson.com/privacy/`
-- Terms: `https://joinjson.com/terms/`
+- Tool: `https://www.joinjson.com/`
+- Homepage guide: `https://www.joinjson.com/#merge-guide`
+- Detailed guide: `https://www.joinjson.com/deep-merge-vs-shallow-merge-json/`
+- About: `https://www.joinjson.com/about/`
+- Contact: `https://www.joinjson.com/contact/`
+- Privacy: `https://www.joinjson.com/privacy/`
+- Terms: `https://www.joinjson.com/terms/`
 
 Use lowercase descriptive slugs, trailing slashes consistently, and permanent redirects for any actual route migration. Do not create an indexable duplicate `/guide/` with the same article. Sitemap includes canonical pages only, not fragments, audit exports or minified copies.
 

@@ -2,7 +2,7 @@
 
 **Merge JSON files into one—directly in your browser.**
 
-[Website](https://joinjson.com/) · [URL import guide](URL-IMPORT.md) · [Optional AI setup](AI-SETUP.md)
+[Website](https://www.joinjson.com/) · [URL import guide](URL-IMPORT.md) · [Optional AI setup](AI-SETUP.md)
 
 JoinJson is a browser-based JSON merger built with HTML, CSS, and JavaScript. Paste JSON, upload files, or import a public HTTPS URL, then join records by ID, combine lists, or deep-merge objects. Core JSON processing happens locally; no backend is required for merging.
 
