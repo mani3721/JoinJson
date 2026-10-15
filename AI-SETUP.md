@@ -19,15 +19,17 @@ Requests use `north-mini-code-1-0`, temperature 0.3, streaming, and a 2,048-toke
 
 ## GitHub push protection
 
-Removing the key from the latest files is not enough: it must also be removed from every commit being pushed. The current repository has one local commit (`4b51837`), so after reviewing these fixes:
+Removing the key from the latest files is not enough: it must also be removed from every commit being pushed. Amending only the latest commit does not remove a secret from an earlier commit. The two unpublished commits have been cleaned so the original key is no longer in the history of `main`; their commit IDs have changed. The browser continues to use a session-only key, while the optional backend reads its key from the ignored `.env` file.
+
+After revoking the exposed key, reviewing the changes, and committing any additional working-tree changes, push normally:
 
 ```sh
-git add assets/ai-assistant.js server/ai-server.mjs package.json .gitignore .env.example AI-SETUP.md tests/ai-assistant.test.mjs
-git commit --amend --no-edit
 git push origin main
 ```
 
-Amending changes the commit ID. These commands are appropriate for the blocked initial commit that has not been published. For an already-shared branch or multiple affected commits, coordinate history cleanup first; do not force-push blindly. Do not bypass GitHub secret protection. Rotate the key even after cleaning history. Check `git check-ignore .env` before adding files, and never use `git add -f .env`.
+No force push or GitHub protection bypass is needed for this unpublished branch. A local recovery bundle is stored at `.git/secret-cleanup-backup.bundle`. It contains the original sensitive history: keep it private, never upload it, and remove it after confirming the cleaned push succeeds. Old objects may also remain in local Git reflogs; they are not part of a normal push of the cleaned `main` branch.
+
+For an already-shared branch, coordinate history cleanup before rewriting commits; do not force-push blindly. Rotate the key even after cleaning history. Check `git check-ignore .env` before adding files, and never use `git add -f .env`.
 
 ## Deployment
 

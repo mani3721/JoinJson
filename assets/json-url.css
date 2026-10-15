@@ -1,0 +1,13 @@
+/* Compact, opt-in URL import controls; matches the existing theme. */
+.json-url { margin: .6rem 0; padding: .6rem .8rem; border: 1px solid var(--border); border-radius: .6rem; }
+.json-url summary { cursor: pointer; font-weight: 600; }
+.json-url[open] summary { margin-bottom: .6rem; }
+.json-url-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.json-url-controls input { flex: 1 1 14rem; width: 0; min-width: 0; }
+.json-url-controls button { flex: 0 0 auto; margin: 0; }
+.json-url button[hidden] { display: none !important; }
+.json-url-example { margin-top: .5rem; font-size: .85rem; }
+.json-url p { margin: .5rem 0 0; font-size: .85rem; overflow-wrap: anywhere; }
+.json-url p:empty { display: none; }
+.json-url[data-state="error"] [role="status"] { font-weight: 600; }
+@media (max-width: 480px) { .json-url-controls input { flex-basis: 100%; width: 100%; } }

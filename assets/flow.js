@@ -297,7 +297,8 @@
   function download(text, name, type, anchor) { const url = URL.createObjectURL(new Blob([text], { type })), a = document.createElement('a'); a.href = url; a.download = name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); toast('Download requested', anchor); }
   ['download', 'mobile-download'].forEach(id => { $(id).onclick = () => { if (current) download(serialized(), 'merged.json', 'application/json', $(id)); }; });
   $('csv').onclick = () => { if (current) download(engine.csv(current.output.conflicts), 'conflicts.csv', 'text/csv;charset=utf-8', $('csv')); };
-  window.JMFlow = { resultText: () => current ? current.text : '', snapshot, applySnapshot, run, hasData: () => !!current || files.length > 0 || ['first', 'second', 'paste'].some(id => $(id).value.trim()), toast };
+  function addSource(source) { files.push({ name: source.name, text: source.text }); draw(); changed(); }
+  window.JMFlow = { addSource, resultText: () => current ? current.text : '', snapshot, applySnapshot, run, hasData: () => !!current || files.length > 0 || ['first', 'second', 'paste'].some(id => $(id).value.trim()), toast };
   const platform = navigator.userAgentData && navigator.userAgentData.platform || navigator.platform || navigator.userAgent || '';
   $('merge-shortcut').textContent = /Mac|iPhone|iPad|iPod/i.test(platform) ? '⌘ ↵' : 'Ctrl ↵';
   syncMode(); checkFormats(); state('Merge', false);

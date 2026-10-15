@@ -156,7 +156,9 @@ assert "connect-src 'self'" in headers
 ai_source = (ROOT / 'assets/ai-assistant.js').read_text()
 assert "'https://api.cohere.ai/compatibility/v1/chat/completions'" in ai_source
 assert "'/api/ai/chat'" not in ai_source
-assert "connect-src 'self' https://api.cohere.ai;" in headers
+assert "connect-src 'self' https:;" in headers, 'URL imports require HTTPS source connections'
+assert '/assets/json-url.js' in raw[ROOT / 'index.html']
+assert '/assets/json-url.css' in raw[ROOT / 'index.html']
 assert 'localStorage' not in ai_source and 'innerHTML' not in ai_source
 
 ns = {'s': 'http://www.sitemaps.org/schemas/sitemap/0.9'}

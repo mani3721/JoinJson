@@ -7,7 +7,8 @@
     "test:editors": "node --test tests/codemirror.test.mjs",
     "test:ai": "node --test tests/ai-assistant.test.mjs",
     "start": "node --env-file=.env server/ai-server.mjs",
-    "test": "npm run test:editors && npm run test:ai"
+    "test:urls": "node --test tests/json-url.test.mjs",
+    "test": "npm run test:editors && npm run test:ai && npm run test:urls"
   },
   "dependencies": {
     "@codemirror/state": "^6.5.0",

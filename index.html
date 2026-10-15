@@ -30,6 +30,8 @@
     <script src="/assets/json-error-helper.js" defer></script>
     <script src="/assets/format-check.js" defer></script>
     <script src="/assets/flow.js" defer></script>
+    <link rel="stylesheet" href="/assets/json-url.css" />
+    <script src="/assets/json-url.js" defer></script>
     <link rel="stylesheet" href="/assets/ai-assistant.css?v=composer-toggle-2" />
     <script src="/assets/ai-stream.js" defer></script>
     <script src="/assets/ai-assistant.js?v=cohere-direct-1" defer></script>
@@ -207,6 +209,14 @@
                             <div class="editor-upload"><label for="first-file">Or upload first JSON</label><input
                                     id="first-file" type="file" accept=".json,application/json" /></div>
                         </div>
+                <details class="json-url" data-json-url="first">
+                    <summary>Load from URL</summary>
+                    <label for="first-url">JSON URL</label>
+                    <div class="json-url-controls"><input id="first-url" type="url" placeholder="https://example.com/data.json" autocomplete="off" spellcheck="false" aria-describedby="first-url-help first-url-status"><button type="button" data-url-load>Load JSON</button><button type="button" data-url-cancel hidden>Cancel</button></div>
+                    <button type="button" class="json-url-example" data-url-example>Use example URL (5 MB)</button>
+                    <p id="first-url-help" class="muted">Contacts the source host without cookies. Public HTTPS URLs need CORS enabled (up to 20 MB); merging stays local.</p>
+                    <p id="first-url-status" role="status" aria-live="polite"></p>
+                </details>
                         <textarea autocomplete="off" autocorrect="off" autocapitalize="off" id="first"
                             spellcheck="false" placeholder='[{"id":1,"name":"Ada"}]'
                             aria-describedby="quick-help"></textarea>
@@ -216,6 +226,14 @@
                             <div class="editor-upload"><label for="second-file">Or upload second JSON</label><input
                                     id="second-file" type="file" accept=".json,application/json" /></div>
                         </div>
+                <details class="json-url" data-json-url="second">
+                    <summary>Load from URL</summary>
+                    <label for="second-url">JSON URL</label>
+                    <div class="json-url-controls"><input id="second-url" type="url" placeholder="https://example.com/data.json" autocomplete="off" spellcheck="false" aria-describedby="second-url-help second-url-status"><button type="button" data-url-load>Load JSON</button><button type="button" data-url-cancel hidden>Cancel</button></div>
+                    <button type="button" class="json-url-example" data-url-example>Use example URL (5 MB)</button>
+                    <p id="second-url-help" class="muted">Contacts the source host without cookies. Public HTTPS URLs need CORS enabled (up to 20 MB); merging stays local.</p>
+                    <p id="second-url-status" role="status" aria-live="polite"></p>
+                </details>
                         <textarea autocomplete="off" autocorrect="off" autocapitalize="off" id="second"
                             spellcheck="false" placeholder='[{"id":1,"name":"Ada Lovelace"}]'
                             aria-describedby="quick-help"></textarea>
@@ -237,6 +255,14 @@
                     <label for="picker">Add JSON files (or drop them here)</label><input id="picker" type="file"
                         accept=".json,application/json" multiple />
                 </div>
+                <details class="json-url" data-json-url="advanced">
+                    <summary>Add JSON from URL</summary>
+                    <label for="advanced-url">JSON URL</label>
+                    <div class="json-url-controls"><input id="advanced-url" type="url" placeholder="https://example.com/data.json" autocomplete="off" spellcheck="false" aria-describedby="advanced-url-help advanced-url-status"><button type="button" data-url-load>Add JSON</button><button type="button" data-url-cancel hidden>Cancel</button></div>
+                    <button type="button" class="json-url-example" data-url-example>Use example URL (5 MB)</button>
+                    <p id="advanced-url-help" class="muted">Contacts the source host without cookies. Public HTTPS URLs need CORS enabled (up to 20 MB); merging stays local.</p>
+                    <p id="advanced-url-status" role="status" aria-live="polite"></p>
+                </details>
                 <ol id="files" aria-label="Input files"></ol>
                 <details>
                     <summary>Add pasted JSON</summary>
