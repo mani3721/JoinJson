@@ -26,7 +26,6 @@ test('standalone page defaults to Paste, empty status and disabled merge', t => 
     assert.equal(s.get(id + '-url-panel').hidden, true);
     assert.equal(s.get(id + '-status').textContent, 'Empty');
   }
-  assert.equal(s.doc.querySelectorAll('script[src],link[rel=stylesheet]').length, 0);
 });
 test('tabs expose only one method and support keyboard navigation', t => {
   const s = setup(); t.after(() => s.dom.window.close());
@@ -48,16 +47,26 @@ test('live validation, line error, ready state and result invalidation', async t
   assert.equal(s.get('copy').disabled, false);
   s.set('first', '{}'); assert.equal(s.get('copy').disabled, true);
 });
-test('deep merge, array policy, shallow option and changed-line annotations', t => {
+test('deep merge, array policies, conflict choices, live diff and shallow option', async t => {
   const s = setup(); t.after(() => s.dom.window.close());
   s.merge({ name: 'Ana', settings: { a: 1, b: 2 }, tags: [1] }, { name: 'Bea', city: 'Paris', settings: { a: 3 }, tags: [2] });
+  await wait(180);
   assert.deepEqual(JSON.parse(s.output()), { name: 'Bea', settings: { a: 3, b: 2 }, tags: [2], city: 'Paris' });
   assert.ok(s.doc.querySelector('.result-lines .added'));
   assert.ok(s.doc.querySelector('.result-lines .overridden'));
-  s.get('arrays').value = 'concat'; s.get('merge').click();
+  assert.equal(s.get('conflict-panel').hidden, false);
+  assert.equal(s.get('diff-panel').hidden, false);
+  const firstName = [...s.doc.querySelectorAll('#conflict-list legend')].find(legend => legend.textContent === '/name').parentElement.querySelector('input[value=first]');
+  firstName.click(); await wait(220);
+  assert.equal(JSON.parse(s.output()).name, 'Ana');
+  s.get('arrays').value = 'concat'; s.get('arrays').dispatchEvent(new s.win.Event('change', { bubbles: true })); await wait(220);
   assert.deepEqual(JSON.parse(s.output()).tags, [1, 2]);
-  s.get('deep').checked = false; s.get('merge').click();
-  assert.deepEqual(JSON.parse(s.output()).settings, { a: 3 });
+  s.get('arrays').value = 'merge-id'; s.get('arrays').dispatchEvent(new s.win.Event('change', { bubbles: true }));
+  s.set('first', JSON.stringify({ users: [{ id: 1, name: 'Ana', role: 'old' }] }));
+  s.set('second', JSON.stringify({ users: [{ id: 1, role: 'new' }, { id: 2, name: 'Bea' }] })); await wait(260);
+  assert.deepEqual(JSON.parse(s.output()).users, [{ id: 1, name: 'Ana', role: 'new' }, { id: 2, name: 'Bea' }]);
+  s.get('deep').checked = false; s.get('deep').dispatchEvent(new s.win.Event('change', { bubbles: true })); await wait(220);
+  assert.deepEqual(JSON.parse(s.output()).users, [{ id: 1, role: 'new' }, { id: 2, name: 'Bea' }]);
 });
 test('primitive, null, root arrays and dangerous object keys merge safely', t => {
   const s = setup(); t.after(() => s.dom.window.close());

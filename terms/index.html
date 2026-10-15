@@ -28,23 +28,12 @@
 <meta property="og:image:alt" content="Merge JSON files: join records by ID and review conflicts">
 <meta name="twitter:image" content="https://www.joinjson.com/assets/og-placeholder.svg">
 <meta name="twitter:image:alt" content="Merge JSON files: join records by ID and review conflicts">
+<link rel="stylesheet" href="/assets/site-layout.css">
 </head>
 
 <body>
     <a class="skip" href="#main">Skip to content</a>
-    <header class="site-header">
-        <div class="header-inner"><a class="wordmark" href="/"><img src="/favicon.svg" width="32" height="32"
-                    alt=""><span class="wordmark-name">JoinJson</span></a>
-            <nav aria-label="Main"><a href="/">Tool</a><a href="/merge-json-files-python/">Python guide</a><a
-                    href="/merge-json-arrays-by-id/">Join by ID</a><a href="/deep-merge-vs-shallow-merge-json/">Merge
-                    methods</a></nav>
-            <div class="theme-control"><label for="theme">Theme</label><select id="theme">
-                    <option value="system">System</option>
-                    <option value="light">Light</option>
-                    <option value="dark">Dark</option>
-                </select></div>
-        </div>
-    </header>
+    <header class="site-header shared-header"><div class="header-inner"><a class="brand" href="/" aria-label="JoinJson home"><img src="/favicon.svg" width="32" height="32" alt=""><span>JoinJson</span></a><nav class="header-links" aria-label="Main"><details class="guide-dropdown"><summary>Guides</summary><div class="guide-menu"><a href="/merge-json-files-python/">Python guide</a><a href="/merge-json-arrays-by-id/">Join by ID</a><a href="/deep-merge-vs-shallow-merge-json/">Merge methods</a></div></details><a href="/privacy/">Privacy</a></nav><button type="button" id="theme-toggle" class="theme-toggle" aria-label="Dark mode" aria-pressed="false" title="Switch to dark mode"><svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14A8 8 0 0 1 10 4a8 8 0 1 0 10 10Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2"/></svg><span class="theme-toggle-label">Dark</span></button></div></header>
     <main id="main" class="article">
         <h1>Terms of use</h1>
         <p>These terms apply to the JoinJson browser tool and its educational guides. By using the site, you agree to use it lawfully and review the limitations described here. If you do not agree, do not use the service.</p>
@@ -72,35 +61,7 @@
         <p class="legal-note">These terms are general information, not legal advice. They require operator review for
             the actual service and jurisdiction.</p>
     </main>
-    <footer class="site-footer">
-        <div class="footer-inner">
-            <div class="footer-grid">
-                <section>
-                    <h2>Tools and guides</h2>
-                    <nav aria-label="Guides"><a href="/">Merge JSON files</a><a href="/merge-json-files-python/">Python
-                            workflow</a><a href="/merge-json-arrays-by-id/">Join arrays by ID</a><a
-                            href="/deep-merge-vs-shallow-merge-json/">Deep vs shallow merge</a></nav>
-                </section>
-                <section>
-                    <h2>About the site</h2>
-                    <nav aria-label="Site information"><a href="/about/">About</a><a href="/contact/">Contact</a><a
-                            href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav><button id="reset-settings"
-                        type="button" hidden>Reset saved settings</button>
-                    <p id="preference-status" role="status" aria-live="polite">Only theme and non-sensitive preferences
-                        are saved. JSON is never saved by the app.</p>
-                </section>
-                <section>
-                    <h2>Privacy choices</h2>
-                    <p id="consent-status" role="status" aria-live="polite">Advertising and analytics are disabled. No
-                        optional vendor scripts are loaded.</p><button id="consent-decline" type="button">Decline
-                        optional services</button> <button id="consent-review" type="button" hidden>Review privacy
-                        choices</button>
-                </section>
-            </div>
-            <p class="footer-note">© joinjson.com. General information, not legal advice. UNVERIFIED: deployment, consent
-                certification, and advertising approval. No rankings or traffic promised.</p>
-        </div>
-    </footer>
+    <footer class="site-footer shared-footer"><span>© JoinJson · Built for your browser</span><nav aria-label="Site information"><a href="/">Home</a><a href="/about/">About US</a><a href="/contact/">Contact US</a><a href="/privacy/">Privacy Policy</a><a href="/terms/">Terms of use</a><a href="/disclaimer/">Disclaimer</a></nav></footer>
 </body>
 
 </html>

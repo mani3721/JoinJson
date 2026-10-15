@@ -4,7 +4,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { minifyHome } from './build-home.mjs';
 const root = new URL('../', import.meta.url);
-const pages = ['index.html', '404.html', ...['about', 'contact', 'privacy', 'terms', 'deep-merge-vs-shallow-merge-json', 'merge-json-arrays-by-id', 'merge-json-files-python'].map(name => name + '/index.html')];
+const pages = ['index.html', '404.html', ...['about', 'contact', 'privacy', 'terms', 'disclaimer', 'deep-merge-vs-shallow-merge-json', 'merge-json-arrays-by-id', 'merge-json-files-python'].map(name => name + '/index.html')];
 const hashes = new Set();
 for (const page of pages) {
   const html = await readFile(new URL(page, root), 'utf8');

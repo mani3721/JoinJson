@@ -30,7 +30,7 @@
 <meta name="twitter:title" content="Merge JSON Files Online — Free &amp; Private | JoinJson">
 <meta name="twitter:description" content="Merge JSON files online: paste, upload, or load a URL. Combine nested objects, review highlighted changes, and download results privately in your browser.">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"JoinJson","url":"https://www.joinjson.com/","description":"Merge JSON files online: paste, upload, or load a URL. Combine nested objects, review highlighted changes, and download results privately in your browser.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript and a modern browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isAccessibleForFree":true}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Are pasted or uploaded JSON files sent to a server?","acceptedAnswer":{"@type":"Answer","text":"No. Parsing, validation, merging, and result rendering run in your browser. Load from URL contacts the source host to obtain the document. Copy and Download export data only when you request them. See the Privacy Policy for hosting and advertising disclosures."}},{"@type":"Question","name":"What happens when both documents contain the same key?","acceptedAnswer":{"@type":"Answer","text":"The second JSON wins a conflicting value. With deep merge enabled, matching objects are combined recursively first. Keys unique to the first object remain, and keys unique to the second are added. Swap the inputs to reverse priority."}},{"@type":"Question","name":"Can I combine arrays without losing their existing items?","acceptedAnswer":{"@type":"Answer","text":"Yes. Select Concatenate both in Advanced options. When the array rule applies, items from the first array are followed by items from the second. Duplicates remain; this is not a join by ID. In shallow object mode, a conflicting nested array is replaced."}},{"@type":"Question","name":"Why does a JSON URL fail even when it opens in another tab?","acceptedAnswer":{"@type":"Answer","text":"A browser can display a page while still blocking another website from reading it. The source needs to permit CORS access, use HTTPS, return valid JSON, and stay within the 20 MB limit. Private endpoints requiring cookies are not supported. You can upload a downloaded .json file instead."}},{"@type":"Question","name":"Does a highlighted change mean the result is incorrect?","acceptedAnswer":{"@type":"Answer","text":"No. Colors explain differences from the first input: added keys and overridden values. They are not schema validation or an assessment of correctness. Review the changes against your intended update and run your project’s normal checks before using the output."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Are pasted or uploaded JSON files sent to a server?","acceptedAnswer":{"@type":"Answer","text":"No. Parsing, validation, merging, and result rendering run in your browser. Load from URL contacts the source host to obtain the document. Copy and Download export data only when you request them. See the Privacy Policy for hosting and advertising disclosures."}},{"@type":"Question","name":"What happens when both documents contain the same key?","acceptedAnswer":{"@type":"Answer","text":"The second JSON wins a conflicting value. With deep merge enabled, matching objects are combined recursively first. Keys unique to the first object remain, and keys unique to the second are added. Swap the inputs to reverse priority."}},{"@type":"Question","name":"Can I combine arrays without losing their existing items?","acceptedAnswer":{"@type":"Answer","text":"Yes. Select Concatenate both to append items, or Merge by ID to join array objects that share a field such as id. Replace with second keeps the updated array only. In shallow object mode, a conflicting nested array is handled with the selected array rule."}},{"@type":"Question","name":"Why does a JSON URL fail even when it opens in another tab?","acceptedAnswer":{"@type":"Answer","text":"A browser can display a page while still blocking another website from reading it. The source needs to permit CORS access, use HTTPS, return valid JSON, and stay within the 20 MB limit. Private endpoints requiring cookies are not supported. You can upload a downloaded .json file instead."}},{"@type":"Question","name":"Does a highlighted change mean the result is incorrect?","acceptedAnswer":{"@type":"Answer","text":"No. Colors explain differences from the first input: added keys and overridden values. They are not schema validation or an assessment of correctness. Review the changes against your intended update and run your project’s normal checks before using the output."}}]}</script>
 <!-- Google CMP placeholder: install your Google-certified consent platform here.
      No CMP is configured and no consent is assumed. Keep advertising disabled until reviewed. -->
 <!-- AdSense placeholder: do NOT paste an eager-loading vendor script here.
@@ -768,6 +768,96 @@ kbd {
   font-size: 13px;
   color: var(--muted);
 }
+.conflict-panel,
+.diff-panel {
+  border-top: 1px solid var(--line);
+  padding: 16px 18px;
+}
+.conflict-panel h3,
+.diff-panel h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+.conflict-list {
+  display: grid;
+  gap: 12px;
+}
+.conflict-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+  background: var(--soft);
+}
+.conflict-card legend {
+  padding: 0 5px;
+  font-weight: 700;
+}
+.conflict-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.conflict-option {
+  display: grid;
+  gap: 7px;
+  align-content: start;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px;
+  background: var(--surface);
+}
+.conflict-option span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 650;
+}
+.conflict-option pre,
+.diff-value {
+  margin: 0;
+  overflow: auto;
+  max-height: 155px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: 12px/1.45 ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+.array-id-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+.array-id-option input {
+  width: 88px;
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--surface);
+  padding: 6px 9px;
+}
+.diff-list {
+  display: grid;
+  gap: 8px;
+}
+.diff-row {
+  display: grid;
+  grid-template-columns: minmax(110px, .65fr) minmax(70px, .35fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px;
+  background: var(--surface);
+  font-size: 13px;
+}
+.diff-path {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  overflow-wrap: anywhere;
+}
+.diff-kind {
+  font-weight: 750;
+  color: var(--accent);
+}
 .legend-key {
   display: inline-flex;
   gap: 7px;
@@ -893,6 +983,10 @@ kbd {
   .site-footer nav {
     flex-wrap: wrap;
   }
+  .conflict-options,
+  .diff-row {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
 <style id="editorial-styles" media="all">
@@ -982,17 +1076,19 @@ kbd {
   }
 }
 </style>
-
+<link rel="stylesheet" href="/assets/site-layout.css">
+<link rel="stylesheet" href="/assets/home-theme.css">
+<script src="/assets/theme.js" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<header class="site-header"><div class="header-inner"><a class="brand" href="/" aria-label="JoinJson home"><img src="/favicon.svg" width="32" height="32" alt=""><span>JoinJson</span></a><nav class="header-links" aria-label="Guides"><a href="/deep-merge-vs-shallow-merge-json/">Merge guide</a><a href="/privacy/">Privacy</a></nav></div></header>
+<header class="site-header shared-header"><div class="header-inner"><a class="brand" href="/" aria-label="JoinJson home"><img src="/favicon.svg" width="32" height="32" alt=""><span>JoinJson</span></a><nav class="header-links" aria-label="Main"><details class="guide-dropdown"><summary>Guides</summary><div class="guide-menu"><a href="/merge-json-files-python/">Python guide</a><a href="/merge-json-arrays-by-id/">Join by ID</a><a href="/deep-merge-vs-shallow-merge-json/">Merge methods</a></div></details><a href="/privacy/">Privacy</a></nav><button type="button" id="theme-toggle" class="theme-toggle" aria-label="Dark mode" aria-pressed="false" title="Switch to dark mode"><svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14A8 8 0 0 1 10 4a8 8 0 1 0 10 10Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2"/></svg><span class="theme-toggle-label">Dark</span></button></div></header>
 <main id="main">
-<section class="hero" aria-labelledby="page-title"><div class="eyebrow">Simple inputs. One clean result.</div><h1 id="page-title">Merge <span>{JSON}</span> files into one</h1><p>Bring two JSON values together. Review exactly what changed.</p></section>
+<section class="hero" aria-labelledby="page-title"><div class="eyebrow">Simple inputs. One clean result.</div><h1 id="page-title">Merge <span>{ JSON }</span> files into one</h1><p>Bring two JSON values together. Review exactly what changed.</p></section>
 <ol class="steps" aria-label="Merge progress"><li id="step-1" aria-current="step"><span class="step-number">1</span>Add JSON A + B</li><li id="step-2"><span class="step-number">2</span>Merge</li><li id="step-3"><span class="step-number">3</span>Result</li></ol>
 <section aria-labelledby="inputs-heading"><div class="section-heading"><h2 id="inputs-heading"><span aria-hidden="true">1</span>Add your JSON</h2><div class="workspace-actions"><button id="example" class="link-button" type="button">Try an example</button><button id="swap" class="quiet-button" type="button" aria-label="Swap first and second JSON">Swap A ↔ B</button><button id="clear" class="quiet-button" type="button">Clear all</button></div></div><div id="inputs" class="input-grid"></div></section>
-<section class="merge-section" aria-labelledby="merge-heading"><h2 id="merge-heading" class="merge-title"><span aria-hidden="true">2 · </span>Merge</h2><button id="merge" class="primary merge-button" type="button" disabled aria-describedby="merge-rule merge-reason">Merge JSON</button><p id="merge-rule" class="rule">If both have the same key, the second JSON wins.</p><p id="merge-reason" class="muted">Add valid JSON to both inputs to continue.</p><p class="shortcut"><kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>Enter</kbd> to merge</p><details class="advanced"><summary>Advanced options</summary><div class="options"><label class="check-label"><input id="deep" type="checkbox" checked>Deep merge nested objects</label><label class="array-option" for="arrays">Arrays<select id="arrays"><option value="replace">Replace with second</option><option value="concat">Concatenate both</option></select></label></div><p class="advanced-note">Objects combine their keys. Other value types use the second input. Arrays follow the selected rule.</p></details></section>
-<section id="result" class="result-panel" aria-labelledby="result-heading"><div class="result-heading"><h2 id="result-heading" class="result-title" tabindex="-1"><span aria-hidden="true">3</span>Result</h2><div class="result-actions"><button id="copy" type="button" disabled>Copy</button><button id="download" type="button" disabled>Download .json</button><button id="format-result" type="button" disabled>Format</button></div></div><div id="result-empty" class="result-empty">Your merged JSON will appear here.</div><div id="result-output" class="result-output" role="region" aria-label="Merged JSON with line numbers" tabindex="0" hidden><ol id="result-lines" class="result-lines"></ol></div><p id="preview-notice" class="result-notice" hidden></p><div id="result-legend" class="result-legend" hidden><span class="legend-key"><span class="swatch" aria-hidden="true"></span>Added key</span><span class="legend-key"><span class="swatch changed" aria-hidden="true"></span>Overridden value</span><span id="change-count"></span></div></section>
+<section class="merge-section" aria-labelledby="merge-heading"><h2 id="merge-heading" class="merge-title"><span aria-hidden="true">2 · </span>Merge</h2><button id="merge" class="primary merge-button" type="button" disabled aria-describedby="merge-rule merge-reason">Merge JSON</button><p id="merge-rule" class="rule">If both have the same key, review conflicts below or keep the second JSON as the default winner.</p><p id="merge-reason" class="muted">Add valid JSON to both inputs to continue.</p><p class="shortcut"><kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>Enter</kbd> to merge</p><details class="advanced"><summary>Advanced options</summary><div class="options"><label class="check-label"><input id="deep" type="checkbox" checked>Deep merge nested objects</label><label class="array-option" for="arrays">Arrays<select id="arrays"><option value="replace">Replace with second</option><option value="concat">Concatenate both</option><option value="merge-id">Merge by ID</option></select></label><label id="array-id-wrap" class="array-id-option" for="array-key" hidden>ID field<input id="array-key" type="text" value="id" autocomplete="off" spellcheck="false"></label></div><p class="advanced-note">Objects combine their keys. Other value types use the selected conflict choice. Arrays can be replaced, concatenated, or joined by a shared identifier.</p></details></section>
+<section id="result" class="result-panel" aria-labelledby="result-heading"><div class="result-heading"><h2 id="result-heading" class="result-title" tabindex="-1"><span aria-hidden="true">3</span>Result</h2><div class="result-actions"><button id="copy" type="button" disabled>Copy</button><button id="download" type="button" disabled>Download .json</button><button id="format-result" type="button" disabled>Format</button></div></div><div id="result-empty" class="result-empty">Your merged JSON will appear here.</div><div id="result-output" class="result-output" role="region" aria-label="Merged JSON with line numbers" tabindex="0" hidden><ol id="result-lines" class="result-lines"></ol></div><p id="preview-notice" class="result-notice" hidden></p><div id="result-legend" class="result-legend" hidden><span class="legend-key"><span class="swatch" aria-hidden="true"></span>Added key</span><span class="legend-key"><span class="swatch changed" aria-hidden="true"></span>Overridden value</span><span id="change-count"></span></div><section id="conflict-panel" class="conflict-panel" aria-labelledby="conflict-heading" hidden><h3 id="conflict-heading">Conflict resolution</h3><p class="muted">Choose which value wins for each conflicting path. The result updates automatically.</p><div id="conflict-list" class="conflict-list"></div></section><section id="diff-panel" class="diff-panel" aria-labelledby="diff-heading" hidden><h3 id="diff-heading">Live visual diff</h3><p id="diff-summary" class="muted"></p><div id="diff-list" class="diff-list" role="list"></div></section></section>
 <p id="status" class="global-status" role="status" aria-live="polite" aria-atomic="true"></p><p class="privacy-note">Your JSON stays in this tab. Loading a URL contacts that source directly; no inputs are saved.</p>
 <noscript><p>This tool needs JavaScript. You can also use the <a href="/merge-json-files-python/">Python merge guide</a>.</p></noscript>
 <!-- Manual placements only; hidden until a successful merge with no input/import errors. -->
@@ -1008,7 +1104,7 @@ kbd {
 <h3>3. Resolve validation errors before merging</h3>
 <p>Each input has a live status badge. Empty means no document has been supplied, Valid JSON means the text can be parsed, and an error identifies a line to inspect. An error may originate just before the reported line, such as a missing comma or an unclosed string. The Format icon helps make a valid document easier to read, while Find locates a key or value and Wrap reduces horizontal scrolling. Validation checks JSON syntax, not your business rules: it cannot tell whether a product price or account identifier is correct.</p>
 <h3>4. Pick the right merge rules</h3>
-<p>Open Advanced options if you need to change how nested objects or arrays behave. Deep merge is enabled initially, so matching nested objects are combined recursively. With deep merge disabled, a nested value supplied by the second object replaces the first value as a whole. Arrays are replaced by the second array by default. Concatenate appends the second array to the first when the array rule is applied; it does not deduplicate items or match records by identifier. With shallow object merging, nested arrays are replaced along with other nested values.</p>
+<p>Open Advanced options if you need to change how nested objects or arrays behave. Deep merge is enabled initially, so matching nested objects are combined recursively. With deep merge disabled, a nested value supplied by the second object replaces the first value as a whole unless you choose a different conflict winner. Arrays are replaced by the second array by default. Concatenate appends the second array to the first, while Merge by ID joins array objects that share the selected identifier field.</p>
 <h3>5. Merge, inspect, and export</h3>
 <p>Select Merge JSON once both badges are valid, or press Ctrl/Cmd+Enter. Review the full-width Result panel rather than assuming a successful parse guarantees a suitable output. Subtle colors identify added keys and overridden values compared with the first document. Check important nested fields, list lengths, and any deliberately changed values. Very large documents have a bounded preview to keep the page responsive, but Copy and Download include the complete serialized result. Download .json saves a new file; it does not edit either original source.</p>
 <p>After exporting, validate the result with any schema or application checks your project normally uses. JavaScript numbers can lose precision for very large integer identifiers, so keep such identifiers as strings where appropriate. Changing an input or a merge option clears the previous result so it cannot be mistaken for a current merge. Clear all removes the working inputs from the interface. The homepage does not save your JSON in app storage, but clipboard history, downloaded files, and browser extensions remain outside the tool’s control.</p>
@@ -1035,12 +1131,12 @@ Second JSON:
 <h2 id="faq-heading">Frequently asked questions</h2>
 <details><summary>Are pasted or uploaded JSON files sent to a server?</summary><p>No. Parsing, validation, merging, and result rendering run in your browser. Load from URL contacts the source host to obtain the document. Copy and Download export data only when you request them. See the <a href="/privacy/">Privacy Policy</a> for hosting and advertising disclosures.</p></details>
 <details><summary>What happens when both documents contain the same key?</summary><p>The second JSON wins a conflicting value. With deep merge enabled, matching objects are combined recursively first. Keys unique to the first object remain, and keys unique to the second are added. Swap the inputs to reverse priority.</p></details>
-<details><summary>Can I combine arrays without losing their existing items?</summary><p>Yes. Select Concatenate both in Advanced options. When the array rule applies, items from the first array are followed by items from the second. Duplicates remain; this is not a join by ID. In shallow object mode, a conflicting nested array is replaced.</p></details>
+<details><summary>Can I combine arrays without losing their existing items?</summary><p>Yes. Select Concatenate both to append items, or Merge by ID to join array objects that share a field such as id. Replace with second keeps the updated array only. In shallow object mode, a conflicting nested array is handled with the selected array rule.</p></details>
 <details><summary>Why does a JSON URL fail even when it opens in another tab?</summary><p>A browser can display a page while still blocking another website from reading it. The source needs to permit CORS access, use HTTPS, return valid JSON, and stay within the 20 MB limit. Private endpoints requiring cookies are not supported. You can upload a downloaded .json file instead.</p></details>
 <details><summary>Does a highlighted change mean the result is incorrect?</summary><p>No. Colors explain differences from the first input: added keys and overridden values. They are not schema validation or an assessment of correctness. Review the changes against your intended update and run your project’s normal checks before using the output.</p></details>
 </section>
-<footer class="site-footer"><span>© JoinJson · Built for your browser</span><nav aria-label="Site information"><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav></footer>
 </main>
+<footer class="site-footer shared-footer"><span>© JoinJson · Built for your browser</span><nav aria-label="Site information"><a href="/">Home</a><a href="/about/">About US</a><a href="/contact/">Contact US</a><a href="/privacy/">Privacy Policy</a><a href="/terms/">Terms of use</a><a href="/disclaimer/">Disclaimer</a></nav></footer>
 <script>
 "use strict";
 (() => {
@@ -1054,9 +1150,28 @@ Second JSON:
   const states = [];
   let resultText = "", lastResult = null, resultReady = false;
   let changes = /* @__PURE__ */ new Map(), totalAdded = 0, totalOverridden = 0;
+  let currentConflicts = [], conflictChoices = /* @__PURE__ */ new Map(), liveTimer = null, activeArrayKey = "id", suppressAuto = false;
   let mergeWorker = null, mergeJob = 0, merging = false;
   const WORKER_THRESHOLD = 256 * 1024;
   const pointer = (path, key) => path + "/" + String(key).replace(/~/g, "~0").replace(/\//g, "~1");
+  const canonical = (value) => {
+    if (Array.isArray(value)) return "[" + value.map(canonical).join(",") + "]";
+    if (object(value)) return "{" + Object.keys(value).sort().map((key) => JSON.stringify(key) + ":" + canonical(value[key])).join(",") + "}";
+    return JSON.stringify(value);
+  };
+  const clone = (value) => {
+    if (Array.isArray(value)) return value.map(clone);
+    if (!object(value)) return value;
+    const output = Object.create(null);
+    for (const key of Object.keys(value)) output[key] = clone(value[key]);
+    return output;
+  };
+  const atPath = (value, path) => path.split(".").filter(Boolean).reduce((current, key) => current != null && own(Object(current), key) ? current[key] : void 0, value);
+  const scalar = (value) => ["string", "number", "boolean"].includes(typeof value);
+  const shortValue = (value) => {
+    const text = JSON.stringify(value, null, 2);
+    return text.length > 900 ? text.slice(0, 900) + "\n…" : text;
+  };
   const announce = (message) => {
     $("status").textContent = message;
   };
@@ -1304,6 +1419,7 @@ Second JSON:
     badge.textContent = message;
     state.editor.setAttribute("aria-invalid", String(status === "error"));
     updateReady();
+    if (!suppressAuto && states.length === 2 && states.every((item) => item.valid)) scheduleLiveMerge();
     return state.valid;
   }
   function updateAds() {
@@ -1326,6 +1442,7 @@ Second JSON:
   function invalidateResult() {
     mergeJob++;
     merging = false;
+    clearTimeout(liveTimer);
     if (mergeWorker) {
       mergeWorker.terminate();
       mergeWorker = null;
@@ -1338,8 +1455,11 @@ Second JSON:
       $(id).disabled = true;
     });
     $("result-output").hidden = $("result-legend").hidden = $("preview-notice").hidden = true;
+    $("conflict-panel").hidden = $("diff-panel").hidden = true;
     $("result-empty").hidden = false;
     $("result-lines").replaceChildren();
+    $("conflict-list").replaceChildren();
+    $("diff-list").replaceChildren();
     $("result-empty").textContent = "Your merged JSON will appear here.";
     updateReady();
   }
@@ -1485,16 +1605,51 @@ Second JSON:
       }
     }
   }
-  function mergeValues(first, second, deep, arrays, depth = 0) {
+  function recordConflict(path, first, second) {
+    if (canonical(first) === canonical(second)) return;
+    if (!currentConflicts.some((item) => item.path === path)) currentConflicts.push({ path: path || "/", first: clone(first), second: clone(second), selected: conflictChoices.get(path || "/") || "second" });
+  }
+  function chooseValue(first, second, path) {
+    const key = path || "/";
+    recordConflict(key, first, second);
+    return clone(conflictChoices.get(key) === "first" ? first : second);
+  }
+  function mergeArraysById(first, second, deep, arrays, depth, path) {
+    const idPath = activeArrayKey.trim() || "id";
+    const output = first.map(clone);
+    const indexes = /* @__PURE__ */ new Map();
+    first.forEach((item, index) => {
+      const id = object(item) ? atPath(item, idPath) : void 0;
+      if (scalar(id)) indexes.set(typeof id + ":" + id, index);
+    });
+    second.forEach((item) => {
+      const id = object(item) ? atPath(item, idPath) : void 0;
+      const token = scalar(id) ? typeof id + ":" + id : "";
+      if (token && indexes.has(token) && object(output[indexes.get(token)]) && object(item)) {
+        const index = indexes.get(token);
+        output[index] = mergeValues(output[index], item, deep, arrays, depth + 1, pointer(path, index));
+      } else {
+        if (token && !indexes.has(token)) indexes.set(token, output.length);
+        output.push(clone(item));
+      }
+    });
+    return output;
+  }
+  function mergeValues(first, second, deep, arrays, depth = 0, path = "") {
     if (depth > MAX_DEPTH) throw new Error("The merged JSON is too deeply nested.");
-    if (Array.isArray(first) && Array.isArray(second)) return arrays === "concat" ? first.concat(second) : second;
+    if (Array.isArray(first) && Array.isArray(second)) {
+      if (arrays === "concat") return first.concat(second).map(clone);
+      if (arrays === "merge-id") return mergeArraysById(first, second, deep, arrays, depth, path);
+      return chooseValue(first, second, path);
+    }
     if (object(first) && object(second)) {
+      if (!deep) return chooseValue(first, second, path);
       const output = /* @__PURE__ */ Object.create(null);
-      for (const key of Object.keys(first)) output[key] = first[key];
-      for (const key of Object.keys(second)) output[key] = own(first, key) && deep ? mergeValues(first[key], second[key], deep, arrays, depth + 1) : second[key];
+      for (const key of Object.keys(first)) output[key] = clone(first[key]);
+      for (const key of Object.keys(second)) output[key] = own(first, key) ? mergeValues(first[key], second[key], deep, arrays, depth + 1, pointer(path, key)) : clone(second[key]);
       return output;
     }
-    return second;
+    return chooseValue(first, second, path);
   }
   function collectChanges(first, merged, path = "", exists = true) {
     if (!exists) {
@@ -1513,38 +1668,71 @@ Second JSON:
       totalOverridden++;
     }
   }
+  function collectDiffRows(first, merged) {
+    const rows = [];
+    function walk(before, after, path, existsBefore = true, existsAfter = true) {
+      if (rows.length >= 80) return;
+      const label = path || "/";
+      if (!existsBefore) { rows.push({ path: label, type: "added", before: void 0, after: clone(after) }); return; }
+      if (!existsAfter) { rows.push({ path: label, type: "removed", before: clone(before), after: void 0 }); return; }
+      if (object(before) && object(after)) {
+        const keys = new Set(Object.keys(before).concat(Object.keys(after)));
+        for (const key of keys) walk(before[key], after[key], pointer(path, key), own(before, key), own(after, key));
+      } else if (canonical(before) !== canonical(after)) rows.push({ path: label, type: "changed", before: clone(before), after: clone(after) });
+    }
+    walk(first, merged, "");
+    return rows;
+  }
   function workerSource() {
     return [
       "'use strict'; const MAX_DEPTH = " + MAX_DEPTH + "; const MAX_PREVIEW_LINES = " + MAX_PREVIEW_LINES + "; const MAX_PREVIEW_CHARS = " + MAX_PREVIEW_CHARS + ";",
-      "const own = " + own + "; const object = " + object + "; const pointer = " + pointer + ";",
-      "let changes = new Map(), totalAdded = 0, totalOverridden = 0;",
+      "const own = " + own + "; const object = " + object + "; const pointer = " + pointer + "; const canonical = " + canonical + "; const clone = " + clone + "; const atPath = " + atPath + "; const scalar = " + scalar + ";",
+      "let changes = new Map(), totalAdded = 0, totalOverridden = 0, currentConflicts = [], conflictChoices = new Map(), activeArrayKey = 'id';",
       parse.toString(),
+      recordConflict.toString(),
+      chooseValue.toString(),
+      mergeArraysById.toString(),
       mergeValues.toString(),
       collectChanges.toString(),
+      collectDiffRows.toString(),
       previewLines.toString(),
-      "onmessage = function(event) { try { const { id, first, second, deep, arrays } = event.data; const base = parse(first); const result = mergeValues(base, parse(second), deep, arrays); collectChanges(base, result); const preview = previewLines(result); postMessage({ id, text: JSON.stringify(result, null, 2), preview, added: totalAdded, overridden: totalOverridden }); } catch(error) { postMessage({ id: event.data.id, error: error.message }); } };"
+      "onmessage = function(event) { try { const { id, first, second, deep, arrays, choices, arrayKey } = event.data; conflictChoices = new Map(choices || []); activeArrayKey = arrayKey || 'id'; currentConflicts = []; const base = parse(first); const result = mergeValues(base, parse(second), deep, arrays); collectChanges(base, result); const preview = previewLines(result); const diffRows = collectDiffRows(base, result); postMessage({ id, text: JSON.stringify(result, null, 2), preview, added: totalAdded, overridden: totalOverridden, conflicts: currentConflicts, diffRows }); } catch(error) { postMessage({ id: event.data.id, error: error.message }); } };"
     ].join("\n");
   }
-  function finishMerge(text, preview, added, overridden) {
+  function finishMerge(text, preview, added, overridden, conflicts, diffRows, manual = true) {
     resultText = text;
     resultReady = true;
     merging = false;
     totalAdded = added;
     totalOverridden = overridden;
+    currentConflicts = conflicts || currentConflicts;
+    const activePaths = new Set(currentConflicts.map((item) => item.path));
+    for (const key of conflictChoices.keys()) if (!activePaths.has(key)) conflictChoices.delete(key);
     $("merge").removeAttribute("aria-busy");
     renderResult(preview);
+    renderConflicts();
+    renderDiff(diffRows || (lastResult === null ? [] : collectDiffRows(states[0].value, lastResult)));
     ["copy", "download", "format-result"].forEach((id) => {
       $(id).disabled = false;
     });
     updateReady();
-    announce("Merged successfully. " + totalAdded + " added and " + totalOverridden + " overridden keys or values.");
-    $("result-heading").focus();
+    if (manual) {
+      announce("Merged successfully. " + totalAdded + " added and " + totalOverridden + " overridden keys or values.");
+      $("result-heading").focus();
+    }
   }
-  function merge() {
+  function scheduleLiveMerge() {
+    clearTimeout(liveTimer);
+    liveTimer = setTimeout(() => merge(false), 160);
+  }
+  function merge(manual = true) {
     if (merging) return;
     const first = states[0].editor.value, second = states[1].editor.value;
     const large = first.length + second.length >= WORKER_THRESHOLD;
+    activeArrayKey = $("array-key").value.trim() || "id";
+    suppressAuto = true;
     if (!large || typeof Worker === "undefined") states.forEach(validate);
+    suppressAuto = false;
     if (!states.every((state) => state.valid)) {
       announce("Both inputs must contain valid JSON before merging.");
       return;
@@ -1572,13 +1760,13 @@ Second JSON:
             return;
           }
           lastResult = null;
-          finishMerge(data.text, data.preview, data.added, data.overridden);
+          finishMerge(data.text, data.preview, data.added, data.overridden, data.conflicts, data.diffRows, manual);
         };
         mergeWorker.onerror = () => {
           invalidateResult();
           announce("Unable to merge in a background worker. Check browser security settings.");
         };
-        mergeWorker.postMessage({ id, first, second, deep, arrays });
+        mergeWorker.postMessage({ id, first, second, deep, arrays, choices: [...conflictChoices], arrayKey: activeArrayKey });
       } catch (error) {
         invalidateResult();
         announce("Unable to merge: " + error.message);
@@ -1588,11 +1776,12 @@ Second JSON:
       return;
     }
     try {
+      currentConflicts = [];
       lastResult = mergeValues(states[0].value, states[1].value, deep, arrays);
       changes = /* @__PURE__ */ new Map();
       totalAdded = totalOverridden = 0;
       collectChanges(states[0].value, lastResult);
-      finishMerge(JSON.stringify(lastResult, null, 2), previewLines(lastResult), totalAdded, totalOverridden);
+      finishMerge(JSON.stringify(lastResult, null, 2), previewLines(lastResult), totalAdded, totalOverridden, currentConflicts, collectDiffRows(states[0].value, lastResult), manual);
     } catch (error) {
       invalidateResult();
       announce("Unable to merge: " + error.message);
@@ -1631,6 +1820,65 @@ Second JSON:
     walk(value, "", 0);
     return { lines, truncated, lineCount };
   }
+  function renderConflicts() {
+    const panel = $("conflict-panel"), list = $("conflict-list");
+    list.replaceChildren();
+    panel.hidden = currentConflicts.length === 0;
+    currentConflicts.forEach((conflict, index) => {
+      const field = document.createElement("fieldset");
+      field.className = "conflict-card";
+      const legend = document.createElement("legend");
+      legend.textContent = conflict.path;
+      const options = document.createElement("div");
+      options.className = "conflict-options";
+      [["first", "Use first JSON", conflict.first], ["second", "Use second JSON", conflict.second]].forEach(([value, label, data]) => {
+        const item = document.createElement("label");
+        item.className = "conflict-option";
+        const title = document.createElement("span");
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = "conflict-" + index;
+        input.value = value;
+        input.checked = (conflictChoices.get(conflict.path) || "second") === value;
+        input.addEventListener("change", () => {
+          conflictChoices.set(conflict.path, value);
+          scheduleLiveMerge();
+        });
+        title.append(input, label);
+        const pre = document.createElement("pre");
+        pre.textContent = shortValue(data);
+        item.append(title, pre);
+        options.append(item);
+      });
+      field.append(legend, options);
+      list.append(field);
+    });
+  }
+  function renderDiff(rows) {
+    const panel = $("diff-panel"), list = $("diff-list");
+    list.replaceChildren();
+    panel.hidden = !resultReady;
+    $("diff-summary").textContent = rows.length ? rows.length + " changed path" + (rows.length === 1 ? "" : "s") + " shown compared with the first JSON." : "No changes from the first JSON with the current choices.";
+    rows.forEach((row) => {
+      const item = document.createElement("div");
+      item.className = "diff-row";
+      item.setAttribute("role", "listitem");
+      const path = document.createElement("span");
+      path.className = "diff-path";
+      path.textContent = row.path;
+      const kind = document.createElement("span");
+      kind.className = "diff-kind";
+      kind.textContent = row.type;
+      const before = document.createElement("pre");
+      before.className = "diff-value";
+      before.textContent = row.before === void 0 ? "—" : shortValue(row.before);
+      const after = document.createElement("pre");
+      after.className = "diff-value";
+      after.textContent = row.after === void 0 ? "—" : shortValue(row.after);
+      item.append(path, kind, before, after);
+      list.append(item);
+    });
+  }
   function renderResult(preview) {
     const { lines, truncated, lineCount } = preview;
     const fragment = document.createDocumentFragment();
@@ -1651,17 +1899,27 @@ Second JSON:
     $("preview-notice").textContent = truncated ? "Preview limited to " + lineCount.toLocaleString() + " lines / 250,000 characters. Copy and Download include the complete result." : "";
     $("change-count").textContent = totalAdded + " added \xB7 " + totalOverridden + " overridden \xB7 compared with first JSON";
   }
-  $("merge").onclick = merge;
+  $("merge").onclick = () => merge(true);
   document.addEventListener("keydown", (event) => {
     if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
       event.preventDefault();
-      merge();
+      merge(true);
     }
   });
+  function updateArrayIdVisibility() {
+    $("array-id-wrap").hidden = $("arrays").value !== "merge-id";
+  }
   ["deep", "arrays"].forEach((id) => $(id).addEventListener("change", () => {
+    updateArrayIdVisibility();
     invalidateResult();
-    announce("Merge options changed. Merge again to update the result.");
+    if (states.every((state) => state.valid)) scheduleLiveMerge();
+    announce("Merge options changed. The live result will update when both inputs are valid.");
   }));
+  $("array-key").addEventListener("input", () => {
+    invalidateResult();
+    if (states.every((state) => state.valid)) scheduleLiveMerge();
+  });
+  updateArrayIdVisibility();
   $("example").onclick = () => {
     const examples = [{ name: "Ana", role: "Designer", settings: { theme: "light", notifications: true }, tags: ["design"] }, { role: "Developer", city: "Chennai", settings: { theme: "dark" }, tags: ["code"] }];
     states.forEach((state, i) => {

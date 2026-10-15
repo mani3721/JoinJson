@@ -35,10 +35,42 @@
   root.JMPreferences = store;
   const theme = document.getElementById('theme');
   const reset = document.getElementById('reset-settings');
-  const note = document.getElementById('preference-status');
-  function applyTheme(value) { document.documentElement.dataset.theme = value; theme.value = value; }
+  const note = document.getElementById('preference-status') || document.createElement('p');
+  if (!note.isConnected) {
+    note.id = 'preference-status';
+    note.className = 'layout-status';
+    note.setAttribute('role', 'status');
+    note.setAttribute('aria-live', 'polite');
+    document.body.append(note);
+  }
+  const toggle = document.getElementById('theme-toggle');
+  const systemTheme = root.matchMedia ? root.matchMedia('(prefers-color-scheme: dark)') : null;
+  const announce = message => { if (note) note.textContent = message; };
+  function isDark() {
+    const value = document.documentElement.dataset.theme;
+    return value === 'dark' || (value === 'system' && !!systemTheme?.matches);
+  }
+  function updateToggle() {
+    if (!toggle) return;
+    const dark = isDark();
+    toggle.setAttribute('aria-pressed', String(dark));
+    toggle.setAttribute('aria-label', 'Dark mode');
+    toggle.title = dark ? 'Switch to light mode' : 'Switch to dark mode';
+    toggle.querySelector('.theme-toggle-label').textContent = dark ? 'Light' : 'Dark';
+  }
+  function applyTheme(value) {
+    document.documentElement.dataset.theme = value;
+    if (theme) theme.value = value;
+    updateToggle();
+  }
+  if (systemTheme?.addEventListener) systemTheme.addEventListener('change', updateToggle);
+  if (toggle) toggle.addEventListener('click', () => {
+    const value = isDark() ? 'light' : 'dark';
+    applyTheme(value);
+    announce(store.write('theme', value) ? 'Theme saved on this device.' : 'Theme changed for this page; storage is unavailable.');
+  });
   applyTheme(store.read('theme'));
-  theme.addEventListener('change', () => { applyTheme(theme.value); note.textContent = store.write('theme',theme.value) ? 'Theme saved on this device.' : 'Theme changed for this page; storage is unavailable.'; });
+  if (theme) theme.addEventListener('change', () => { applyTheme(theme.value); announce(store.write('theme',theme.value) ? 'Theme saved on this device.' : 'Theme changed for this page; storage is unavailable.'); });
   const fields = {method:'method',key:'key',winner:'winner',lists:'lists',format:'format',caseInsensitive:'case-insensitive'};
   function restore() {
     Object.entries(fields).forEach(([name,id]) => {
@@ -54,7 +86,7 @@
       note.textContent = store.write(name,value) ? 'Non-sensitive setting saved. JSON is never stored.' : 'Setting works for this page but was not saved (invalid preference or unavailable storage).';
     });
   });
-  reset.addEventListener('click', () => {
+  if (reset) reset.addEventListener('click', () => {
     const success = store.reset(); applyTheme('system'); restore();
     // Force defaults for this page even if removals were denied.
     Object.entries(fields).forEach(([name,id]) => { const field=document.getElementById(id); if (field) { if(name==='caseInsensitive') field.checked=defaults[name]; else field.value=defaults[name]; } });

@@ -7,8 +7,8 @@
   // There is deliberately no synthetic TCF API and no public grant-consent shortcut.
   root.JMConsent = Object.freeze({config, allowed:() => false, state:() => state});
   const status = document.getElementById('consent-status');
-  document.getElementById('consent-decline').addEventListener('click', () => { state='declined'; status.textContent='Optional services declined for this page. No advertising or analytics scripts are loaded.'; });
-  document.getElementById('consent-review').addEventListener('click', () => {
+  document.getElementById('consent-decline')?.addEventListener('click', () => { state='declined'; status.textContent='Optional services declined for this page. No advertising or analytics scripts are loaded.'; });
+  document.getElementById('consent-review')?.addEventListener('click', () => {
     status.textContent='Advertising is disabled. UNVERIFIED: [CMP CHOICE] is not configured or certified for this deployment. No consent is granted and no optional scripts are loaded.';
   });
 }(window));

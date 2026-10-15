@@ -1,0 +1,41 @@
+/* Homepage colors; article pages retain their existing theme palette. */
+:root[data-theme=dark] {
+  color-scheme: dark;
+  --bg: #1b1917;
+  --surface: #24211f;
+  --soft: #302a26;
+  --text: #f4eee8;
+  --muted: #c4b9af;
+  --line: #60554c;
+  --accent: #ffac86;
+  --accent-soft: #422b22;
+  --focus: #91bcff;
+  --good: #91dbac;
+  --good-bg: #193a29;
+  --bad: #ffabb0;
+  --bad-bg: #422326;
+  --added: #193a29;
+  --changed: #493b19;
+  --shadow: none;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme=light]):not([data-theme=dark]) {
+    color-scheme: dark;
+    --bg: #1b1917;
+    --surface: #24211f;
+    --soft: #302a26;
+    --text: #f4eee8;
+    --muted: #c4b9af;
+    --line: #60554c;
+    --accent: #ffac86;
+    --accent-soft: #422b22;
+    --focus: #91bcff;
+    --good: #91dbac;
+    --good-bg: #193a29;
+    --bad: #ffabb0;
+    --bad-bg: #422326;
+    --added: #193a29;
+    --changed: #493b19;
+    --shadow: none;
+  }
+}

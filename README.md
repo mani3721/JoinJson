@@ -34,6 +34,8 @@ npm ci
 npm run build
 ```
 
+The homepage header and footer are the shared layout source for every page. After editing them, run `node scripts/shared-layout.mjs` to synchronize source pages. The build also synchronizes the deployed pages automatically. Shared navigation and footer styles live in `assets/site-layout.css`; the Guides dropdown works without JavaScript. Run `python3 tests/shared-layout.py` to check layout consistency.
+
 The build bundles the CodeMirror editor and copies the deployable website into `public/` using an explicit file allowlist. Server code, dependencies, tests, Git history, and environment files are not copied.
 
 Serve the generated site locally:
