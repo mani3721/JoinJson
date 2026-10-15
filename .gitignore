@@ -3,6 +3,7 @@ __pycache__/
 *.pyc
 .wrangler/
 node_modules/
+public/
 .env
 .env.*
 !.env.example

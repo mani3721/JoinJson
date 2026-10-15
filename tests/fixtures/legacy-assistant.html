@@ -1,0 +1,10 @@
+<!doctype html><html lang="en"><head><title>Legacy assistant fixture</title></head><body>
+<button id="ai-toggle" type="button" aria-controls="ai-assistant" aria-expanded="false">AI Help</button>
+<section id="ai-assistant" role="dialog" aria-labelledby="ai-heading" hidden>
+<h2 id="ai-heading">AI assistant</h2><button id="ai-clear" type="button">New chat</button><button id="ai-close" type="button">Close</button>
+<div id="ai-messages"><div id="ai-empty">What are you building?</div></div>
+<p id="ai-status" role="status"></p><button id="ai-copy" type="button" disabled>Copy reply</button>
+<form id="ai-form"><textarea id="ai-prompt" required></textarea><button id="ai-send" type="submit">Send</button><button id="ai-stop" type="button" hidden disabled>Stop</button></form>
+<p id="ai-privacy">Messages go to Cohere.</p></section>
+<textarea id="first"></textarea><textarea id="second"></textarea><button id="clear-data" type="button">Clear data</button>
+</body></html>

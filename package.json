@@ -3,12 +3,14 @@
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "build": "node scripts/build-editors.mjs",
+    "build": "node scripts/build-editors.mjs && node scripts/build-site.mjs",
     "test:editors": "node --test tests/codemirror.test.mjs",
     "test:ai": "node --test tests/ai-assistant.test.mjs",
     "start": "node --env-file=.env server/ai-server.mjs",
     "test:urls": "node --test tests/json-url.test.mjs",
-    "test": "npm run test:editors && npm run test:ai && npm run test:urls"
+    "test:flow": "node --test tests/three-step.test.mjs",
+    "test:ads": "node --test tests/adsense.test.mjs",
+    "test": "npm run test:editors && npm run test:ai && npm run test:urls && npm run test:flow && npm run test:ads"
   },
   "dependencies": {
     "@codemirror/state": "^6.5.0",

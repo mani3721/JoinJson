@@ -70,7 +70,8 @@ test('missing configuration, production guard and upstream errors do not leak de
   }
 });
 async function ui() {
-  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  // Test the retained optional assistant independently of the standalone homepage.
+  const html = await readFile(new URL('./fixtures/legacy-assistant.html', import.meta.url), 'utf8');
   const dom = new JSDOM(html, { runScripts: 'outside-only', url: 'http://localhost' });
   const w = dom.window, $ = id => w.document.getElementById(id);
   w.prompt = () => 'session-test-key';

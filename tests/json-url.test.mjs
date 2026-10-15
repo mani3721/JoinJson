@@ -6,7 +6,8 @@ import { JSDOM } from 'jsdom';
 const require = createRequire(import.meta.url);
 const api = require('../assets/json-url.js');
 const source = readFileSync(new URL('../assets/json-url.js', import.meta.url), 'utf8');
-const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+// Retained legacy adapter; the new standalone flow has its own integration tests.
+const html = readFileSync(new URL('./fixtures/legacy-url.html', import.meta.url), 'utf8');
 
 test('only complete HTTPS URLs without embedded credentials are accepted', () => {
   for (const url of ['', 'data:application/json,{}', 'http://example.com/a.json', '/data.json', 'https://user:pass@example.com/a.json', 'javascript:alert(1)']) {
@@ -58,14 +59,15 @@ function setup() {
   const input = target => w.document.getElementById(target + '-url');
   return { dom, w, added, panel, load, input };
 }
-test('quick import replaces selected input and dispatches existing input flow; example does not fetch', async () => {
+test('quick import works without example controls and fetches only on load', async () => {
   const { dom, w, panel, load, input } = setup();
   try {
     let changed = 0, calls = 0;
     w.document.getElementById('first').addEventListener('input', () => changed++);
     w.fetch = async () => { calls++; return new Response('[{"id":1}]'); };
-    panel('first').querySelector('[data-url-example]').click();
-    assert.equal(input('first').value, api.EXAMPLE_URL); assert.equal(calls, 0);
+    assert.equal(w.document.querySelector('[data-url-example]'), null);
+    input('first').value = api.EXAMPLE_URL;
+    assert.equal(calls, 0);
     const pending = load('first').onclick();
     assert.equal(load('first').disabled, true);
     assert.equal(panel('first').querySelector('[data-url-cancel]').hidden, false);

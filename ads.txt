@@ -1,2 +1,4 @@
-# DISABLED TEMPLATE: replace only after publisher identity and approval are verified.
-# google.com, pub-[PUB-ID], DIRECT, f08c47fec0942fa0
+# JoinJson ads.txt template — no authorized sellers until AdSense is configured.
+# After verifying your actual publisher ID, uncomment and replace the placeholder:
+# google.com, pub-YOUR_VERIFIED_PUBLISHER_ID, DIRECT, f08c47fec0942fa0
+# Never publish a made-up publisher ID or an unverified seller.

@@ -83,17 +83,15 @@
     const status = document.getElementById(target + '-url-status');
     const load = panel.querySelector('[data-url-load]');
     const cancel = panel.querySelector('[data-url-cancel]');
-    const example = panel.querySelector('[data-url-example]');
     let pending = null;
     function busy(value) {
-      load.disabled = value; input.disabled = value; example.disabled = value;
+      load.disabled = value; input.disabled = value;
       cancel.hidden = !value; panel.setAttribute('aria-busy', String(value));
     }
     function reset() {
       if (pending) pending.abort();
       pending = null; busy(false); status.textContent = ''; delete panel.dataset.state;
     }
-    example.onclick = () => { input.value = EXAMPLE_URL; input.focus(); };
     cancel.onclick = () => {
       reset(); status.textContent = 'Download cancelled.'; load.focus();
     };

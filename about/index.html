@@ -47,17 +47,14 @@
     </header>
     <main id="main" class="article">
         <h1>About this JSON merger</h1>
-        <p>Built by joinjson.com, this free tool helps you combine JSON without sending files to a server. Join records
-            by ID across many files and see every conflict.</p>
+        <p>JoinJson is a free browser utility for combining two JSON documents and inspecting their differences. It is designed for applying configuration overrides, reviewing small updates, and preparing combined exports without a file-processing server.</p>
         <h2>What it does</h2>
-        <p><a href="/">Quick mode</a> accepts two pasted or uploaded values. Advanced mode handles multiple files,
-            nested record keys, list policies, source-aware conflicts, and CSV reports. It is intended for inspection
-            and practical data cleanup, not as a substitute for application-specific validation.</p>
+        <p>The <a href="/">JSON merger</a> follows three steps: add two inputs, choose merge rules, and review the result. Each input supports pasted text, a local .json file, or a public HTTPS URL. Live syntax validation helps locate errors. Matching keys use the second input’s value; optional deep merging combines nested objects, and arrays can be replaced or concatenated.</p>
+        <p>The result shows line numbers and highlights added keys and overridden values compared with the first input. Copy and Download export the complete result. The homepage does not join records by ID or validate application-specific schemas. Our separate guides explain approaches you can use in your own scripts.</p>
         <h2>How privacy works</h2>
-        <p>File parsing and merging run in your browser. There is no upload endpoint, account system, analytics script,
-            or live advertising code. Only theme and non-sensitive tool preferences use localStorage; file data never
-            does. The web host still receives normal page and asset requests. See the <a href="/privacy/">privacy
-                notice</a> for boundaries and future-service placeholders.</p>
+        <p>Parsing and merging run in browser memory. The homepage does not save inputs or results in app storage. Loading a URL contacts the source host; ordinary page visits contact the hosting provider. Guide pages can save theme preferences. No live advertising or analytics vendor is enabled in the current template. See the <a href="/privacy/">Privacy Policy</a> for limitations and future advertising disclosures.</p>
+        <h2>Limitations and responsible use</h2>
+        <p>Keep original files and inspect important fields before using a merged document. JSON syntax validation is not a correctness guarantee. Large or deeply nested inputs may exceed browser resources, and large numeric identifiers may lose JavaScript precision. Treat the guides as technical information rather than professional advice.</p>
         <h2>Learn and get in touch</h2>
         <p>Read the <a href="/merge-json-files-python/">Python guide</a>, <a href="/merge-json-arrays-by-id/">ID join
                 guide</a>, and <a href="/deep-merge-vs-shallow-merge-json/">merge-method comparison</a>. Send questions
