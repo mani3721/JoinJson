@@ -1,0 +1,27 @@
+{
+  "unit": "bytes; divide by 1024 for KiB",
+  "before": {
+    "html": 13651,
+    "css": 13272,
+    "js": 30867,
+    "total": 57790,
+    "gzip": 17446,
+    "brotli": 14965
+  },
+  "readable": {
+    "html": 17002,
+    "css": 16215,
+    "js": 34436,
+    "total": 67653,
+    "gzip": 18206,
+    "brotli": 15569
+  },
+  "minified": {
+    "html": 17002,
+    "css": 12866,
+    "js": 27172,
+    "total": 57040,
+    "gzip": 17133,
+    "brotli": 14823
+  }
+}

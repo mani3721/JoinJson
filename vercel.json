@@ -2,5 +2,54 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "buildCommand": "npm run build",
-  "outputDirectory": "public"
+  "outputDirectory": "public",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'none'; script-src 'self' 'sha256-jXIVEHlyukUM52IxPsEEdzdddpN/TmrLfbvFohgNXVk=' 'sha256-dlUz9vo2nnGRpxDctFExmmsASSji5SCSvewra+0nOZ8=' 'sha256-YoDj4o32BmPP0+p5uDbSMmADXdqnjQUq2OQbNgN6lbA=' 'sha256-VXbxeYmaXRRatdd1Ye11EbaLKGAaXrnQHuldS4rUq5M=' 'sha256-RTY1KtA0doacDv4HE0kmGtdz9LshIjTCtXXBPcgV9ks=' 'sha256-+gM+DoaEZnz5IEUIymSnO1sQ7cI3C+Ws5JYL6aP1uWg=' 'sha256-oBzyWql+HqLKMe+jPMihVTUDCHi3LCK12275TX6KDzY=' 'sha256-z5haLC6B6exc+u2xpZx59MNGWOT2bPTbJiyaIkfQMkw=' 'sha256-UDy69/FbxiGHhAsFGVco3cKnIbmkJiUNE1JEGNk8s2E='; script-src-elem 'self' 'sha256-jXIVEHlyukUM52IxPsEEdzdddpN/TmrLfbvFohgNXVk=' 'sha256-dlUz9vo2nnGRpxDctFExmmsASSji5SCSvewra+0nOZ8=' 'sha256-YoDj4o32BmPP0+p5uDbSMmADXdqnjQUq2OQbNgN6lbA=' 'sha256-VXbxeYmaXRRatdd1Ye11EbaLKGAaXrnQHuldS4rUq5M=' 'sha256-RTY1KtA0doacDv4HE0kmGtdz9LshIjTCtXXBPcgV9ks=' 'sha256-+gM+DoaEZnz5IEUIymSnO1sQ7cI3C+Ws5JYL6aP1uWg=' 'sha256-oBzyWql+HqLKMe+jPMihVTUDCHi3LCK12275TX6KDzY=' 'sha256-z5haLC6B6exc+u2xpZx59MNGWOT2bPTbJiyaIkfQMkw=' 'sha256-UDy69/FbxiGHhAsFGVco3cKnIbmkJiUNE1JEGNk8s2E='; worker-src blob:; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'self' https:; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/favicon.svg",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
+    }
+  ]
 }

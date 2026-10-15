@@ -2,8 +2,10 @@
 __pycache__/
 *.pyc
 .wrangler/
+.vercel/
 node_modules/
 public/
+.audit-baseline/
 .env
 .env.*
 !.env.example

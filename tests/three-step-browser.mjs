@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import assert from 'node:assert/strict';
 const profile = await mkdtemp(join(tmpdir(), 'joinjson-flow-'));
-const server = spawn('python3', ['-m', 'http.server', '8791'], { stdio: 'ignore' });
+const server = spawn('python3', ['-m', 'http.server', '8791', '--directory', process.env.SITE_DIR || '.'], { stdio: 'ignore' });
 const chrome = spawn('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', ['--headless=new', '--no-first-run', '--disable-background-networking', '--remote-debugging-port=9251', '--user-data-dir=' + profile, 'http://localhost:8791'], { stdio: 'ignore' });
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 let socket;
@@ -71,6 +71,22 @@ try {
     assert.equal(ads.overflow, false, 'editorial overflow at ' + width);
     for (const key of ['visible','height','stationary','spacing']) assert.equal(ads[key], true, key + ' at ' + width);
   }
+  // Execute the actual browser Worker, including the minified production variant.
+  await evaluate(`(async () => {
+    const first=document.getElementById('first'), second=document.getElementById('second');
+    first.value=JSON.stringify({items:Array.from({length:18000},(_,id)=>({id,name:'Item '+id}))});
+    second.value='{"worker":true}';
+    first.dispatchEvent(new Event('input')); second.dispatchEvent(new Event('input'));
+    await new Promise(resolve=>setTimeout(resolve,300));
+    document.getElementById('merge').click();
+  })()`);
+  let workerReady=false;
+  for(let i=0;i<100;i++) {
+    workerReady=await evaluate(`!document.getElementById('copy').disabled`);
+    if(workerReady)break; await wait(50);
+  }
+  assert.equal(workerReady,true,'real browser worker completed');
+  assert.equal(await evaluate(`!document.getElementById('preview-notice').hidden`),true);
   const cleared = await evaluate(`(() => { document.getElementById('clear').click(); return [...document.querySelectorAll('.ad-slot')].every(s=>getComputedStyle(s).display==='none'); })()`);
   assert.equal(cleared, true);
   console.log('PASS Chrome: four widths, input methods, merge behavior, ad visibility, 280px reservations and 120px control clearance.');
