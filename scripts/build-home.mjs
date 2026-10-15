@@ -45,7 +45,7 @@ export async function securityHeaders(outputDirectory, pages) {
     }
   }
   let headers = await readFile(join(root, '_headers'), 'utf8');
-  headers = headers.replace(/script-src(?:-elem)?[^;]*;/g, directive => directive.split(' ')[0] + " 'self' " + [...hashes].join(' ') + ';');
+  headers = headers.replace(/script-src(?:-elem)?[^;]*;/g, directive => directive.split(' ')[0] + " 'self' https://www.googletagmanager.com " + [...hashes].join(' ') + ';');
   await writeFile(join(outputDirectory, '_headers'), headers);
   return headers;
 }

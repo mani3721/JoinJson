@@ -15,7 +15,7 @@ for (const page of pages) {
   }
 }
 let headers = await readFile(new URL('_headers', root), 'utf8');
-headers = headers.replace(/script-src(?:-elem)?[^;]*;/g, directive => directive.split(' ')[0] + " 'self' " + [...hashes].join(' ') + ';');
+headers = headers.replace(/script-src(?:-elem)?[^;]*;/g, directive => directive.split(' ')[0] + " 'self' https://www.googletagmanager.com " + [...hashes].join(' ') + ';');
 await writeFile(new URL('_headers', root), headers);
 const config = JSON.parse(await readFile(new URL('vercel.json', root), 'utf8'));
 const security = headers.split('\n').filter(line => /^  [A-Z][^:]+:/.test(line)).map(line => {
