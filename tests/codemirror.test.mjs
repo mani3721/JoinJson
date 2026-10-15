@@ -1,0 +1,101 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { gzipSync } from 'node:zlib';
+import { performance } from 'node:perf_hooks';
+import { createRequire } from 'node:module';
+import { JSDOM } from 'jsdom';
+import { stateForTest, replaceDocument, undo, redo, diagnostics, LARGE } from '../src/editor-core.mjs';
+const require = createRequire(import.meta.url);
+const { checkJson } = require('../assets/json-error-helper.js');
+const engine = require('../assets/editor-find.js');
+const formatter = require('../assets/format-check.js');
+
+test('format fix transactions undo and redo', () => {
+  const original = '{"id":1}';
+  let state = stateForTest(original);
+  const view = { get state() { return state; }, dispatch(spec) { state = spec.state || state.update(spec).state; } };
+  const fixed = formatter.fix({files:[{name:'a',text:original}],options:{method:'join',key:'id'}},'wrapInList',0);
+  replaceDocument(view, fixed.files[0].text);
+  assert.deepEqual(JSON.parse(state.doc.toString()), [{id:1}]);
+  assert.equal(undo(view), true); assert.equal(state.doc.toString(), original);
+  assert.equal(redo(view), true); assert.deepEqual(JSON.parse(state.doc.toString()), [{id:1}]);
+});
+test('lint location and large-document policy', () => {
+  const lint = diagnostics('{\n"a":\n}', checkJson);
+  assert.equal(lint.length,1); assert.equal(lint[0].severity,'error');
+  assert.ok(lint[0].from >= 0 && lint[0].to <= 8);
+  assert.deepEqual(diagnostics(' '.repeat(LARGE+1)+'bad',checkJson),[]);
+  assert.equal(diagnostics(' '.repeat(LARGE+1)+'bad',checkJson,true).length,1);
+  assert.deepEqual(diagnostics('{}',checkJson),[]);
+});
+test('search scopes preserve supplied engine', () => {
+  const text = '{"name":"name","other":"Name"}';
+  assert.equal(engine.findMatches(text,'name',{scope:'keys'}).matches.length,1);
+  assert.equal(engine.findMatches(text,'name',{scope:'values'}).matches.length,2);
+  assert.equal(engine.findMatches(text,'name',{scope:'all',caseSensitive:true}).matches.length,2);
+  assert.ok(engine.findMatches(text,'[',{regex:true}).error);
+});
+test('5 MB transaction and search timings (Node, not browser responsiveness)', () => {
+  const text=JSON.stringify(Array.from({length:110000},(_,id)=>({id,name:'customer',note:'abcdefghijklmnop'})));
+  assert.ok(text.length>5*1024*1024);
+  let start=performance.now(),state=stateForTest(text),created=performance.now()-start;
+  start=performance.now(); state=state.update({changes:{from:1,insert:' '}}).state; const edit=performance.now()-start;
+  start=performance.now(); const found=engine.findMatches(text,'customer',{scope:'values',maxMatches:5000}); const search=performance.now()-start;
+  assert.equal(found.matches.length,5000); assert.equal(found.truncated,true);
+  console.log(JSON.stringify({bytes:text.length,stateMs:created,editMs:edit,searchMs:search}));
+});
+test('bundle budget',()=>{
+  const bytes=readFileSync(new URL('../assets/codemirror.js',import.meta.url));
+  assert.ok(gzipSync(bytes,{level:9}).length<150*1024);
+});
+test('DOM fallback/editor sync, undo, labels, full result',async()=>{
+  const dom=new JSDOM('<div class="editor-pane"><div class="editor-heading"></div><textarea id="first" aria-describedby="help">{}</textarea></div><p id="help">Help</p><div class="code-box"><div class="code-toolbar"></div><pre id="preview">short</pre></div><input type="checkbox" id="wrap-lines" checked><ol id="files"></ol>',{pretendToBeVisual:true,url:'https://example.test'});
+  const win=dom.window;
+  for(const name of ['window','document','navigator','MutationObserver','HTMLTextAreaElement','CustomEvent','Event','HTMLElement','Node','Window','getComputedStyle'])Object.defineProperty(globalThis,name,{value: name==='getComputedStyle'?win.getComputedStyle.bind(win):name==='window'?win:win[name],configurable:true});
+  globalThis.requestAnimationFrame=win.requestAnimationFrame.bind(win);globalThis.cancelAnimationFrame=win.cancelAnimationFrame.bind(win);
+  win.Range.prototype.getClientRects=()=>[];win.Range.prototype.getBoundingClientRect=()=>({left:0,right:0,top:0,bottom:0,width:0,height:0});
+  win.JsonErrorHelper={checkJson};win.EditorFind=engine;win.JMFlow={resultText:()=>'{"complete":true}'};
+  const {enhance}=await import('../src/editors.mjs');enhance();
+  const input=win.document.getElementById('first'),controller=win.JMEditors.get('first');
+  assert.ok(controller);assert.equal(input.hidden,true);
+  assert.ok(!Array.from(win.document.querySelectorAll('.cm-toolbar button')).some(button => /sample/i.test(button.textContent)), 'Editor toolbar has no sample-loading button');
+  let events=0;input.addEventListener('input',()=>events++);
+  controller.view.dispatch({changes:{from:1,insert:'"a":1'}});assert.equal(input.value,'{"a":1}');assert.ok(events>0);
+  input.value='[{"id":1}]';assert.equal(controller.text(),'[{"id":1}]');
+  undo(controller.view);assert.equal(controller.text(),'{"a":1}');
+  assert.equal(controller.view.contentDOM.getAttribute('aria-describedby'),'help first-cm-help');
+  assert.equal(win.JMEditors.get('preview').text(),'{"complete":true}');
+  win.document.dispatchEvent(new win.CustomEvent('jm:result-ready',{detail:{text:'[1,2,3]'}}));
+  assert.equal(win.JMEditors.get('preview').text(),'[1,2,3]');
+  for (const id of ['first', 'preview']) {
+    const editor = win.JMEditors.get(id);
+    const find = editor.view.dom.parentElement.previousElementSibling.querySelector('button');
+    assert.equal(find.textContent, 'Find');
+    find.click();
+    await Promise.resolve();
+    assert.ok(editor.view.dom.querySelector('.cm-search-panel'), id + ' Find opens');
+    assert.equal(find.textContent, 'Close ×');
+    assert.equal(find.getAttribute('aria-expanded'), 'true');
+    assert.match(find.getAttribute('aria-label'), /^Close find in /);
+    find.click();
+    assert.equal(editor.view.dom.querySelector('.cm-search-panel'), null, id + ' Find closes on second click');
+    assert.equal(find.textContent, 'Find');
+    assert.equal(find.getAttribute('aria-expanded'), 'false');
+    assert.equal(win.document.activeElement, editor.view.contentDOM);
+    find.click();
+    await Promise.resolve();
+    assert.ok(editor.view.dom.querySelector('.cm-search-panel'), id + ' Find reopens');
+    editor.view.dom.querySelector('.cm-search-panel').dispatchEvent(new win.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    assert.equal(editor.view.dom.querySelector('.cm-search-panel'), null);
+    assert.equal(find.textContent, 'Find');
+    editor.find();
+    await Promise.resolve();
+    assert.equal(find.textContent, 'Close ×');
+    const close = Array.from(editor.view.dom.querySelectorAll('.cm-search-panel button')).find(button => button.textContent === 'Close');
+    close.click();
+    assert.equal(find.textContent, 'Find');
+    assert.equal(find.getAttribute('aria-expanded'), 'false');
+  }
+  controller.view.destroy();win.JMEditors.get('preview').view.destroy();win.close();
+});

@@ -1,0 +1,11 @@
+/* Layout only; reuse existing colour, typography, spacing and focus tokens. */
+@layer flow {
+  .example-library,.share-tools { padding:var(--s3); display:flex; flex-wrap:wrap; align-items:center; gap:var(--s2); min-inline-size:0; }
+  .example-library p,.share-tools p { flex-basis:100%; margin:0; overflow-wrap:anywhere; }
+  .example-library select { max-inline-size:100%; }
+  #example-confirm { flex-basis:100%; }
+  #example-caption,#example-message,#share-message { min-block-size:1.6em; }
+  .share-tools { border-block-start:1px solid var(--border); }
+  .example-library button,.share-tools button,#try-example { min-block-size:44px; }
+  @media(max-width:480px) { .example-library select { inline-size:100%; } .share-tools button { flex:1 1 auto; } }
+}

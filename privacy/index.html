@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Privacy Policy | joinjson.com</title>
+    <meta name="description" content="How joinjson.com processes JSON locally, saves preferences and handles sharing. Includes hosting, disabled ads and consent disclosures.">
+    <script
+        data-theme-init>try { const t = JSON.parse(localStorage.getItem('jm:v1:theme')); if (['system', 'light', 'dark'].includes(t)) document.documentElement.dataset.theme = t; } catch (_) { }</script>
+    <link rel="canonical" href="https://joinjson.com/privacy/">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/assets/style.css">
+    <link rel="stylesheet" href="/assets/warm.css">
+    <script src="/assets/theme.js" defer></script>
+    <script src="/assets/consent.js" defer></script>
+    <script src="/assets/ads.js" defer></script>
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Privacy Policy | joinjson.com">
+    <meta property="og:description" content="How joinjson.com processes JSON locally, saves preferences and handles sharing. Includes hosting, disabled ads and consent disclosures.">
+    <meta property="og:url" content="https://joinjson.com/privacy/">
+    <meta property="og:site_name" content="joinjson.com">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Privacy Policy | joinjson.com">
+    <meta name="twitter:description" content="How joinjson.com processes JSON locally, saves preferences and handles sharing. Includes hosting, disabled ads and consent disclosures.">
+<meta property="og:image" content="https://joinjson.com/assets/og-placeholder.svg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Merge JSON files: join records by ID and review conflicts">
+<meta name="twitter:image" content="https://joinjson.com/assets/og-placeholder.svg">
+<meta name="twitter:image:alt" content="Merge JSON files: join records by ID and review conflicts">
+</head>
+
+<body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+        <div class="header-inner"><a class="wordmark" href="/"><img src="/favicon.svg" width="32" height="32"
+                    alt=""><span class="wordmark-name">JoinJson</span></a>
+            <nav aria-label="Main"><a href="/">Tool</a><a href="/merge-json-files-python/">Python guide</a><a
+                    href="/merge-json-arrays-by-id/">Join by ID</a><a href="/deep-merge-vs-shallow-merge-json/">Merge
+                    methods</a></nav>
+            <div class="theme-control"><label for="theme">Theme</label><select id="theme">
+                    <option value="system">System</option>
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                </select></div>
+        </div>
+    </header>
+    <main id="main" class="article">
+        <h1>Privacy notice</h1>
+        <p>Updated 2026-10-14. This is a template, not legal advice. joinjson.com must review its actual hosting and
+            vendors before publishing.</p>
+        <h2>Local processing</h2>
+        <p>Selected and pasted JSON is merged in browser memory. Local merging never uploads, logs, or
+            automatically persists JSON, filenames, or results. Optional AI requests are described below. Copy and Download are explicit exports you request to
+            your clipboard or device. Browser extensions, clipboard history, device software, and browser session
+            restoration are outside the app’s control. Clear JSON inputs and results removes the current page data from
+            the interface; this is not a forensic memory erasure guarantee.</p>
+        <h2>Optional AI coding assistant</h2>
+        <p>AI is separate from local merging. Selecting Ask AI after agreeing sends your prompt directly from your browser to Cohere using the site's configured API key. Requests do not pass through this site's AI proxy. Include context is off by default; enabling it also sends the current mode's JSON inputs, merge settings, and result. Filenames and previous requests are not included. Do not send secrets, personal data, or confidential records.</p>
+        <p>Prompts and responses stay in page memory, not app storage. The configured API key is embedded in public JavaScript and sent to Cohere for authentication; usage may be billed to the configured account. Anyone can inspect and reuse this key. This configuration is not suitable for public deployment; a server-side secret is needed to keep it private. Clear in the AI panel or Clear JSON inputs and results removes AI text and resets consent and context choices, but does not remove the configured key. This is not a forensic memory erasure guarantee. Stop cancels the local request but cannot recall data already sent. Review Cohere's retention, processing regions, and account limits before sending. Direct requests require Cohere to permit browser cross-origin access; the app cannot bypass those restrictions.</p>
+        <h2>Examples and sharing</h2>
+        <p>Examples are bundled static fixtures, loaded locally. Loading an example or shared input requires
+            confirmation before replacing current inputs, with a 10-second in-memory Undo. No example, shared data, or
+            Undo snapshot is written to app storage.</p>
+        <p>Copy link to this tool includes only the page address, without query or fragment data. Copy settings link
+            includes only method, ID field name, records field name, earlier/later rule, list handling, and output
+            format. Field names are visible to anyone with the link and, as query parameters, can appear in hosting
+            request logs. Do not put sensitive information in field names. Unknown and invalid settings are ignored.</p>
+        <p>Share result sends the complete result as a JSON file to your chosen operating-system share target only after
+            you request it. That target may upload or retain it outside this tool. Copy and Download remain available
+            when native sharing is unsupported.</p>
+        <p>Share with data is off by default. Enabling it and requesting a link puts input JSON and the six settings
+            above in the URL fragment (after #), without filenames or a separate result. The tool does not upload, log,
+            or persist that payload. URL fragments are not sent in HTTP requests, but browsers, browser history/sync,
+            extensions, clipboard history, messaging apps and link recipients may retain or read them. Compression is
+            not encryption. Anyone with the link can read the inputs. Links over 8,000 characters are refused. Opening a
+            shared-data link clears its fragment from the current address when possible, but cannot erase copies
+            elsewhere. Never use this option for private data.</p>
+        <h2>Exactly what localStorage contains</h2>
+        <p>The only app storage keys are <code>jm:v1:theme</code> (system/light/dark), <code>jm:v1:method</code>
+            (join/combine/deep), <code>jm:v1:key</code> (ID field name only), <code>jm:v1:winner</code> (later/earlier),
+            <code>jm:v1:lists</code> (concat/unique/replace), <code>jm:v1:format</code> (pretty/compact), and
+            <code>jm:v1:caseInsensitive</code> (boolean). There are seven keys. They contain no records, filenames,
+            results, or pasted JSON. Do not put sensitive information in a field name. Invalid values are ignored and
+            blocked storage does not prevent merging. Reset saved settings removes these keys without clearing other
+            sites’ storage or your current inputs. Records path and keep-no-key are not persisted.
+        </p>
+        <h2>Hosting and analytics</h2>
+        <p>The host receives ordinary page and asset requests, potentially including IP address, request time and
+            browser headers. Page and asset requests contain no selected JSON; approved AI requests contain the prompt and any enabled context. No analytics, tracking pixel, or error-reporting
+            service is installed. The supplied app sets no cookies. UNVERIFIED: hosting provider log retention, security
+            cookies, region, and deployment configuration require operator review.</p>
+        <h2>Advertising and cookies</h2>
+        <p>Advertising is disabled by default. Publisher: [PUB-ID or "not yet approved"]. Consent platform: [CMP
+            CHOICE]. No Google advertising or analytics script is included. If advertising is enabled in a future
+            reviewed integration, third-party vendors including Google use cookies to serve ads based on visits to this
+            and other sites. You can manage personalised advertising through <a
+                href="https://adssettings.google.com/">Google Ads Settings</a>. See <a
+                href="https://policies.google.com/technologies/ads">Google’s advertising privacy information</a>. These
+            links do not load third-party resources until you follow them.</p>
+        <h2>Consent and regional privacy</h2>
+        <p>No advertising or analytics scripts load before a choice, or after a choice in this disabled template.
+            Decline applies to this page in memory; Review privacy choices reports the unconfigured platform rather than
+            pretending to collect legal consent. UNVERIFIED: a production Google-certified CMP integrated with IAB TCF
+            v2.3 must be configured for the EEA, UK and Switzerland and checked against current vendor requirements.
+            This placeholder is not a certified CMP.</p>
+        <p>US state privacy placeholder: [US STATE OPT-OUT / RESTRICTED DATA PROCESSING CONFIGURATION]. UNVERIFIED:
+            applicable opt-out, Global Privacy Control, sale/sharing treatment, and restricted data processing settings
+            require legal and vendor review. Until then, optional services stay disabled. No consent choice is persisted
+            by this template.</p>
+        <h2>Contact</h2>
+        <p>Email <a href="mailto:[EMAIL]">[EMAIL]</a>. Email is separate from the local tool; do not send private source
+            files. Read <a href="/terms/">Terms</a> or return to the <a href="/">JSON merger</a>.</p>
+    </main>
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-grid">
+                <section>
+                    <h2>Tools and guides</h2>
+                    <nav aria-label="Guides"><a href="/">Merge JSON files</a><a href="/merge-json-files-python/">Python
+                            workflow</a><a href="/merge-json-arrays-by-id/">Join arrays by ID</a><a
+                            href="/deep-merge-vs-shallow-merge-json/">Deep vs shallow merge</a></nav>
+                </section>
+                <section>
+                    <h2>About the site</h2>
+                    <nav aria-label="Site information"><a href="/about/">About</a><a href="/contact/">Contact</a><a
+                            href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav><button id="reset-settings"
+                        type="button" hidden>Reset saved settings</button>
+                    <p id="preference-status" role="status" aria-live="polite">Only theme and non-sensitive preferences
+                        are saved. JSON is never saved by the app.</p>
+                </section>
+                <section>
+                    <h2>Privacy choices</h2>
+                    <p id="consent-status" role="status" aria-live="polite">Advertising and analytics are disabled. No
+                        optional vendor scripts are loaded.</p><button id="consent-decline" type="button">Decline
+                        optional services</button> <button id="consent-review" type="button" hidden>Review privacy
+                        choices</button>
+                </section>
+            </div>
+            <p class="footer-note">© joinjson.com. General information, not legal advice. UNVERIFIED: deployment, consent
+                certification, and advertising approval. No rankings or traffic promised.</p>
+        </div>
+    </footer>
+</body>
+
+</html>

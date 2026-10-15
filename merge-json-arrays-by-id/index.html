@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Merge JSON Arrays by ID: Join Records Across Files</title>
+<meta name="description" content="How to merge JSON arrays by ID so records with the same id become one. Covers conflicts, missing keys and nested ids, with a free in-browser tool.">
+<script data-theme-init>try{const t=JSON.parse(localStorage.getItem('jm:v1:theme'));if(['system','light','dark'].includes(t))document.documentElement.dataset.theme=t;}catch(_){}</script>
+<link rel="canonical" href="https://joinjson.com/merge-json-arrays-by-id/"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/style.css">
+    <link rel="stylesheet" href="/assets/warm.css"><script src="/assets/theme.js" defer></script><script src="/assets/consent.js" defer></script><script src="/assets/ads.js" defer></script>
+<meta property="og:type" content="article"><meta property="og:title" content="Merge JSON Arrays by ID: Join Records Across Files"><meta property="og:description" content="How to merge JSON arrays by ID so records with the same id become one. Covers conflicts, missing keys and nested ids, with a free in-browser tool."><meta property="og:url" content="https://joinjson.com/merge-json-arrays-by-id/"><meta property="og:site_name" content="joinjson.com"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Merge JSON Arrays by ID: Join Records Across Files"><meta name="twitter:description" content="How to merge JSON arrays by ID so records with the same id become one. Covers conflicts, missing keys and nested ids, with a free in-browser tool.">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Merge JSON files","item":"https://joinjson.com/"},{"@type":"ListItem","position":2,"name":"Merge JSON arrays by ID","item":"https://joinjson.com/merge-json-arrays-by-id/"}]}</script>
+<meta property="og:image" content="https://joinjson.com/assets/og-placeholder.svg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Merge JSON files: join records by ID and review conflicts">
+<meta name="twitter:image" content="https://joinjson.com/assets/og-placeholder.svg">
+<meta name="twitter:image:alt" content="Merge JSON files: join records by ID and review conflicts">
+</head><body>
+<a class="skip" href="#main">Skip to content</a><header class="site-header"><div class="header-inner"><a class="wordmark" href="/"><svg class="site-logo" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect width="64" height="64" rx="12" fill="var(--accent-text)"/><path d="M23 15h-5v13l-5 4 5 4v13h5M41 15h5v13l5 4-5 4v13h-5M26 32h12m-5-5 5 5-5 5" fill="none" stroke="var(--surface)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="wordmark-name">JoinJson</span></a><nav aria-label="Main"><a href="/">Tool</a><a href="/merge-json-files-python/">Python guide</a><a href="/merge-json-arrays-by-id/">Join by ID</a><a href="/deep-merge-vs-shallow-merge-json/">Merge methods</a></nav><div class="theme-control"><label for="theme">Theme</label><select id="theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></header>
+<main id="main" class="article" data-ads="editorial"><p class="breadcrumb"><a href="/">Merge JSON files</a> / Join arrays by ID</p>
+<h1>Merge JSON arrays by ID</h1>
+<p>To merge JSON arrays by ID, index each record by its stable ID, combine matching fields, and choose which source wins conflicts. Appending arrays is easy, but it does not reconcile records. If two exports contain the same product, appending creates two entries. A keyed join treats the product ID as an identity and combines matching records into one. That can preserve a description from one export while adding a price from another. It also creates a decision when both records contain different prices: which source should win?</p>
+<p>The <a href="/">JSON file merger</a> makes that decision explicit. Advanced mode lets you select an ID key, reorder files, choose earlier or later values, and inspect conflicts by source. Quick mode infers a likely ID for two lists of records. Inference is a convenience, not proof of identity. Always read the chosen-method sentence before trusting the result.</p>
+<h2>Pick a stable, meaningful key</h2>
+<p>Use an identifier that means the same thing in every input. A database ID from one system may not match an ID from another system. A display name can change, and an email may not be unique. Missing IDs need a separate rule: keep unmatched records as independent entries or discard them. Do not accidentally join all missing values into one record. The browser tool keeps them independently by default.</p>
+<p>In advanced mode, <code>user.id</code> selects a nested key. If the list lives inside an API response, set Records path to something like <code>data.items</code>. The output is the merged array, not a reconstructed API response. Dot paths cannot address property names containing literal dots. Numeric IDs and string IDs remain distinct: the number 7 is not the string "7". Case-insensitive matching applies only to string IDs and should be enabled only when the source system treats case as insignificant.</p>
+<h2>A small, explicit Python join</h2>
+<p>This example accepts arrays of objects with nonempty string IDs. It preserves first-seen record order, adds new fields, and lets the later record replace a conflicting top-level field. It is a shallow record merge: nested objects are replaced, unlike the browser tool’s recursive merge. That difference is intentional and is tested by keeping this example focused on flat records.</p>
+<pre><code class="language-python" data-test="python-join">from copy import deepcopy
+
+
+def join_by_id(*groups, key="id"):
+    output = []
+    index = {}
+    for records in groups:
+        if not isinstance(records, list):
+            raise ValueError("Each group must be a list")
+        for record in records:
+            if not isinstance(record, dict):
+                raise ValueError("Each record must be an object")
+            identity = record.get(key)
+            if not isinstance(identity, str) or not identity:
+                raise ValueError("Each record needs a nonempty string ID")
+            if identity in index:
+                output[index[identity]].update(deepcopy(record))
+            else:
+                index[identity] = len(output)
+                output.append(deepcopy(record))
+    return output
+
+
+first = [{"id": "p1", "name": "Notebook", "price": 5}]
+second = [{"id": "p1", "price": 6}, {"id": "p2", "name": "Pen"}]
+result = join_by_id(first, second)
+assert result == [
+    {"id": "p1", "name": "Notebook", "price": 6},
+    {"id": "p2", "name": "Pen"},
+]
+assert first[0]["price"] == 5  # Inputs were not mutated.
+print(result)
+</code></pre>
+<p>Save the block as <code>join_by_id.py</code> and run this command in the same directory. The assertions fail if the example stops preserving its documented behavior.</p>
+<pre><code class="language-shell" data-test="join-shell">python3 join_by_id.py
+</code></pre>
+<h2>Decide what to do with nested lists</h2>
+<p>A record may contain tags, addresses, or transactions. Joining the parent record does not automatically establish how to merge those child lists. Concatenation preserves every item, including duplicates. Unique combination removes structurally equal items, not items sharing a business ID. Replacement chooses one entire list using the earlier/later rule. The browser tool exposes all three options and applies the selection wherever two lists meet.</p>
+<p>Two address objects with the same address ID but different text are not structurally equal, so unique combination retains both. If child records also require keyed joins, normalize those child lists separately or write a domain-specific recursive join. The <a href="/deep-merge-vs-shallow-merge-json/">deep merge guide</a> explains why recursion alone does not answer array identity questions.</p>
+<h2>Review conflicts, not just the record count</h2>
+<p>A stable output count does not prove correctness. A later file could overwrite a meaningful value with an empty string or null. In this tool those are explicit JSON values, not deletion commands. Earlier-wins keeps the previous conflicting value but still accepts fields that were not present before. Duplicate IDs inside one file are also joined, so inspect source data if fewer records appear than expected.</p>
+<p>Before a production merge, test one matching ID, one new ID, one missing ID, and one deliberate conflict. Download the conflict CSV and keep it alongside the result if you need a review trail. The CSV reports sources and encountered differences; it is not an immutable audit log or a substitute for retaining original files. For scheduled workflows, adapt the <a href="/merge-json-files-python/">Python file-processing guide</a>. For a local, visual workflow, <a href="/">join your JSON files in the browser</a> without uploading them.</p>
+<h2>Check identity before resolving values</h2><p>Before joining a full export, examine whether each candidate key is unique within its source. Repeated IDs may be legitimate revisions, or they may indicate the key is not an entity identifier. A join can reduce those repetitions without telling you which interpretation was intended. Keep a small fixture where two different entities deliberately share a display name to confirm that you are not joining by appearance.</p><p>String normalization deserves the same care. Trimming whitespace or removing leading zeros can turn two different codes into one. This tool does not silently apply those transformations. Its optional case-insensitive rule lowercases string IDs for comparison only; it does not establish equivalence across different alphabets or external systems. A system-specific identity mapping should happen before the merge and should itself be reviewed.</p><p>Finally, verify stable order in the downloaded result. Matching records stay at their first-seen position, while new IDs append as they arrive. This makes the result easier to compare, but it is not a sort by ID or timestamp. If a downstream consumer requires sorted output, perform that as a separate explicit step after checking the join and conflicts.</p><h2>When not to use this approach</h2>
+<p>Do not join records when the candidate key is not a stable identity shared by every source. A display name, row position, or ID allocated independently by another system can combine unrelated people or products. Append independent events instead. The flat Python example is not suitable for recursively merging nested fields or generating a source-aware conflict report. Use a reviewed identity mapping before joining, and keep unmatched records until you can explain what each missing key means.</p>
+<aside class="callout"><p>Review merge rules with a small fixture before using production data. The examples here are tested; application-specific correctness depends on your schema.</p></aside><aside class="ad-slot" data-ad-placeholder hidden aria-label="Advertisement"><strong>Advertisement</strong><p>Disabled placement preview. No advertising script is installed.</p></aside></main><footer class="site-footer"><div class="footer-inner"><div class="footer-grid"><section><h2>Tools and guides</h2><nav aria-label="Guides"><a href="/">Merge JSON files</a><a href="/merge-json-files-python/">Python workflow</a><a href="/merge-json-arrays-by-id/">Join arrays by ID</a><a href="/deep-merge-vs-shallow-merge-json/">Deep vs shallow merge</a></nav></section><section><h2>About the site</h2><nav aria-label="Site information"><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav><button id="reset-settings" type="button" hidden>Reset saved settings</button><p id="preference-status" role="status" aria-live="polite">Only theme and non-sensitive preferences are saved. JSON is never saved by the app.</p></section><section><h2>Privacy choices</h2><p id="consent-status" role="status" aria-live="polite">Advertising and analytics are disabled. No optional vendor scripts are loaded.</p><button id="consent-decline" type="button">Decline optional services</button> <button id="consent-review" type="button" hidden>Review privacy choices</button></section></div><p class="footer-note">© joinjson.com. General information, not legal advice. UNVERIFIED: deployment, consent certification, and advertising approval. No rankings or traffic promised.</p></div></footer>
+</body></html>

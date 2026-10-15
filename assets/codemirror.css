@@ -1,0 +1,33 @@
+/* Editor enhancement uses existing site tokens, never new palette values. */
+/* Keep CodeMirror's internal panel/tooltip z-indexes below site overlays. */
+.cm-host{position:relative;isolation:isolate;min-inline-size:0;max-inline-size:100%;border:1px solid var(--control-border);border-radius:var(--r1);overflow:hidden;background:var(--code);color:var(--text)}
+.cm-host:focus-within{outline:2px solid var(--focus);outline-offset:2px}
+.cm-host .cm-editor{height:240px;font:var(--sm)/1.6 ui-monospace,SFMono-Regular,Consolas,monospace}
+.cm-host[data-result] .cm-editor{height:420px}
+.cm-host .cm-scroller{overflow:auto;max-inline-size:100%;font:inherit}
+.cm-host .cm-content{padding:12px 0;caret-color:var(--text)}
+.cm-host .cm-line{padding:0 12px}
+.cm-host .cm-gutters{background:var(--raised);color:var(--muted);border-color:var(--border)}
+.cm-host .cm-cursor{border-inline-start-color:var(--text)}
+.cm-host .cm-activeLine,.cm-host .cm-activeLineGutter{background:var(--raised)}
+.cm-host .cm-selectionBackground,.cm-host .cm-content ::selection{background:var(--raised)!important}
+.cm-host .cm-panels,.cm-host .cm-tooltip{background:var(--panel);color:var(--text);border-color:var(--control-border)}
+.cm-host .cm-search-panel{padding:8px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.cm-host .cm-search-panel label{display:flex;align-items:center;gap:4px;margin:0}
+.cm-host .cm-search-panel input[type=search]{inline-size:160px;max-inline-size:100%}
+.cm-host .cm-search-panel button,.cm-toolbar button{min-block-size:44px}
+.cm-host .cm-find-hit{background:var(--raised);text-decoration:underline;text-decoration-color:var(--accent)}
+.cm-host .cm-find-current{outline:2px solid var(--accent);outline-offset:1px}
+.cm-host .cm-search-error{flex-basis:100%;color:var(--different)}
+.cm-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px}
+.cm-toolbar label{display:flex;gap:8px;align-items:center;margin:0}
+.cm-help{font-size:var(--xs);color:var(--muted);margin:8px 12px}
+.cm-token-string{color:var(--same)}
+.cm-token-key,.cm-token-keyword{color:var(--accent)}
+.cm-token-number{color:var(--different)}
+.cm-token-punctuation{color:var(--muted)}
+.cm-host .cm-diagnosticText{color:var(--text)}
+.cm-host .cm-lintRange-error{text-decoration:underline wavy var(--different)}
+.cm-host .cm-foldPlaceholder{background:var(--raised);color:var(--text);border-color:var(--border)}
+@media(max-width:640px){.cm-host .cm-search-panel{align-items:stretch}.cm-host .cm-search-panel label{min-block-size:44px}.cm-host .cm-search-panel input[type=search]{inline-size:100%}.cm-host .cm-search-panel>label:first-child{flex-basis:100%}}
+@media print{.cm-toolbar,.cm-help,.cm-panels{display:none!important}.cm-host .cm-editor{height:auto!important}.cm-host .cm-scroller{overflow:visible!important}}

@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Merge JSON Files in Python: Examples and Pitfalls</title>
+    <meta name="description" content="Merge multiple JSON files in Python: combine lists, deep merge objects and join records by key. Includes tested code and a no-code online tool.">
+    <script
+        data-theme-init>try { const t = JSON.parse(localStorage.getItem('jm:v1:theme')); if (['system', 'light', 'dark'].includes(t)) document.documentElement.dataset.theme = t; } catch (_) { }</script>
+    <link rel="canonical" href="https://joinjson.com/merge-json-files-python/">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/assets/style.css">
+    <link rel="stylesheet" href="/assets/warm.css">
+    <script src="/assets/theme.js" defer></script>
+    <script src="/assets/consent.js" defer></script>
+    <script src="/assets/ads.js" defer></script>
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Merge JSON Files in Python: Examples and Pitfalls">
+    <meta property="og:description" content="Merge multiple JSON files in Python: combine lists, deep merge objects and join records by key. Includes tested code and a no-code online tool.">
+    <meta property="og:url" content="https://joinjson.com/merge-json-files-python/">
+    <meta property="og:site_name" content="joinjson.com">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Merge JSON Files in Python: Examples and Pitfalls">
+    <meta name="twitter:description" content="Merge multiple JSON files in Python: combine lists, deep merge objects and join records by key. Includes tested code and a no-code online tool.">
+    <script
+        type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Merge JSON files","item":"https://joinjson.com/"},{"@type":"ListItem","position":2,"name":"Merge JSON files with Python","item":"https://joinjson.com/merge-json-files-python/"}]}</script>
+<meta property="og:image" content="https://joinjson.com/assets/og-placeholder.svg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Merge JSON files: join records by ID and review conflicts">
+<meta name="twitter:image" content="https://joinjson.com/assets/og-placeholder.svg">
+<meta name="twitter:image:alt" content="Merge JSON files: join records by ID and review conflicts">
+</head>
+
+<body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+        <div class="header-inner"><a class="wordmark" href="/"><img src="/favicon.svg" width="32" height="32"
+                    alt=""><span class="wordmark-name">JoinJson</span></a>
+            <nav aria-label="Main"><a href="/">Tool</a><a href="/merge-json-files-python/">Python guide</a><a
+                    href="/merge-json-arrays-by-id/">Join by ID</a><a href="/deep-merge-vs-shallow-merge-json/">Merge
+                    methods</a></nav>
+            <div class="theme-control"><label for="theme">Theme</label><select id="theme">
+                    <option value="system">System</option>
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                </select></div>
+        </div>
+    </header>
+    <main id="main" class="article" data-ads="editorial">
+        <p class="breadcrumb"><a href="/">Merge JSON files</a> / Python guide</p>
+        <h1>Merge JSON files with Python</h1>
+        <p>To merge JSON files in Python, load each file with the standard-library json module, then concatenate lists, recursively merge objects, or index records by a shared key. Python is useful when merging is part of a repeatable job: a scheduled export, a repository build, or a local
+            data cleanup. Its standard library can read and write JSON without an extra package. The important decision
+            is not which library to install. It is what “merge” means for your data. Appending two arrays is different
+            from matching records by ID, and replacing an object is different from preserving its nested fields.</p>
+        <p>If you only need a one-time result, use the <a href="/">browser JSON file merger</a>. It lets you inspect
+            conflicts with their source files before downloading. The scripts below are deliberately smaller: they
+            demonstrate explicit rules, reject unexpected top-level shapes, and do not reproduce the browser tool’s
+            complete conflict report.</p>
+        <h2>Choose your rule before writing files</h2>
+        <p>Start by checking the outermost value in each input. A list of independent events often needs concatenation.
+            Two configuration objects may need a shallow or deep merge. Two customer exports usually need a keyed join
+            so that the same person does not appear twice. File order matters whenever a later value replaces an earlier
+            value. Write down that order instead of relying on whatever order a folder happens to return.</p>
+        <p>Keep original files and write to a new output path. A syntactically valid result can still be wrong for the
+            application that consumes it. For example, a shallow object merge can silently discard nested settings.
+            Inspect a small fixture with an intentional conflict before running a large batch.</p>
+        <h2>A runnable command-line script</h2>
+        <p>Save this as <code>merge_json.py</code>. It accepts either <code>lists</code> or <code>objects</code>, an
+            output path, and at least two input paths. List mode concatenates items without deduplication. Object mode
+            performs a shallow merge with later files winning. It rejects nonstandard NaN and Infinity values and
+            reports read or parse errors without producing a partial output file during validation.</p>
+        <pre><code class="language-python" data-test="python-cli">import json
+import sys
+from pathlib import Path
+
+
+def reject_constant(value):
+    raise ValueError(f"Nonstandard JSON constant: {value}")
+
+
+def main(args):
+    if len(args) &lt; 4 or args[0] not in ("lists", "objects"):
+        raise ValueError("Usage: merge_json.py lists|objects OUT IN1 IN2 [IN...]")
+    mode, output, *inputs = args
+    destination = Path(output).resolve()
+    if any(Path(name).resolve() == destination for name in inputs):
+        raise ValueError("Output must not overwrite an input")
+    merged = [] if mode == "lists" else {}
+    expected = list if mode == "lists" else dict
+    for name in inputs:
+        with open(name, encoding="utf-8") as source:
+            value = json.load(source, parse_constant=reject_constant)
+        if not isinstance(value, expected):
+            raise ValueError(f"{name}: expected {expected.__name__}")
+        if mode == "lists":
+            merged.extend(value)
+        else:
+            merged.update(value)
+    encoded = json.dumps(merged, ensure_ascii=False, indent=2, allow_nan=False)
+    with open(output, "w", encoding="utf-8") as target:
+        target.write(encoded + "\n")
+
+
+if __name__ == "__main__":
+    try:
+        main(sys.argv[1:])
+    except (OSError, ValueError) as error:
+        print(f"Merge failed: {error}", file=sys.stderr)
+        sys.exit(1)
+</code></pre>
+        <p>These shell commands create tiny fixtures and run both modes. Use a new working directory so that the example
+            output names do not replace existing work. They assume a POSIX shell and an available <code>python3</code>
+            executable.</p>
+        <pre><code class="language-shell" data-test="python-shell">printf '%s\n' '[{"id":1}]' &gt; first.json
+printf '%s\n' '[{"id":2}]' &gt; second.json
+python3 merge_json.py lists combined.json first.json second.json
+python3 -m json.tool combined.json
+printf '%s\n' '{"region":"west","enabled":false}' &gt; base.json
+printf '%s\n' '{"enabled":true}' &gt; override.json
+python3 merge_json.py objects settings.json base.json override.json
+python3 -m json.tool settings.json
+</code></pre>
+        <h2>What this script preserves and what it changes</h2>
+        <p>Input list order is preserved. Reversing the filenames reverses which list contributes its items first.
+            Object keys already present in the accumulator receive the later value, including when that value is null. A
+            null is not treated as a deletion instruction. Nested objects are replaced wholesale, not recursively
+            merged. If you need to keep both nested branches, read the <a href="/deep-merge-vs-shallow-merge-json/">deep
+                versus shallow merge guide</a> before changing the implementation.</p>
+        <p>The script loads each file into memory and retains the merged result, so it is not a streaming solution for
+            arbitrarily large data. Whitespace and indentation from the original files are not preserved. Python
+            integers retain integer precision, unlike JavaScript numbers beyond the safe integer range; decimal values
+            still need deliberate handling if exact decimal arithmetic matters. JSON duplicate object keys are accepted
+            by the default parser with the last occurrence retained. If duplicate keys are unacceptable, validate them
+            with an object-pairs hook before merging.</p>
+        <h2>When you need a keyed join instead</h2>
+        <p>Suppose both files contain a record with ID 1. List concatenation leaves two records with ID 1. Object mode
+            cannot solve that because the top-level inputs are arrays. A keyed join builds an index and combines
+            matching records according to a field-level policy. See the <a href="/merge-json-arrays-by-id/">array join
+                guide</a> for a tested Python function and the decisions that go with it.</p>
+        <p>For a visual review, return to the <a href="/">merge JSON files tool</a>, use advanced mode, and select Join
+            records by key. Try the sample files first. Compare earlier-wins and later-wins results, inspect the
+            conflict sources, then apply the same rules to your own data. Automation is useful only after the desired
+            output is clear.</p>
+        <h2>Make the workflow reproducible</h2>
+        <p>Keep an explicit input manifest when a job grows beyond two files. A shell wildcard can be convenient, but
+            alphabetical order is not necessarily business priority. Name the base file first and list overrides in
+            their intended precedence. Record the selected mode alongside the output so someone else can reproduce the
+            same decision without guessing from the result.</p>
+        <p>For automated checks, include empty arrays, an empty object, a conflicting scalar, and a wrong-shape input.
+            Check that failure leaves a previous result untouched. This script finishes reading and encoding before
+            opening the output, but a disk failure during writing can still leave a partial file. A production pipeline
+            can write to a temporary file in the destination directory, flush it, and atomically replace the destination
+            when successful. Decide separately whether replacing an existing output is allowed.</p>
+        <p>Do not send private fixtures to a remote paste service while debugging. Replace names and account numbers
+            with synthetic examples that preserve the relevant structure. When JSON contains credentials, also consider
+            terminal history, build logs, and shared output folders. The browser tool does not log input, but your
+            surrounding workflow can still expose data if you print or publish it.</p>
+        <h2>When not to use this approach</h2>
+<p>Do not use this in-memory script for exports that exceed available RAM, or when a downstream schema needs transactional validation. Its object mode is shallow, so it is also the wrong choice when nested fields must survive overrides. Use the tested recursive function in the deep-merge guide or a domain-specific pipeline instead. If you need a one-off visual review of conflicting sources, the browser tool is easier to inspect than a script that only prints the final value.</p>
+<aside class="callout">
+            <p>Review merge rules with a small fixture before using production data. The examples here are tested;
+                application-specific correctness depends on your schema.</p>
+        </aside>
+        <aside class="ad-slot" data-ad-placeholder hidden aria-label="Advertisement"><strong>Advertisement</strong>
+            <p>Disabled placement preview. No advertising script is installed.</p>
+        </aside>
+    </main>
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-grid">
+                <section>
+                    <h2>Tools and guides</h2>
+                    <nav aria-label="Guides"><a href="/">Merge JSON files</a><a href="/merge-json-files-python/">Python
+                            workflow</a><a href="/merge-json-arrays-by-id/">Join arrays by ID</a><a
+                            href="/deep-merge-vs-shallow-merge-json/">Deep vs shallow merge</a></nav>
+                </section>
+                <section>
+                    <h2>About the site</h2>
+                    <nav aria-label="Site information"><a href="/about/">About</a><a href="/contact/">Contact</a><a
+                            href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav><button id="reset-settings"
+                        type="button" hidden>Reset saved settings</button>
+                    <p id="preference-status" role="status" aria-live="polite">Only theme and non-sensitive preferences
+                        are saved. JSON is never saved by the app.</p>
+                </section>
+                <section>
+                    <h2>Privacy choices</h2>
+                    <p id="consent-status" role="status" aria-live="polite">Advertising and analytics are disabled. No
+                        optional vendor scripts are loaded.</p><button id="consent-decline" type="button">Decline
+                        optional services</button> <button id="consent-review" type="button" hidden>Review privacy
+                        choices</button>
+                </section>
+            </div>
+            <p class="footer-note">© joinjson.com. General information, not legal advice. UNVERIFIED: deployment, consent
+                certification, and advertising approval. No rankings or traffic promised.</p>
+        </div>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Merge JSON Files Online: Join by ID, See Conflicts</title>
+    <meta name="description" content="Merge multiple JSON files into one. Join records by ID, merge objects or combine lists, and see every conflict. Free and private: runs in your browser.">
+    <script data-theme-init>
+        try {
+            const t = JSON.parse(localStorage.getItem("jm:v1:theme"));
+            if (["system", "light", "dark"].includes(t)) document.documentElement.dataset.theme = t;
+        } catch (_) { }
+    </script>
+    <link rel="canonical" href="https://joinjson.com/" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/assets/style.css" />
+    <link rel="stylesheet" href="/assets/flow.css" />
+    <link rel="stylesheet" href="/assets/format-check.css" />
+    <link rel="stylesheet" href="/assets/examples-share.css" />
+    <script src="/assets/examples-share.js" defer></script>
+    <script src="/assets/examples-share-ui.js" defer></script>
+    <script src="/assets/theme.js" defer></script>
+    <script src="/assets/consent.js" defer></script>
+    <script src="/assets/ads.js" defer></script>
+    <script src="/assets/tool.js" defer></script>
+    <script src="/assets/compare.js" defer></script>
+    <script src="/assets/compare-ui.js" defer></script>
+    <script src="/assets/merge-format-rules.js" defer></script>
+    <script src="/assets/json-error-helper.js" defer></script>
+    <script src="/assets/format-check.js" defer></script>
+    <script src="/assets/flow.js" defer></script>
+    <link rel="stylesheet" href="/assets/ai-assistant.css" />
+    <script src="/assets/ai-stream.js" defer></script>
+    <script src="/assets/ai-assistant.js" defer></script>
+    <link rel="stylesheet" href="/assets/editor-find.css" />
+    <script src="/assets/editor-find.js" defer></script>
+    <script src="/assets/editor-find-ui.js" defer></script>
+    <link rel="stylesheet" href="/assets/codemirror.css" />
+    <link rel="stylesheet" href="/assets/warm.css">
+    <script src="/assets/editor-loader.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Merge JSON Files Online: Join by ID, See Conflicts">
+    <meta property="og:description" content="Merge multiple JSON files into one. Join records by ID, merge objects or combine lists, and see every conflict. Free and private: runs in your browser.">
+    <meta property="og:url" content="https://joinjson.com/" />
+    <meta property="og:site_name" content="joinjson.com" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Merge JSON Files Online: Join by ID, See Conflicts">
+    <meta name="twitter:description" content="Merge multiple JSON files into one. Join records by ID, merge objects or combine lists, and see every conflict. Free and private: runs in your browser.">
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "joinjson.com JSON merger",
+  "url": "https://joinjson.com/",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Any",
+  "browserRequirements": "Requires JavaScript",
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "price": 0,
+    "priceCurrency": "USD"
+  },
+  "description": "Merge multiple JSON files into one. Join records by ID, merge objects or combine lists, and see every conflict. Free and private: runs in your browser."
+}</script>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I merge 2 JSON files?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Paste or upload one JSON value in each Quick mode box, then select Merge JSON. Auto-merge is on by default. The page explains the chosen method; review the result and conflicts before exporting."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I merge multiple JSON files into one?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Open Advanced mode, add files with the picker, drag and drop, or paste, then reorder them and select Merge JSON. Download the result as one JSON file."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are my files uploaded?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Merging happens locally without uploading or saving JSON. Optional AI sends your prompt directly to Cohere using the site's configured API key, including only messages you type in the chat, never automatically attaching workspace JSON. Only theme and non-sensitive preferences use localStorage. Sharing and exports can expose data; read the privacy notice."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens when values conflict?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You choose later or earlier values. New fields are kept either way. Lists can concatenate, deduplicate, or be replaced. Review JSON merge conflicts with their source files in the Conflicts tab and export the report as CSV."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I join JSON files using nested IDs?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. To join JSON files by ID, choose Join records in Advanced mode and use a dot path such as user.id. For wrapped lists, set the records field to data.items. The result is the merged list, not its original wrapper."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does my JSON fail validation?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "JSON requires double-quoted keys and strings, no comments, no trailing commas, and matching brackets. Format check explains syntax or method problems and offers fixes. Use the reported line and column when available, correct the input, and try again."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is there a file size limit?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "There is no fixed tool limit, but browser memory and device speed limit practical size. Large merges use a local worker, but input checking and rendering can still take time. Preview is shortened at 50,000 characters; copies and downloads contain the full result. Keep large numeric IDs as strings to avoid precision loss."
+      }
+    }
+  ]
+}</script>
+<meta property="og:image" content="https://joinjson.com/assets/og-placeholder.svg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Merge JSON files: join records by ID and review conflicts">
+<meta name="twitter:image" content="https://joinjson.com/assets/og-placeholder.svg">
+<meta name="twitter:image:alt" content="Merge JSON files: join records by ID and review conflicts">
+<meta name="google-site-verification" content="[SEARCH CONSOLE VERIFICATION TOKEN]">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "joinjson.com", "url": "https://joinjson.com/"}</script>
+</head>
+
+<body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="wordmark" href="/"><svg class="site-logo" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect width="64" height="64" rx="12" fill="var(--accent-text)"/><path d="M23 15h-5v13l-5 4 5 4v13h5M41 15h5v13l5 4-5 4v13h-5M26 32h12m-5-5 5 5-5 5" fill="none" stroke="var(--surface)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="wordmark-name">JoinJson</span></a>
+            <nav aria-label="Main">
+                <a href="/" aria-current="page">Tool</a><a href="/merge-json-files-python/">Python guide</a><a
+                    href="/merge-json-arrays-by-id/">Join by ID</a><a href="/deep-merge-vs-shallow-merge-json/">Merge
+                    methods</a>
+            </nav>
+            <div class="theme-control">
+                <label for="theme">Theme</label><select id="theme">
+                    <option value="system">System</option>
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                </select>
+            </div>
+        </div>
+    </header>
+    <main id="main" class="tool-page">
+        <div class="tool-hero">
+            <h1>Merge <span class="hero-accent">JSON</span> files into one</h1>
+            <p class="lede">Join records by ID across many files and see every conflict.</p>
+            <p>
+                Merging is free and browser-only, with no uploads or saved inputs. Optional AI sends only the request you approve. <a href="/privacy/">How privacy works</a>.
+            </p>
+            <noscript>
+                <p>
+                    This tool needs JavaScript to process files locally. Enable JavaScript or use the
+                    <a href="/merge-json-files-python/">Python instructions</a>.
+                </p>
+            </noscript>
+            <ul class="trust-chips" aria-label="Tool benefits">
+                <li>Private in your browser</li>
+                <li>No upload</li>
+                <li>Free</li>
+            </ul>
+        </div>
+        <div class="workspace">
+            <div class="workspace-heading"><span class="workspace-mark" aria-hidden="true">{ }</span><span>1 Add
+                    JSON</span></div>
+            <div class="mode-control" role="group" aria-label="Input mode">
+<button id="quick-mode" type="button" aria-controls="quick" aria-pressed="true">Quick</button>
+<button id="mode-toggle" type="button" aria-controls="advanced" aria-expanded="false" aria-pressed="false" title="More files and options">Advanced</button>
+</div>
+
+            <section id="quick" class="panel" aria-labelledby="quick-heading">
+                <h2 id="quick-heading">Quick mode</h2>
+                <p>
+                    Paste or upload into both boxes. Valid JSON merges automatically; the second input wins conflicts.
+                    Review the method below.
+                </p>
+                <div class="columns editor-grid">
+                    <div class="editor-pane">
+                        <div class="editor-heading"><label for="first">First JSON</label><span id="first-shape" class="format-chip editor-status" data-state="empty"><span aria-hidden="true">—</span><span>Empty</span></span>
+                            <div class="editor-upload"><label for="first-file">Or upload first JSON</label><input
+                                    id="first-file" type="file" accept=".json,application/json" /></div>
+                        </div>
+                        <textarea autocomplete="off" autocorrect="off" autocapitalize="off" id="first"
+                            spellcheck="false" placeholder='[{"id":1,"name":"Ada"}]'
+                            aria-describedby="quick-help"></textarea>
+                    </div>
+                    <div class="editor-pane">
+                        <div class="editor-heading"><label for="second">Second JSON</label><span id="second-shape" class="format-chip editor-status" data-state="empty"><span aria-hidden="true">—</span><span>Empty</span></span>
+                            <div class="editor-upload"><label for="second-file">Or upload second JSON</label><input
+                                    id="second-file" type="file" accept=".json,application/json" /></div>
+                        </div>
+                        <textarea autocomplete="off" autocorrect="off" autocapitalize="off" id="second"
+                            spellcheck="false" placeholder='[{"id":1,"name":"Ada Lovelace"}]'
+                            aria-describedby="quick-help"></textarea>
+                    </div>
+                </div>
+                <p id="quick-help" class="muted">
+                    Objects merge deeply. Lists of records join by a likely ID when found; otherwise lists combine. Use
+                    advanced mode to choose a different key or rule.
+                </p>
+            </section>
+
+            <section id="advanced" class="panel" hidden aria-labelledby="advanced-heading">
+                <h2 id="advanced-heading">Advanced mode</h2>
+                <p>
+                    Files are processed from top to bottom. Reorder them to control which values win. Quick mode inputs
+                    are kept separately.
+                </p>
+                <div id="drop" class="drop">
+                    <label for="picker">Add JSON files (or drop them here)</label><input id="picker" type="file"
+                        accept=".json,application/json" multiple />
+                </div>
+                <ol id="files" aria-label="Input files"></ol>
+                <details>
+                    <summary>Add pasted JSON</summary>
+                    <label for="paste-name">Source name (optional)</label><input id="paste-name" type="text"
+                        placeholder="notes.json" /><label for="paste">JSON to add</label><textarea autocomplete="off"
+                        autocorrect="off" autocapitalize="off" id="paste" spellcheck="false"></textarea><button
+                        id="add-paste" type="button">Add pasted JSON</button>
+                </details>
+                <fieldset id="settings">
+                    <legend>Merge options</legend>
+                    <div class="settings">
+                        <div>
+                            <label for="method">Method</label><select id="method">
+                                <option value="join">Join records by key</option>
+                                <option value="combine">Combine lists</option>
+                                <option value="deep">Deep-merge objects</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="winner">When values conflict</label><select id="winner">
+                                <option value="later">Later file wins</option>
+                                <option value="earlier">Earlier file wins</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="key">ID key (join only)</label><input id="key" value="id"
+                                aria-describedby="path-help" />
+                        </div>
+                        <div>
+                            <label for="records-path">Records path (lists only; blank = root)</label><input
+                                id="records-path" placeholder="data.items" aria-describedby="path-help" />
+                        </div>
+                        <div>
+                            <label for="lists">List handling</label><select id="lists">
+                                <option value="concat">Combine all items</option>
+                                <option value="unique">Combine unique items</option>
+                                <option value="replace">Replace using winner rule</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label><input id="case-insensitive" type="checkbox" />Case-insensitive string
+                                IDs</label><label><input id="keep-no-key" type="checkbox" checked />Keep records without
+                                an ID</label>
+                        </div>
+                    </div>
+                    <p id="path-help" class="muted">
+                        Use dot paths such as user.id. Literal dots in property names are not supported in paths.
+                        Numeric and string IDs are different. Joining outputs a list without its wrapper.
+                    </p>
+                </fieldset>
+            </section>
+            <section id="format-check" class="format-check" aria-labelledby="format-heading" hidden>
+                <h2 id="format-heading">Format check</h2>
+                <p id="format-status" role="status" aria-live="polite" aria-atomic="true">Add JSON to check its format.
+                </p>
+                <div id="format-methods" class="format-methods" aria-label="Method compatibility"></div>
+                <div id="format-rows"></div>
+                <div id="format-global"></div>
+                <button id="format-demo" type="button">Try object + list demo</button>
+            </section>
+            <p id="format-undo-status" role="status" aria-live="polite"></p>
+            <button id="format-undo" type="button" hidden>Undo fix</button>
+            <div class="merge-bar" aria-labelledby="merge-step">
+                <span id="merge-step" class="flow-step">Step 2</span>
+                <div class="merge-main">
+                    <button id="merge" class="primary" type="button" disabled aria-disabled="true"
+                        aria-describedby="merge-block-reason">Merge</button>
+                    <span id="merge-block-reason" role="status" aria-live="polite" aria-atomic="true">Add JSON to both boxes</span>
+                    <span id="merge-progress" hidden><span class="merge-spinner" aria-hidden="true"></span>Merging…</span>
+                </div>
+                <div class="merge-options">
+                    <kbd id="merge-shortcut" class="shortcut" aria-label="Merge using Control or Command and Enter">Ctrl ↵</kbd>
+                    <label title="Merge as you type"><input id="auto-merge" type="checkbox" checked>Auto-merge</label>
+                </div>
+            </div>
+<section id="result-card" class="panel result-card" aria-labelledby="result-heading">
+                <h2 id="result-heading" tabindex="-1">3 Review — Result and conflict report</h2>
+                <div class="result-status-bar"><span id="result-chip" class="kept-label">Ready</span><span
+                        id="result-metrics">Not merged</span><button id="review-conflicts" type="button" hidden>Review
+                        conflicts</button></div>
+                <p id="status" role="status" aria-live="polite" aria-atomic="true">Paste or upload JSON in both boxes to
+                    start.</p>
+                <p id="method-description" class="muted"></p>
+                <div class="result-header">
+                    <div class="result-tabs" role="tablist" aria-label="Result views">
+                        <button id="merge-tab" type="button" role="tab" aria-selected="true"
+                            aria-controls="merge-panel">Result</button>
+                        <button id="conflicts-tab" type="button" role="tab" aria-selected="false"
+                            aria-controls="conflicts-panel" tabindex="-1">Conflicts (<span
+                                id="conflict-count">0</span>)</button>
+                        <button id="compare-tab" type="button" role="tab" aria-selected="false"
+                            aria-controls="compare-panel" tabindex="-1">Compare</button>
+                    </div>
+                    <div class="actions result-actions">
+                        <label for="format">Output format</label><select id="format">
+                            <option value="pretty">Pretty JSON (indented)</option>
+                            <option value="compact">Compact JSON</option>
+                        </select>
+                        <span class="action-anchor"><button id="copy" type="button" disabled>Copy</button><span
+                                id="action-toast" class="action-toast" role="status" aria-live="polite"
+                                hidden></span></span>
+                        <span class="action-anchor"><button id="download" type="button" disabled>Download
+                                JSON</button></span>
+                        <span class="action-anchor"><button id="csv" type="button" disabled>Download conflicts
+                                CSV</button></span>
+                    </div>
+                </div>
+                <div id="merge-panel" role="tabpanel" aria-labelledby="merge-tab">
+                    <div id="empty-result" class="empty-result"><span aria-hidden="true">{ }</span>
+                        <p>Your merged result will appear here</p>
+                    </div>
+                    <div id="code-box" class="code-box" hidden>
+                        <div class="code-toolbar"><label><input id="wrap-lines" type="checkbox" checked>Wrap long
+                                lines</label><span class="action-anchor"><button id="copy-box" type="button"
+                                    disabled>Copy JSON</button></span></div>
+                        <pre id="preview" class="wrap-lines" tabindex="0" aria-label="Merged JSON preview"></pre>
+                    </div>
+                </div>
+                <div id="conflicts-panel" role="tabpanel" aria-labelledby="conflicts-tab" hidden>
+                    <label class="density-control"><input type="checkbox" name="compact-density" checked>Compact</label>
+                    <p id="conflict-summary">No conflict report yet.</p>
+                    <div class="conflict-table-scroll" tabindex="0" role="region"
+                        aria-label="Conflicts with source files">
+                        <table class="conflict-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Path</th>
+                                    <th scope="col">First value</th>
+                                    <th scope="col">Second value</th>
+                                    <th scope="col">Kept</th>
+                                </tr>
+                            </thead>
+                            <tbody id="conflicts"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <section class="share-tools" aria-label="Sharing options">
+                    <div id="example-confirm" hidden role="group" aria-label="Confirm shared input replacement">
+                        <p>This shared link replaces your current inputs and settings. Continue? Undo will be available for 10 seconds.</p>
+                        <button id="example-confirm-yes" type="button">Replace inputs</button>
+                        <button id="example-confirm-no" type="button">Cancel</button>
+                    </div>
+                    <button id="example-undo" type="button" hidden>Undo input replacement</button>
+                    <span id="example-message" role="status" aria-live="polite"></span>
+                    <button id="share-native" type="button" hidden>Share result</button>
+                    <button id="share-tool" type="button">Copy link to this tool</button><button id="share-settings"
+                        type="button">Copy settings link</button>
+                    <label><input id="share-data-enabled" type="checkbox">Enable Share with data (off by
+                        default)</label>
+                    <p id="share-data-warning">Anyone with this link can read this data. Don't use it for private data.
+                    </p>
+                    <button id="share-data" type="button" hidden aria-describedby="share-data-warning">Copy link with
+                        data</button>
+                    <p id="share-message" role="status" aria-live="polite"></p>
+                </section>
+                <p class="settings-note">Preferences only are saved on this device. Do not enter sensitive data in the
+                    ID field name.</p>
+                <button id="clear-data" type="button">Clear JSON inputs and results</button>
+                <div id="compare-panel" role="tabpanel" aria-labelledby="compare-tab" hidden>
+                    <p id="compare-status" role="status" aria-live="polite">Add at least two valid files to compare.</p>
+                    <p class="callout">Values <code>"1"</code> and <code>1</code> differ. Comparison groups join keys as
+                        text; the existing merger still treats numeric and string IDs separately. Multiple type-distinct
+                        merged records are shown together. Null is a value; Missing means absent. Conflicting present
+                        values take precedence over missing files. Duplicate IDs within a file are consolidated using
+                        the current rules.</p>
+                    <dl id="compare-summary" class="compare-summary" aria-label="Comparison summary"></dl>
+                    <div class="compare-controls">
+                        <div><label for="compare-filter">Show rows</label><select id="compare-filter">
+                                <option value="all">All</option>
+                                <option value="different">Different</option>
+                                <option value="missing">Only in some files</option>
+                                <option value="same">Same in all files</option>
+                            </select></div>
+                        <div><label for="compare-search">Search records, paths, or values</label><input
+                                id="compare-search" type="search" autocomplete="off"></div>
+                        <div><label for="compare-sort">Sort by</label><select id="compare-sort">
+                                <option value="record">Record, then field</option>
+                                <option value="field">Field</option>
+                                <option value="status">Status</option>
+                            </select></div>
+                        <label><input id="compare-hide-same" type="checkbox">Hide identical rows</label>
+                    </div>
+                    <div class="actions"><button id="compare-export" type="button" disabled>Download comparison
+                            CSV</button><button id="compare-side-toggle" type="button" aria-pressed="false"
+                            disabled>Side-by-side view (two files)</button></div>
+                    <p class="muted">Same in all files: present in every file and identical. Different: present in two
+                        or more files with differing values. Only in some files: missing from files without a conflict.
+                        “Kept” marks an exact source value present in the result; combined values may have no single
+                        kept source. Arrays compare as whole values; object key order is ignored. Paths use JSON
+                        Pointer. Combine-lists mode compares item counts only.</p>
+                    <div id="compare-matrix" class="compare-surface"></div>
+                    <div id="compare-side" class="compare-surface" hidden></div>
+                    <div class="actions"><button id="compare-prev" type="button" disabled>Previous 200
+                            rows</button><span id="compare-page" role="status">No rows</span><button id="compare-next"
+                            type="button" disabled>Next 200 rows</button></div>
+                </div>
+            </section>
+        </div>
+        <button id="ai-toggle" class="ai-launcher" type="button" aria-controls="ai-assistant" aria-expanded="false" aria-haspopup="dialog" hidden><span aria-hidden="true">✦</span> AI Help</button>
+        <section id="ai-assistant" class="panel ai-assistant" role="dialog" aria-labelledby="ai-heading" hidden>
+            <div class="ai-header">
+                <div class="ai-title"><span class="ai-avatar" aria-hidden="true">✦</span><h2 id="ai-heading">AI assistant</h2></div>
+                <div class="ai-header-actions"><button id="ai-clear" type="button" title="New chat" aria-label="Start a new chat">↻</button><button id="ai-close" type="button" aria-label="Close AI assistant">&times;</button></div>
+            </div>
+            <div class="ai-body" id="ai-messages" role="region" aria-label="Chat conversation" tabindex="0">
+                <div id="ai-empty" class="ai-empty"><span aria-hidden="true">✦</span><p>What are you building?</p></div>
+            </div>
+            <div class="ai-composer">
+                <div class="ai-chat-tools"><p id="ai-status" role="status" aria-live="polite" aria-atomic="true"></p><button id="ai-copy" type="button" disabled>Copy reply</button></div>
+                <form id="ai-form">
+                    <textarea id="ai-prompt" aria-label="Message AI assistant" rows="2" maxlength="8000" autocomplete="off" spellcheck="false" placeholder="Ask about JSON or code…" required aria-describedby="ai-privacy"></textarea>
+                    <button id="ai-send" class="primary" type="submit" aria-label="Send message" title="Send message">↑</button>
+                    <button id="ai-stop" type="button" hidden disabled aria-label="Stop response" title="Stop response">■</button>
+                </form>
+                <p id="ai-privacy">Messages go to Cohere. Don't share secrets. <a href="/privacy/">Privacy</a></p>
+            </div>
+        </section>
+        <section class="feature-grid" aria-label="Tool features">
+            <a class="feature-card" href="/merge-json-arrays-by-id/"><svg viewBox="0 0 24 24" width="28" height="28"
+                    fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                    <rect x="3" y="4" width="6" height="6" rx="2" />
+                    <rect x="15" y="14" width="6" height="6" rx="2" />
+                    <path d="M9 7h6a3 3 0 0 1 3 3v4M3 17h8m-3-3 3 3-3 3" />
+                </svg>
+                <h2>Join by ID</h2>
+            </a>
+            <a class="feature-card" href="#result-heading"><svg viewBox="0 0 24 24" width="28" height="28" fill="none"
+                    stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                    <rect x="5" y="3" width="14" height="18" rx="3" />
+                    <path d="M9 8h6M9 12h6M9 16h3" />
+                </svg>
+                <h2>Conflict report</h2>
+            </a>
+            <a class="feature-card" href="#compare-tab"><svg viewBox="0 0 24 24" width="28" height="28" fill="none"
+                    stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                    <rect x="3" y="4" width="7" height="16" rx="2" />
+                    <rect x="14" y="4" width="7" height="16" rx="2" />
+                    <path d="M5 9h3m-3 4h3m8-4h3m-3 4h3" />
+                </svg>
+                <h2>Compare files</h2>
+            </a>
+            <a class="feature-card" href="/privacy/"><svg viewBox="0 0 24 24" width="28" height="28" fill="none"
+                    stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                    <path d="m12 3 8 3v6c0 4-4 7-8 9-4-2-8-5-8-9V6l8-3Z" />
+                    <path d="m8 12 3 3 5-6" />
+                </svg>
+                <h2>Private by design</h2>
+            </a>
+        </section>
+        <section class="tool-explanation">
+            <h2>Combine JSON files into one, without losing the story</h2>
+<p data-seo-intro>Use this browser tool to merge JSON files without sending your inputs to a server. You can merge JSON files online by pasting two values or adding files, then review the selected method before exporting. For larger jobs, merge multiple JSON files with explicit ordering and conflict rules in Advanced mode. Join customer records by a shared ID, combine independent lists, or preserve nested fields when merging settings objects. The result includes a conflict report that names the source files, so you can inspect competing values instead of guessing which one survived. Format check flags incompatible shapes and offers fixes near your inputs. Start with two small inputs if you want to understand the workflow before using larger files. Keep original files, review the output, and validate it against the requirements of the application that will consume it.</p>
+            <p>
+                Use Quick mode to merge 2 JSON files, or advanced mode to merge multiple JSON files with explicit
+                rules. Joining matches records by an ID rather than simply appending duplicates. Non-conflicting
+                fields are preserved, and every differing value encountered is recorded with its source. Array
+                differences also appear in the report, including when arrays are combined.
+            </p>
+            <p>
+                This JSON file merger works in memory. Review results before using them in production. It is not a
+                streaming processor: very large files can exceed browser memory. JSON formatting changes on export,
+                and numbers outside JavaScript’s safe integer range can lose precision. Keep large identifiers as
+                strings.
+            </p>
+            <p>
+                For repeatable workflows, see <a href="/merge-json-files-python/">merge JSON files with Python</a>.
+                Learn <a href="/merge-json-arrays-by-id/">how to join JSON arrays by ID</a> or compare
+                <a href="/deep-merge-vs-shallow-merge-json/">deep and shallow merges</a>.
+            </p>
+        </section>
+<section class="tool-explanation"><h2>How it works</h2>
+<ol><li><strong>Add JSON.</strong> Paste two inputs in Quick mode, or add and reorder several inputs in Advanced mode. Format check shows issues that need attention.</li>
+<li><strong>Merge.</strong> Select Merge JSON or leave Auto-merge enabled. To merge JSON files by key, choose Join records and enter a shared ID field; use Combine lists for independent items or Deep-merge objects for nested settings.</li>
+<li><strong>Review.</strong> Inspect the result, compare source values, and resolve your policy for conflicting fields. Copy the complete JSON or download the result and conflict CSV.</li></ol></section>
+<section class="tool-explanation"><h2>Python and command-line equivalents</h2>
+<p>For repeatable local jobs, Python's json module can read files, combine lists and write a new output. Save the tested script from the <a href="/merge-json-files-python/">Python JSON merging guide</a>, then run <code>python3 merge_json.py lists merged.json first.json second.json</code>. That command appends lists; it does not join matching IDs. Object mode in that script is shallow. The guide explains those limits and links to recursive and keyed examples. Check syntax from your terminal with <code>python3 -m json.tool merged.json</code>; syntax validation does not replace schema checks.</p></section>
+<section aria-labelledby="faq"><h2 id="faq">Frequently asked questions</h2>
+<details><summary>How do I merge 2 JSON files?</summary><p>Paste or upload one JSON value in each Quick mode box, then select Merge JSON. Auto-merge is on by default. The page explains the chosen method; review the result and conflicts before exporting.</p></details>
+<details><summary>Can I merge multiple JSON files into one?</summary><p>Yes. Open Advanced mode, add files with the picker, drag and drop, or paste, then reorder them and select Merge JSON. Download the result as one JSON file.</p></details>
+<details><summary>Are my files uploaded?</summary><p>Merging happens locally without uploading or saving JSON. Optional AI sends your prompt directly to Cohere using the site's configured API key, including only messages you type in the chat, never automatically attaching workspace JSON. Only theme and non-sensitive preferences use localStorage. Sharing and exports can expose data; read the privacy notice.</p></details>
+<details><summary>What happens when values conflict?</summary><p>You choose later or earlier values. New fields are kept either way. Lists can concatenate, deduplicate, or be replaced. Review JSON merge conflicts with their source files in the Conflicts tab and export the report as CSV.</p></details>
+<details><summary>Can I join JSON files using nested IDs?</summary><p>Yes. To join JSON files by ID, choose Join records in Advanced mode and use a dot path such as user.id. For wrapped lists, set the records field to data.items. The result is the merged list, not its original wrapper.</p></details>
+<details><summary>Why does my JSON fail validation?</summary><p>JSON requires double-quoted keys and strings, no comments, no trailing commas, and matching brackets. Format check explains syntax or method problems and offers fixes. Use the reported line and column when available, correct the input, and try again.</p></details>
+<details><summary>Is there a file size limit?</summary><p>There is no fixed tool limit, but browser memory and device speed limit practical size. Large merges use a local worker, but input checking and rendering can still take time. Preview is shortened at 50,000 characters; copies and downloads contain the full result. Keep large numeric IDs as strings to avoid precision loss.</p></details>
+</section>
+    </main>
+    <div class="mobile-merge-bar" aria-label="Merge actions"><button id="mobile-merge" class="primary"
+            type="button" disabled aria-disabled="true" aria-describedby="merge-block-reason">Merge</button><span class="action-anchor"><button id="mobile-download" type="button"
+                disabled>Download JSON</button></span></div>
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-grid">
+                <section>
+                    <h2>Tools and guides</h2>
+                    <nav aria-label="Guides">
+                        <a href="/">Merge JSON files</a><a href="/merge-json-files-python/">Python workflow</a><a
+                            href="/merge-json-arrays-by-id/">Join arrays by ID</a><a
+                            href="/deep-merge-vs-shallow-merge-json/">Deep vs shallow merge</a>
+                    </nav>
+                </section>
+                <section>
+                    <h2>About the site</h2>
+                    <nav aria-label="Site information">
+                        <a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a><a
+                            href="/terms/">Terms</a>
+                    </nav>
+                </section>
+                <section>
+                    <h2>Preferences</h2><button id="reset-settings" type="button" hidden>Reset saved settings</button>
+                    <p id="preference-status" role="status" aria-live="polite">
+                        Only theme and non-sensitive preferences are saved. JSON is never saved by the app.
+                    </p>
+                </section>
+                <section>
+                    <h2>Privacy choices</h2>
+                    <p id="consent-status" role="status" aria-live="polite">
+                        Advertising and analytics are disabled. No optional vendor scripts are loaded.
+                    </p>
+                    <button id="consent-decline" type="button">Decline optional services</button>
+                    <button id="consent-review" type="button" hidden>Review privacy choices</button>
+                </section>
+            </div>
+            <p class="footer-note">
+                © joinjson.com. General information, not legal advice. UNVERIFIED: deployment, consent
+                certification, and advertising approval. No rankings or traffic promised.
+            </p>
+        </div>
+    </footer>
+</body>
+
+</html>

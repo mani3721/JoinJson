@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Deep Merge vs Shallow Merge in JSON: The Difference</title>
+    <meta name="description" content="Shallow merge replaces whole objects; deep merge combines nested keys. See side-by-side JSON examples, how arrays behave and when to use each.">
+    <script
+        data-theme-init>try { const t = JSON.parse(localStorage.getItem('jm:v1:theme')); if (['system', 'light', 'dark'].includes(t)) document.documentElement.dataset.theme = t; } catch (_) { }</script>
+    <link rel="canonical" href="https://joinjson.com/deep-merge-vs-shallow-merge-json/">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/assets/style.css">
+    <link rel="stylesheet" href="/assets/warm.css">
+    <script src="/assets/theme.js" defer></script>
+    <script src="/assets/consent.js" defer></script>
+    <script src="/assets/ads.js" defer></script>
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Deep Merge vs Shallow Merge in JSON: The Difference">
+    <meta property="og:description" content="Shallow merge replaces whole objects; deep merge combines nested keys. See side-by-side JSON examples, how arrays behave and when to use each.">
+    <meta property="og:url" content="https://joinjson.com/deep-merge-vs-shallow-merge-json/">
+    <meta property="og:site_name" content="joinjson.com">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Deep Merge vs Shallow Merge in JSON: The Difference">
+    <meta name="twitter:description" content="Shallow merge replaces whole objects; deep merge combines nested keys. See side-by-side JSON examples, how arrays behave and when to use each.">
+    <script
+        type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Merge JSON files","item":"https://joinjson.com/"},{"@type":"ListItem","position":2,"name":"Deep versus shallow merge","item":"https://joinjson.com/deep-merge-vs-shallow-merge-json/"}]}</script>
+<meta property="og:image" content="https://joinjson.com/assets/og-placeholder.svg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Merge JSON files: join records by ID and review conflicts">
+<meta name="twitter:image" content="https://joinjson.com/assets/og-placeholder.svg">
+<meta name="twitter:image:alt" content="Merge JSON files: join records by ID and review conflicts">
+</head>
+
+<body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+        <div class="header-inner"><a class="wordmark" href="/"><img src="/favicon.svg" width="32" height="32"
+                    alt=""><span class="wordmark-name">JoinJson</span></a>
+            <nav aria-label="Main"><a href="/">Tool</a><a href="/merge-json-files-python/">Python guide</a><a
+                    href="/merge-json-arrays-by-id/">Join by ID</a><a href="/deep-merge-vs-shallow-merge-json/">Merge
+                    methods</a></nav>
+            <div class="theme-control"><label for="theme">Theme</label><select id="theme">
+                    <option value="system">System</option>
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                </select></div>
+        </div>
+    </header>
+    <main id="main" class="article" data-ads="editorial">
+        <p class="breadcrumb"><a href="/">Merge JSON files</a> / Deep versus shallow merge</p>
+        <h1>Deep merge vs shallow merge JSON</h1>
+        <p>A shallow merge combines only the first level of an object. A deep merge also visits nested objects and
+            combines their fields. Neither phrase fully specifies array handling, conflict priority, or deletion
+            semantics. Before combining configuration files, agree on those rules. A merge that is technically correct
+            can still remove a setting your application needs.</p>
+        <p>Use the <a href="/">merge JSON files tool</a> to compare results locally. Its object method is recursive,
+            preserves non-conflicting fields, and records differences with the source filenames. You can choose earlier
+            or later conflicting values and select how lists behave. The examples below isolate these decisions so you
+            can recognize the result before downloading it.</p>
+        <h2>The difference appears at a nested boundary</h2>
+        <p>Imagine a base configuration with a service host and timeout, then an override that changes only the timeout.
+            A shallow merge replaces the entire service object. The host disappears because it was inside the replaced
+            value. A deep merge descends into service, keeps the host, and updates timeout. If the override instead
+            replaces service with null, there are no two objects to recurse into; under a later-wins policy the entire
+            value becomes null.</p>
+        <p>The following standalone Python block demonstrates both outcomes. Its deep function recursively combines
+            dictionaries, replaces arrays and scalar values with the later value, and copies inputs so they are not
+            mutated. It intentionally uses array replacement; the browser tool defaults to concatenation, so select
+            Replace using winner rule to reproduce this function there.</p>
+        <pre><code class="language-python" data-test="python-deep">from copy import deepcopy
+
+
+def deep_merge(earlier, later):
+    if isinstance(earlier, dict) and isinstance(later, dict):
+        output = deepcopy(earlier)
+        for key, value in later.items():
+            if key in output:
+                output[key] = deep_merge(output[key], value)
+            else:
+                output[key] = deepcopy(value)
+        return output
+    return deepcopy(later)
+
+
+base = {"service": {"host": "localhost", "timeout": 10}, "tags": ["base"]}
+override = {"service": {"timeout": 30}, "tags": ["override"]}
+shallow = {**base, **override}
+deep = deep_merge(base, override)
+assert shallow["service"] == {"timeout": 30}
+assert deep["service"] == {"host": "localhost", "timeout": 30}
+assert deep["tags"] == ["override"]
+assert deep_merge({"service": {}}, {"service": None}) == {"service": None}
+assert base["service"]["timeout"] == 10
+print(deep)
+</code></pre>
+        <p>Save the block as <code>deep_merge.py</code> and run it with Python 3. The embedded assertions document the
+            expected behavior as well as checking the implementation.</p>
+        <pre><code class="language-shell" data-test="deep-shell">python3 deep_merge.py
+</code></pre>
+        <h2>Arrays require a separate policy</h2>
+        <p>Arrays have positions, but positions are not necessarily identities. Pairing the first item in one export
+            with the first item in another is usually unsafe. Common policies are to concatenate every item, concatenate
+            and remove structurally equal duplicates, or replace the entire array. These policies produce different
+            results even when object fields are merged recursively.</p>
+        <p>For example, combining [1, 2] with [2, 3] yields [1, 2, 2, 3] under concatenation and [1, 2, 3] under unique
+            combination. Later replacement gives [2, 3]. Earlier replacement gives [1, 2]. Unique combination in this
+            tool ignores object key order when comparing objects, but respects array order. It does not identify records
+            by their ID. To reconcile customer or product records, use a <a href="/merge-json-arrays-by-id/">keyed array
+                join</a> instead.</p>
+        <h2>Earlier wins does not mean ignore later files</h2>
+        <p>Earlier-wins is a conflict policy, not a stop-reading policy. A field that exists only in a later file is
+            still added. When both values are objects, their non-overlapping nested fields are preserved. Only competing
+            values use the earlier/later decision. Array concatenation and unique combination are independent of that
+            winner switch; choose replacement if you want one whole list to win.</p>
+        <p>Null, false, zero, and an empty string are real values. They should not be treated as missing simply because
+            they are false-like in a programming language. This tool detects whether a property exists rather than
+            relying on truthiness. It also preserves a property named __proto__ as JSON data instead of treating it as
+            an instruction to modify an object prototype.</p>
+        <h2>Validate the result against your application</h2>
+        <p>JSON syntax validation only proves that a parser can read a value. It does not prove that required fields
+            exist, that a port is in range, or that a configuration combination makes sense. Run your application’s
+            schema checks after merging. If you have no schema, at least compare a representative sample and review each
+            conflict. The browser tool reports differences encountered while processing files in order, not a semantic
+            explanation of whether each difference is safe.</p>
+        <p>Choose shallow merging when whole nested blocks are intentionally replaceable. Choose deep merging when
+            independent nested settings should survive. Choose keyed joining when arrays represent entities with stable
+            IDs. For a repeatable local pipeline, see <a href="/merge-json-files-python/">merging JSON files with
+                Python</a>. For an immediate review with explicit options, return to the <a href="/">browser merger</a>,
+            add a small fixture, and check the conflict report before using the result elsewhere.</p>
+        <h2>Use a decision table during review</h2>
+        <p>Write a few expected outcomes before changing a merge implementation. Include an object versus a scalar, a
+            scalar versus null, an empty list versus a populated list, and two nested objects with different fields.
+            These boundaries reveal more than a large fixture full of non-conflicting values. In particular, an empty
+            earlier list must remain empty under earlier-wins replacement; it is not an uninitialized accumulator.</p>
+        <div class="table-scroll">
+            <table>
+                <caption>Questions that define a merge policy</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Boundary</th>
+                        <th scope="col">Decision to document</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">Objects</th>
+                        <td>Recurse into fields or replace the whole block?</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Lists</th>
+                        <td>Concatenate, structurally deduplicate, or replace?</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Null</th>
+                        <td>Keep as a value or use a separate deletion protocol?</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p>Do not infer deletion from an absent field. Absence generally means the later source has no opinion about
+            that field. If your application requires removal, define a separate, unambiguous operation and validate it
+            before applying the result. This tool does not implement JSON Patch or JSON Merge Patch and should not be
+            substituted for either protocol without examining the differences.</p>
+        <p>When a merged object will become executable configuration, also restrict permitted keys and value ranges.
+            Safe JSON property copying prevents one class of JavaScript prototype problem, but it does not make
+            arbitrary configuration safe to load into every application.</p>
+        <h2>When not to use this approach</h2>
+<p>Do not use a generic deep merge as an implementation of JSON Patch or JSON Merge Patch. Their operation and deletion rules differ. Recursive merging is also inappropriate when a nested block must be replaced atomically or arrays contain entities that need an ID-based join. A valid merged configuration can still violate your application's schema. Use explicit operations, validate the allowed keys, and test the resulting configuration before loading it into a production application.</p>
+<aside class="callout">
+            <p>Review merge rules with a small fixture before using production data. The examples here are tested;
+                application-specific correctness depends on your schema.</p>
+        </aside>
+        <aside class="ad-slot" data-ad-placeholder hidden aria-label="Advertisement"><strong>Advertisement</strong>
+            <p>Disabled placement preview. No advertising script is installed.</p>
+        </aside>
+    </main>
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-grid">
+                <section>
+                    <h2>Tools and guides</h2>
+                    <nav aria-label="Guides"><a href="/">Merge JSON files</a><a href="/merge-json-files-python/">Python
+                            workflow</a><a href="/merge-json-arrays-by-id/">Join arrays by ID</a><a
+                            href="/deep-merge-vs-shallow-merge-json/">Deep vs shallow merge</a></nav>
+                </section>
+                <section>
+                    <h2>About the site</h2>
+                    <nav aria-label="Site information"><a href="/about/">About</a><a href="/contact/">Contact</a><a
+                            href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav><button id="reset-settings"
+                        type="button" hidden>Reset saved settings</button>
+                    <p id="preference-status" role="status" aria-live="polite">Only theme and non-sensitive preferences
+                        are saved. JSON is never saved by the app.</p>
+                </section>
+                <section>
+                    <h2>Privacy choices</h2>
+                    <p id="consent-status" role="status" aria-live="polite">Advertising and analytics are disabled. No
+                        optional vendor scripts are loaded.</p><button id="consent-decline" type="button">Decline
+                        optional services</button> <button id="consent-review" type="button" hidden>Review privacy
+                        choices</button>
+                </section>
+            </div>
+            <p class="footer-note">© joinjson.com. General information, not legal advice. UNVERIFIED: deployment, consent
+                certification, and advertising approval. No rankings or traffic promised.</p>
+        </div>
+    </footer>
+</body>
+
+</html>

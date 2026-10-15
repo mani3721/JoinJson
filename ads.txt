@@ -1,0 +1,2 @@
+# DISABLED TEMPLATE: replace only after publisher identity and approval are verified.
+# google.com, pub-[PUB-ID], DIRECT, f08c47fec0942fa0

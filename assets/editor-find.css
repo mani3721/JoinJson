@@ -1,0 +1,29 @@
+/* Editor find only: existing palette, spacing, and radii are unchanged. */
+@layer editor-find {
+  .find-reserve { block-size:196px; overflow:auto; background:var(--raised); border-block:var(--rule); }
+  .find-bar { padding:var(--s3); color:var(--text); }
+  .find-row,.find-controls { display:flex; align-items:center; flex-wrap:wrap; gap:var(--s2); }
+  .find-row label { flex:1 1 180px; margin:0; font-size:var(--xs); }
+  .find-row input { display:block; inline-size:100%; min-inline-size:0; }
+  .find-row button,.find-controls button { min-block-size:44px; padding-inline:var(--s2); font-size:var(--xs); }
+  .find-controls { margin-block-start:var(--s2); }
+  .find-controls label { display:flex; align-items:center; gap:var(--s1); margin:0; min-block-size:44px; font-size:var(--xs); }
+  .find-scope { display:flex; gap:var(--s1); }
+  .find-scope button[aria-pressed=true] { background:var(--accent); color:var(--on-accent); }
+  .find-error { min-block-size:24px; color:var(--different); font-size:var(--xs); overflow-wrap:anywhere; }
+  .find-position { font-size:var(--xs); color:var(--muted); }
+  .find-surface { position:relative; overflow:hidden; background:var(--panel); }
+  .find-surface textarea { display:block; position:relative; margin:0; background:transparent; }
+  .find-backdrop { position:absolute; inset-block-start:0; inset-inline-start:0; pointer-events:none; color:transparent; border:0; box-sizing:border-box; }
+  .find-backdrop mark { color:transparent; }
+  .find-active textarea { background:transparent!important; }
+  .find-backdrop mark,#preview mark { background:var(--raised); outline:1px solid var(--control-border); }
+  @supports (background:color-mix(in srgb,red,white)) {
+    .find-backdrop mark,#preview mark { background:color-mix(in srgb,var(--accent) 18%,var(--panel)); }
+  }
+  #preview mark { color:var(--text); }
+  .find-backdrop mark.find-current,#preview mark.find-current { outline:2px solid var(--accent); outline-offset:-1px; }
+  .find-bar :focus-visible { outline:3px solid var(--focus); outline-offset:2px; }
+  @media(max-width:767px) { .find-reserve { block-size:300px; } .find-row label { flex-basis:100%; } }
+  @media print { .find-reserve,.editor-heading>button { display:none!important; } .find-backdrop { display:none; } }
+}
