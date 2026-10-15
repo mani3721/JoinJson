@@ -38,6 +38,8 @@ The homepage header and footer are the shared layout source for every page. Afte
 
 The build bundles the CodeMirror editor and copies the deployable website into `public/` using an explicit file allowlist. Server code, dependencies, tests, Git history, and environment files are not copied.
 
+After editing inline JavaScript or JSON-LD, run `npm run audit:headers` and commit both `_headers` and `vercel.json` before deployment. This refreshes the CSP hashes for readable and production-minified scripts without enabling unsafe inline JavaScript. The build also refreshes these files, but Vercel can read its routing configuration before the build starts, so deploy the updated `vercel.json` together with the page changes. Run `node --test tests/security.test.mjs` to detect stale hashes.
+
 Serve the generated site locally:
 
 ```sh

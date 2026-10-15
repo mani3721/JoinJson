@@ -3,7 +3,7 @@
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "build": "node scripts/build-editors.mjs && node scripts/build-site.mjs",
+    "build": "node scripts/sync-security.mjs && node scripts/build-editors.mjs && node scripts/build-site.mjs",
     "test:editors": "node --test tests/codemirror.test.mjs",
     "test:ai": "node --test tests/ai-assistant.test.mjs",
     "start": "node --env-file=.env server/ai-server.mjs",
@@ -12,7 +12,7 @@
     "test:ads": "node --test tests/adsense.test.mjs",
     "audit:export": "node scripts/audit-deliverables.mjs",
     "audit:headers": "node scripts/sync-security.mjs",
-    "test:audit": "node --test tests/home-audit.test.mjs tests/home-performance.test.mjs",
+    "test:audit": "node --test tests/home-audit.test.mjs tests/home-performance.test.mjs tests/security.test.mjs",
     "test:performance": "node tests/home-performance-browser.mjs",
     "test": "npm run test:editors && npm run test:ai && npm run test:urls && npm run test:flow && npm run test:ads && npm run test:audit"
   },
