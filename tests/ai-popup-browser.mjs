@@ -56,6 +56,48 @@ try {
     await evaluate('document.getElementById("ai-close").click()');
     assert.equal(await evaluate('document.getElementById("ai-assistant").hidden'), true);
   }
+  // Check rendered visibility, not just hidden attributes; never call the provider.
+  await evaluate('document.getElementById("ai-toggle").click()');
+  const controls = async pendingResponse => {
+    const state = await evaluate(`(() => {
+      const send = document.getElementById('ai-send'), stop = document.getElementById('ai-stop');
+      const visible = button => getComputedStyle(button).display !== 'none' && button.getClientRects().length > 0;
+      return { send: visible(send), stop: visible(stop), sendDisabled: send.disabled, stopDisabled: stop.disabled };
+    })()`);
+    assert.deepEqual(state, { send: !pendingResponse, stop: pendingResponse, sendDisabled: pendingResponse, stopDisabled: !pendingResponse });
+  };
+  const waitForIdle = async () => {
+    for (let i = 0; i < 100; i++) {
+      if (await evaluate('!document.getElementById("ai-send").disabled')) return;
+      await new Promise(resolve => setTimeout(resolve, 20));
+    }
+    assert.fail('Composer did not return to idle');
+  };
+  await controls(false);
+  await evaluate(`window.fetch = (url, options) => new Promise((resolve, reject) => {
+    window.finishAI = resolve;
+    options.signal.addEventListener('abort', () => reject(new DOMException('Stopped', 'AbortError')));
+  });
+  window.submitAI = () => {
+    document.getElementById('ai-prompt').value = 'Test message';
+    document.getElementById('ai-form').requestSubmit();
+  };
+  window.submitAI();`);
+  await controls(true);
+  await evaluate(`window.testAIStream = new ReadableStream({ start(controller) { window.aiStreamController = controller; } });
+    window.finishAI(new Response(window.testAIStream, { headers: { 'Content-Type': 'text/event-stream' } }));
+    window.aiStreamController.enqueue(new TextEncoder().encode('data: {"choices":[{"delta":{"content":"Hello"}}]}\\n\\n'));`);
+  await controls(true);
+  await evaluate(`window.aiStreamController.enqueue(new TextEncoder().encode('data: [DONE]\\n\\n')); window.aiStreamController.close();`);
+  await waitForIdle(); await controls(false);
+  await evaluate('window.submitAI()'); await controls(true);
+  await evaluate('document.getElementById("ai-stop").click()');
+  await waitForIdle(); await controls(false);
+  await evaluate('window.submitAI()'); await controls(true);
+  await evaluate('document.getElementById("ai-clear").click()');
+  await waitForIdle(); await controls(false);
+  await evaluate(`window.fetch = async () => new Response('{}', { status: 503 }); window.submitAI();`);
+  await waitForIdle(); await controls(false);
   await send('Emulation.setEmulatedMedia', { media: 'print' });
   assert.equal(await evaluate('getComputedStyle(document.getElementById("ai-toggle")).display'), 'none');
   console.log('PASS compact popup: light/dark, 320/375/768/1440 and landscape, focus, scrolling, viewport bounds and print.');

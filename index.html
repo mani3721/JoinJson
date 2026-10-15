@@ -30,14 +30,15 @@
     <script src="/assets/json-error-helper.js" defer></script>
     <script src="/assets/format-check.js" defer></script>
     <script src="/assets/flow.js" defer></script>
-    <link rel="stylesheet" href="/assets/ai-assistant.css" />
+    <link rel="stylesheet" href="/assets/ai-assistant.css?v=composer-toggle-2" />
     <script src="/assets/ai-stream.js" defer></script>
-    <script src="/assets/ai-assistant.js" defer></script>
+    <script src="/assets/ai-assistant.js?v=cohere-direct-1" defer></script>
     <link rel="stylesheet" href="/assets/editor-find.css" />
     <script src="/assets/editor-find.js" defer></script>
     <script src="/assets/editor-find-ui.js" defer></script>
     <link rel="stylesheet" href="/assets/codemirror.css" />
     <link rel="stylesheet" href="/assets/warm.css">
+    <link rel="stylesheet" href="/assets/hero-json.css?v=1">
     <script src="/assets/editor-loader.js" defer></script>
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Merge JSON Files Online: Join by ID, See Conflicts">
@@ -155,7 +156,21 @@
     </header>
     <main id="main" class="tool-page">
         <div class="tool-hero">
-            <h1>Merge <span class="hero-accent">JSON</span> files into one</h1>
+            <div class="hero-json-art" aria-hidden="true" inert>
+                <pre class="hero-json-card hero-json-card--left"><code>{
+  <span class="hero-json-key">"id"</span>: <span class="hero-json-value">1</span>,
+  <span class="hero-json-key">"name"</span>: <span class="hero-json-string">"Ada"</span>,
+  <span class="hero-json-key">"skills"</span>: [<span class="hero-json-string">"JSON"</span>]
+}</code></pre>
+                <pre class="hero-json-card hero-json-card--right"><code>{
+  <span class="hero-json-key">"id"</span>: <span class="hero-json-value">1</span>,
+  <span class="hero-json-key">"role"</span>: <span class="hero-json-string">"Developer"</span>,
+  <span class="hero-json-key">"merged"</span>: <span class="hero-json-value">true</span>
+}</code></pre>
+                <span class="hero-json-symbol hero-json-symbol--left">{ }</span>
+                <span class="hero-json-symbol hero-json-symbol--right">[ ]</span>
+            </div>
+            <h1>Merge <span class="hero-accent json-accent"><span class="json-brace" aria-hidden="true">{</span>JSON<span class="json-brace" aria-hidden="true">}</span></span> files into one</h1>
             <p class="lede">Join records by ID across many files and see every conflict.</p>
             <p>
                 Merging is free and browser-only, with no uploads or saved inputs. Optional AI sends only the request you approve. <a href="/privacy/">How privacy works</a>.
@@ -173,7 +188,7 @@
             </ul>
         </div>
         <div class="workspace">
-            <div class="workspace-heading"><span class="workspace-mark" aria-hidden="true">{ }</span><span>1 Add
+            <div class="workspace-heading"><span>1 Add
                     JSON</span></div>
             <div class="mode-control" role="group" aria-label="Input mode">
 <button id="quick-mode" type="button" aria-controls="quick" aria-pressed="true">Quick</button>

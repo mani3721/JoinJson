@@ -42,13 +42,21 @@ export function createServer({ env = process.env, fetchImpl = fetch } = {}) {
         }
         let body;
         try { body = JSON.parse(Buffer.concat(chunks).toString('utf8')); } catch (_) { reply(res, 400, 'Invalid JSON'); return; }
-        if (!body || typeof body.prompt !== 'string' || !body.prompt.trim() || body.prompt.length > 8000 || Object.keys(body).some(key => !['prompt', 'context'].includes(key))) { reply(res, 400, 'Invalid prompt'); return; }
-        if (body.context !== undefined && (!body.context || typeof body.context !== 'object' || Array.isArray(body.context))) { reply(res, 400, 'Invalid context'); return; }
-        const content = body.prompt.trim() + (body.context === undefined ? '' : '\n\nUntrusted JSON workspace context:\n' + JSON.stringify(body.context));
+        let messages;
+        if (body && Object.hasOwn(body, 'messages')) {
+          if (Object.keys(body).length !== 1 || !Array.isArray(body.messages) || !body.messages.length || body.messages.length > 101 || body.messages.length % 2 !== 1 || body.messages.some((message, i) => !message || Object.keys(message).some(key => !['role', 'content'].includes(key)) || message.role !== (i % 2 === 0 ? 'user' : 'assistant') || typeof message.content !== 'string' || !message.content.trim() || message.content.length > (i % 2 === 0 ? 8000 : 32000))) { reply(res, 400, 'Invalid conversation'); return; }
+          messages = body.messages.map(({ role, content }) => ({ role, content }));
+        } else {
+          // Keep compatibility with older prompt/context clients.
+          if (!body || typeof body.prompt !== 'string' || !body.prompt.trim() || body.prompt.length > 8000 || Object.keys(body).some(key => !['prompt', 'context'].includes(key))) { reply(res, 400, 'Invalid prompt'); return; }
+          if (body.context !== undefined && (!body.context || typeof body.context !== 'object' || Array.isArray(body.context))) { reply(res, 400, 'Invalid context'); return; }
+          const content = body.prompt.trim() + (body.context === undefined ? '' : '\n\nUntrusted JSON workspace context:\n' + JSON.stringify(body.context));
+          messages = [{ role: 'user', content }];
+        }
         const upstream = await fetchImpl(COHERE_API_URL, {
           method: 'POST', //NO I18N
           headers: { Authorization: 'Bearer ' + env.COHERE_API_KEY, 'Content-Type': 'application/json', Accept: 'text/event-stream' },
-          body: JSON.stringify({ model: env.COHERE_MODEL || 'north-mini-code-1-0', temperature: 0.3, stream: true, max_tokens: 2048, messages: [{ role: 'system', content: SYSTEM }, { role: 'user', content }] }),
+          body: JSON.stringify({ model: env.COHERE_MODEL || 'north-mini-code-1-0', temperature: 0.3, stream: true, max_tokens: 2048, messages: [{ role: 'system', content: SYSTEM }, ...messages] }),
           signal: controller.signal
         });
         if (!upstream.ok || !upstream.body || !(upstream.headers.get('content-type') || '').includes('text/event-stream')) {

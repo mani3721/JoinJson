@@ -6,7 +6,7 @@
       "scrollWidth": 375,
       "background": "rgb(251, 250, 248)",
       "heroSize": "40px",
-      "heroAccent": "rgb(214, 111, 68)",
+      "heroAccent": "rgb(179, 90, 56)",
       "frame": "rgb(54, 50, 47)",
       "grid": "343px",
       "editor": true
@@ -17,7 +17,7 @@
       "scrollWidth": 768,
       "background": "rgb(251, 250, 248)",
       "heroSize": "46.08px",
-      "heroAccent": "rgb(214, 111, 68)",
+      "heroAccent": "rgb(179, 90, 56)",
       "frame": "rgb(54, 50, 47)",
       "grid": "218.656px 218.672px 218.672px",
       "editor": true
@@ -28,7 +28,7 @@
       "scrollWidth": 1024,
       "background": "rgb(251, 250, 248)",
       "heroSize": "61.44px",
-      "heroAccent": "rgb(214, 111, 68)",
+      "heroAccent": "rgb(179, 90, 56)",
       "frame": "rgb(54, 50, 47)",
       "grid": "304px 304px 304px",
       "editor": true
@@ -39,7 +39,7 @@
       "scrollWidth": 1440,
       "background": "rgb(251, 250, 248)",
       "heroSize": "72px",
-      "heroAccent": "rgb(214, 111, 68)",
+      "heroAccent": "rgb(179, 90, 56)",
       "frame": "rgb(54, 50, 47)",
       "grid": "384px 384px 384px",
       "editor": true
@@ -50,7 +50,7 @@
       "scrollWidth": 375,
       "background": "rgb(27, 25, 23)",
       "heroSize": "40px",
-      "heroAccent": "rgb(243, 151, 112)",
+      "heroAccent": "rgb(246, 174, 142)",
       "frame": "rgb(54, 50, 47)",
       "grid": "343px",
       "editor": true
@@ -61,7 +61,7 @@
       "scrollWidth": 768,
       "background": "rgb(27, 25, 23)",
       "heroSize": "46.08px",
-      "heroAccent": "rgb(243, 151, 112)",
+      "heroAccent": "rgb(246, 174, 142)",
       "frame": "rgb(54, 50, 47)",
       "grid": "218.656px 218.672px 218.672px",
       "editor": true
@@ -72,7 +72,7 @@
       "scrollWidth": 1024,
       "background": "rgb(27, 25, 23)",
       "heroSize": "61.44px",
-      "heroAccent": "rgb(243, 151, 112)",
+      "heroAccent": "rgb(246, 174, 142)",
       "frame": "rgb(54, 50, 47)",
       "grid": "304px 304px 304px",
       "editor": true
@@ -83,7 +83,7 @@
       "scrollWidth": 1440,
       "background": "rgb(27, 25, 23)",
       "heroSize": "72px",
-      "heroAccent": "rgb(243, 151, 112)",
+      "heroAccent": "rgb(246, 174, 142)",
       "frame": "rgb(54, 50, 47)",
       "grid": "384px 384px 384px",
       "editor": true

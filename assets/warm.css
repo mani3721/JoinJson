@@ -1,4 +1,17 @@
 /* Original warm visual system. No behavior, content or storage changes. */
+/* Decorative JSON braces are limited to the homepage hero heading. */
+.hero-accent.json-accent {
+    display:inline-block;
+    color:var(--accent-text);
+    white-space:nowrap;
+}
+.hero-accent .json-brace {
+    font-family:ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-weight:500;
+}
+@media (max-width:480px) {
+    .site-header .wordmark { gap:8px; }
+}
 /* Shared header wordmark: theme-aware, compact and touch accessible. */
 .site-header .wordmark {
     min-block-size:44px;

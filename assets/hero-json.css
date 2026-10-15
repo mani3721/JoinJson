@@ -1,0 +1,96 @@
+/* Homepage-only decoration. No user data, scripts, or external resources.
+   Motion ends within five seconds; reduced-motion users see a static scene. */
+.tool-hero .hero-json-art {
+    position:absolute;
+    inset:0 -24px;
+    z-index:-1;
+    overflow:hidden;
+    pointer-events:none;
+    user-select:none;
+    border-radius:24px;
+    background:radial-gradient(ellipse at 12% 38%, var(--accent-tint), transparent 46%),
+        radial-gradient(ellipse at 88% 58%, var(--section-tint), transparent 46%);
+    mask-image:linear-gradient(to bottom, transparent, #000 12%, #000 78%, transparent);
+}
+.hero-json-art .hero-json-card {
+    position:absolute;
+    margin:0;
+    padding:20px 24px;
+    inline-size:246px;
+    box-sizing:border-box;
+    overflow:hidden;
+    border:1px solid var(--line-card);
+    border-radius:16px;
+    background:var(--surface);
+    box-shadow:var(--shadow-card);
+    color:var(--ink-muted);
+    font:13px/1.9 ui-monospace, SFMono-Regular, Consolas, monospace;
+    text-align:start;
+    white-space:pre;
+    opacity:.32;
+    animation:hero-json-drift 4.8s ease-out both;
+}
+.hero-json-card code {
+    padding:0;
+    border:0;
+    background:none;
+    color:inherit;
+    font:inherit;
+}
+.hero-json-card--left {
+    inset-block-start:66px;
+    inset-inline-start:-40px;
+    --hero-turn:-9deg;
+    transform:rotate(var(--hero-turn));
+}
+.hero-json-card--right {
+    inset-block-start:148px;
+    inset-inline-end:-40px;
+    --hero-turn:8deg;
+    transform:rotate(var(--hero-turn));
+}
+.hero-json-key { color:var(--accent-text); }
+.hero-json-string { color:var(--same); }
+.hero-json-value { color:var(--accent-display); }
+.hero-json-symbol {
+    position:absolute;
+    color:var(--accent-text);
+    font:500 56px/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+    opacity:.12;
+    animation:hero-json-drift 4.8s ease-out both;
+}
+.hero-json-symbol--left {
+    inset-inline-start:16%;
+    inset-block-end:36px;
+    --hero-turn:-12deg;
+    transform:rotate(var(--hero-turn));
+}
+.hero-json-symbol--right {
+    inset-inline-end:15%;
+    inset-block-start:30px;
+    --hero-turn:12deg;
+    transform:rotate(var(--hero-turn));
+}
+@keyframes hero-json-drift {
+    from { translate:0 20px; }
+    to { translate:0 0; }
+}
+@media (max-width:1023px) {
+    .hero-json-art .hero-json-card { opacity:.14; }
+    .hero-json-card--left { inset-inline-start:-130px; }
+    .hero-json-card--right { inset-inline-end:-130px; }
+}
+@media (max-width:767px) {
+    .tool-hero .hero-json-art { inset-inline:-8px; }
+    .hero-json-art .hero-json-card { display:none; }
+    .hero-json-symbol { font-size:40px; opacity:.08; }
+    .hero-json-symbol--left { inset-inline-start:2%; inset-block-end:24px; }
+    .hero-json-symbol--right { inset-inline-end:2%; inset-block-start:12px; }
+}
+@media (prefers-reduced-motion:reduce) {
+    .hero-json-art .hero-json-card,
+    .hero-json-art .hero-json-symbol { animation:none; }
+}
+@media print, (forced-colors:active) {
+    .tool-hero .hero-json-art { display:none; }
+}

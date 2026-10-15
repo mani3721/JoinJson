@@ -1,4 +1,6 @@
+/* Hide the AI entry point without changing the assistant or other controls. */
 .ai-launcher {
+  display: none !important;
   position: fixed;
   right: max(1.25rem, env(safe-area-inset-right));
   bottom: max(1.25rem, env(safe-area-inset-bottom));
@@ -15,7 +17,7 @@
   box-shadow: var(--shadow-float);
   font-weight: 700;
 }
-.ai-launcher[hidden], .panel.ai-assistant[hidden], .ai-assistant [hidden] { display: none; }
+.ai-launcher[hidden], .panel.ai-assistant[hidden], .ai-assistant [hidden] { display: none !important; }
 .panel.ai-assistant {
   position: fixed;
   right: max(1.25rem, env(safe-area-inset-right));
@@ -51,6 +53,23 @@
 .ai-assistant .ai-message-assistant { align-self: flex-start; width: 100%; }
 .ai-assistant .ai-message-label { display: block; margin: 0 0 .35rem; color: var(--muted); font-size: .7rem; font-weight: 600; }
 .ai-assistant .ai-message pre { margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; color: var(--text); white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; line-height: 1.65; max-height: none; }
+.ai-assistant .ai-markdown { line-height: 1.65; overflow-wrap: anywhere; }
+.ai-assistant .ai-markdown > :first-child { margin-top: 0; }
+.ai-assistant .ai-markdown > :last-child { margin-bottom: 0; }
+.ai-assistant .ai-markdown p { margin: .65rem 0; white-space: pre-wrap; }
+.ai-assistant .ai-markdown :is(h1, h2, h3, h4, h5, h6) { margin: 1rem 0 .5rem; font-size: 1rem; line-height: 1.4; }
+.ai-assistant .ai-markdown :is(ul, ol) { margin: .65rem 0; padding-left: 1.4rem; }
+.ai-assistant .ai-markdown li + li { margin-top: .3rem; }
+.ai-assistant .ai-markdown code { padding: .1rem .3rem; border-radius: 4px; background: var(--code); color: var(--text); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: .85em; }
+.ai-assistant .ai-markdown pre { margin: .75rem 0; padding: .85rem; border: 1px solid var(--border); border-radius: 10px; background: var(--code); white-space: pre; overflow-x: auto; overflow-wrap: normal; font-size: .8rem; }
+.ai-assistant .ai-markdown pre code { padding: 0; border: 0; background: transparent; font-size: inherit; }
+.ai-assistant .ai-markdown a { color: var(--accent); text-decoration: underline; }
+.ai-assistant .ai-markdown blockquote { margin: .75rem 0; padding-left: .75rem; border-left: 3px solid var(--control-border); color: var(--muted); }
+.ai-assistant .ai-table-scroll { max-width: 100%; overflow-x: auto; margin: .75rem 0; border: 1px solid var(--border); border-radius: 8px; }
+.ai-assistant .ai-markdown table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+.ai-assistant .ai-markdown :is(th, td) { padding: .5rem .65rem; text-align: left; vertical-align: top; border-bottom: 1px solid var(--border); }
+.ai-assistant .ai-markdown th { background: var(--code); font-weight: 600; }
+.ai-assistant .ai-markdown tbody tr:last-child td { border-bottom: 0; }
 .ai-assistant .ai-composer { flex-shrink: 0; padding: .5rem .85rem .75rem; border-top: 1px solid var(--border); }
 .ai-assistant .ai-chat-tools { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
 .ai-assistant #ai-status { margin: 0; color: var(--muted); font-size: .75rem; overflow-wrap: anywhere; }
@@ -61,6 +80,11 @@
 .ai-assistant textarea { flex: 1; min-width: 0; width: 100%; min-height: 48px; max-height: 120px; margin: 0; padding: .45rem; resize: none; font: inherit; font-size: 1rem; line-height: 1.5; border: 0; box-shadow: none; background: transparent; color: var(--text); }
 .ai-assistant textarea:focus { outline: none; }
 .ai-assistant #ai-send, .ai-assistant #ai-stop { flex-shrink: 0; width: 44px; min-height: 44px; padding: 0; border-radius: 12px; font-size: 1.3rem; }
+/* Keep exactly one composer action visible, even if generic button styles change. */
+.ai-assistant #ai-form[data-busy="true"] #ai-send,
+.ai-assistant #ai-form:not([data-busy="true"]) #ai-stop,
+.ai-assistant #ai-send[hidden],
+.ai-assistant #ai-stop[hidden] { display: none !important; }
 .ai-assistant #ai-privacy { margin: .6rem 0 0; text-align: center; color: var(--muted); font-size: .65rem; line-height: 1.4; }
 @media (max-width: 480px) {
   .ai-launcher { right: max(.75rem, env(safe-area-inset-right)); bottom: max(.75rem, env(safe-area-inset-bottom)); }

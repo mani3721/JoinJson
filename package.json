@@ -6,7 +6,7 @@
     "build": "node scripts/build-editors.mjs",
     "test:editors": "node --test tests/codemirror.test.mjs",
     "test:ai": "node --test tests/ai-assistant.test.mjs",
-    "start": "node server/ai-server.mjs",
+    "start": "node --env-file=.env server/ai-server.mjs",
     "test": "npm run test:editors && npm run test:ai"
   },
   "dependencies": {
@@ -19,5 +19,5 @@
     "@codemirror/lang-json": "^6.0.1"
   },
   "devDependencies": { "esbuild": "^0.25.0", "jsdom": "^26.0.0" },
-  "engines": { "node": ">=20" }
+  "engines": { "node": ">=20.6" }
 }

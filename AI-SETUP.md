@@ -1,13 +1,38 @@
-# Optional Cohere coding assistant
+# Cohere coding assistant
 
-The popup sends POST requests directly to `https://api.cohere.ai/compatibility/v1/chat/completions`, not `/api/ai/chat`. It works from a static host only if Cohere permits browser requests through CORS. The CSP allows connections to `https://api.cohere.ai`.
+The browser now posts directly to `https://api.cohere.ai/compatibility/v1/chat/completions`, including the model, streaming settings, conversation and Bearer authorization. On first send it prompts for your own replacement API key, kept only in page memory. New chat, Clear data or reload clears the key; a 401 also clears it so you can retry with a replacement. No key is embedded in source or saved to browser storage. Browser scripts can still access a key used by the page. Workspace JSON is never attached automatically.
 
-The popup uses the key configured in `assets/ai-assistant.js` and does not ask visitors for a key. This key is embedded in public JavaScript: anyone can inspect and reuse it, potentially consuming the account's quota. Direct browser calls cannot keep credentials secret. Do not deploy this shared-key configuration publicly; use a server-side secret for production and rotate exposed keys.
+Static preview on port 5500 can use this mode, but Cohere must allow your origin and authorization headers via CORS. If it does not, use a backend proxy instead; browser code cannot bypass CORS. Server-side `.env` variables cannot be read by a static page. The optional backend below remains available but is no longer called by the chat UI; using it requires changing the browser endpoint back to `/api/ai/chat` and removing browser-side authorization and model settings.
 
-Requests use `north-mini-code-1-0`, temperature `0.3`, streaming, and a 2,048-token output limit. Your account needs access to that model. Sending requires explicit consent. JSON context is off by default. Each question is independent; responses are plain text and never executed or applied. Local JSON merging remains offline.
+## Local setup
 
-Open the floating AI Help button, enter a question, and approve sending. Closing preserves the draft and response. Stop cancels a request; Clear (or Clear JSON inputs and results) removes AI text and resets consent and context, but does not remove the configured key. No AI history is saved.
+1. Revoke the exposed Cohere key and generate a replacement.
+2. Install Node.js 20.6 or newer.
+3. Run `cp .env.example .env` in the project root.
+4. Edit `.env` and set `COHERE_API_KEY` to the replacement key.
+5. Run `npm install`, then `npm start`.
+6. Open `http://localhost:3000`, not the static preview on port 5500.
 
-Serve the project using your static preview server, or use Node 20+ and `npm start` at `http://localhost:3000`. The included server retains its optional `/api/ai/chat` proxy for compatibility, but the popup does not use it or its environment key. A CORS failure cannot be fixed with `no-cors`; use a server proxy if Cohere does not support your browser origin.
+`npm start` loads `.env` using Node's native environment-file support. Existing environment variables take precedence. `.env` and `.env.*` are ignored by Git; only the empty `.env.example` template is tracked. The backend does not serve environment files. Never put secrets in browser scripts, frontend environment variables, or generated bundles.
 
-Run `npm test` and `python3 tests/validate.py`. Tests mock Cohere: live model access, browser CORS, and billing are not tested.
+Requests use `north-mini-code-1-0`, temperature 0.3, streaming, and a 2,048-token output limit. Your account needs access to that model. Responses are plain text and are never executed or applied. JSON merging remains local.
+
+## GitHub push protection
+
+Removing the key from the latest files is not enough: it must also be removed from every commit being pushed. The current repository has one local commit (`4b51837`), so after reviewing these fixes:
+
+```sh
+git add assets/ai-assistant.js server/ai-server.mjs package.json .gitignore .env.example AI-SETUP.md tests/ai-assistant.test.mjs
+git commit --amend --no-edit
+git push origin main
+```
+
+Amending changes the commit ID. These commands are appropriate for the blocked initial commit that has not been published. For an already-shared branch or multiple affected commits, coordinate history cleanup first; do not force-push blindly. Do not bypass GitHub secret protection. Rotate the key even after cleaning history. Check `git check-ignore .env` before adding files, and never use `git add -f .env`.
+
+## Deployment
+
+Static-only hosting cannot keep a shared API key secret. Deploy the Node backend or an equivalent serverless proxy, and route `/api/ai/chat` to it on the site's origin. Configure the replacement key in your host's secret/environment settings. Use HTTPS and authenticated access at the reverse proxy, plus per-user quotas, to prevent public use of your account's quota. Server IP rate limits alone are not authentication.
+
+For production set `NODE_ENV=production`, `AI_ALLOWED_ORIGIN=https://joinjson.com`, and `AI_ACCESS_CONTROLLED=true` only after authentication is actually enforced. The server refuses production requests without those settings. Bind `HOST` appropriately for your hosting platform.
+
+Run `npm test` and `python3 tests/validate.py`. Tests mock Cohere; live access and billing are not tested.

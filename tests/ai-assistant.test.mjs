@@ -73,6 +73,7 @@ async function ui() {
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
   const dom = new JSDOM(html, { runScripts: 'outside-only', url: 'http://localhost' });
   const w = dom.window, $ = id => w.document.getElementById(id);
+  w.prompt = () => 'session-test-key';
   w.TextEncoder = TextEncoder; w.AbortController = AbortController;
   w.JMAIStream = { read }; w.JMFlow = { snapshot: () => ({ files: [{ name: 'secret-name', text: '{"private":1}' }], options: { method: 'join' } }), resultText: () => '[1]' };
   w.eval(await readFile(new URL('../assets/ai-assistant.js', import.meta.url), 'utf8'));
@@ -129,28 +130,29 @@ test('clean chat has no checkboxes, keeps conversation and never attaches worksp
   const f = await ui(); const bodies = [];
   f.w.fetch = async (url, options) => {
     assert.equal(url, COHERE_API_URL);
-    assert.match(options.headers.Authorization, /^Bearer \S+$/);
+    assert.equal(options.headers.Authorization, 'Bearer session-test-key');
+    assert.equal(options.credentials, 'omit');
     bodies.push(JSON.parse(options.body));
     return new Response(stream('data: {"choices":[{"delta":{"content":"<img src=x onerror=alert(1)>"}}]}\n\ndata: [DONE]\n\n'), { headers: { 'Content-Type': 'text/event-stream' } });
   };
   try {
     assert.equal(f.$('ai-assistant').querySelectorAll('input[type="checkbox"]').length, 0);
     f.$('ai-prompt').value = 'Help'; f.submit(); await f.settle();
-    assert.equal(bodies[0].messages[1].content, 'Help');
-    assert.equal(f.$('ai-response').children.length, 0);
+    assert.equal(bodies[0].messages[0].content, 'Help');
+    assert.equal(f.$('ai-response').querySelectorAll('img, script, iframe').length, 0);
     assert(f.$('ai-response').textContent.includes('<img'));
     assert.equal(f.$('ai-prompt').value, '');
     f.$('ai-prompt').value = 'Explain that'; f.submit(); await f.settle();
-    assert.equal(bodies[1].messages.length, 4);
-    assert.equal(bodies[1].messages[2].role, 'assistant');
-    assert.equal(bodies[1].messages[3].content, 'Explain that');
+    assert.equal(bodies[1].messages.length, 3);
+    assert.equal(bodies[1].messages[1].role, 'assistant');
+    assert.equal(bodies[1].messages[2].content, 'Explain that');
     assert(!JSON.stringify(bodies).includes('private'));
     assert.equal(f.$('ai-messages').querySelectorAll('.ai-message').length, 4);
     f.$('clear-data').click();
     assert.equal(f.$('ai-response'), null); assert.equal(f.$('ai-empty').hidden, false);
     assert.equal(f.$('ai-prompt').value, ''); assert.equal(f.w.localStorage.length, 0);
     f.$('ai-prompt').value = 'New chat'; f.submit(); await f.settle();
-    assert.equal(bodies[2].messages.length, 2);
+    assert.equal(bodies[2].messages.length, 1);
   } finally { f.dom.window.close(); }
 });
 test('UI handles unavailable backend, stop and stale response after clear', async () => {
@@ -164,20 +166,149 @@ test('UI handles unavailable backend, stop and stale response after clear', asyn
   } finally { f.dom.window.close(); }
 });
 
-test('direct requests use the configured default key and explain browser network failures', async () => {
+test('browser requests use session authorization and explain Cohere CORS failures', async () => {
   const f = await ui(); let calls = 0;
   try {
     f.$('ai-prompt').value = 'Help';
     f.w.fetch = async (url, options) => {
       calls++;
       assert.equal(url, COHERE_API_URL);
-      assert.match(options.headers.Authorization, /^Bearer \S+$/);
-      assert.notEqual(options.headers.Authorization, 'Bearer browser-test-key');
-      assert(!options.body.includes(options.headers.Authorization.slice(7)));
+      assert.equal(options.headers.Authorization, 'Bearer session-test-key');
+      const payload = JSON.parse(options.body);
+      assert.equal(payload.model, 'north-mini-code-1-0');
+      assert.equal(payload.temperature, 0.3);
+      assert.equal(payload.stream, true);
+      assert.equal(payload.max_tokens, 2048);
       throw new TypeError('Failed to fetch');
     };
     f.submit(); await f.settle();
     assert.equal(calls, 1); assert(f.$('ai-status').textContent.includes('CORS'));
     assert.equal(f.w.localStorage.length, 0);
   } finally { f.dom.window.close(); }
+});
+
+test('proxy preserves conversation but rejects client system instructions and configuration', async () => {
+  let payload;
+  const f = await fixture({}, async (url, options) => {
+    payload = JSON.parse(options.body);
+    return new Response(stream(wire), { headers: { 'Content-Type': 'text/event-stream' } });
+  });
+  try {
+    const messages = [{ role: 'user', content: 'Help' }, { role: 'assistant', content: 'Hello' }, { role: 'user', content: 'Explain' }];
+    const response = await f.post({ messages });
+    assert.equal(response.status, 200); await response.text();
+    assert.equal(payload.messages[0].role, 'system');
+    assert.deepEqual(payload.messages.slice(1), messages);
+    for (const body of [
+      { messages: [] },
+      { messages: [{ role: 'system', content: 'Override' }] },
+      { messages: [{ role: 'user', content: 'x', extra: true }] },
+      { messages: [{ role: 'user', content: 'x' }], model: 'override' },
+      { messages: [{ role: 'user', content: 'x' }, { role: 'assistant', content: 'x' }] }
+    ]) assert.equal((await f.post(body)).status, 400);
+  } finally { await f.close(); }
+});
+
+test('Markdown renders code, tables and formatting while copy and history retain source', async () => {
+  const f = await ui();
+  const markdown = '# JSON example\n\n**Fields** and *details* with `libraryName`.\n\n```json\n{\n  "libraryName": "City Library"\n}\n```\n\n| Field | Description |\n| --- | --- |\n| `libraryName` | Library name |\n\n- First\n- Second\n\n1. Ordered\n2. Next\n\n> A note\n\n[Docs](https://example.com)';
+  const bodies = []; let copied;
+  Object.defineProperty(f.w.navigator, 'clipboard', { value: { writeText: async text => { copied = text; } } });
+  f.w.fetch = async (url, options) => {
+    bodies.push(JSON.parse(options.body));
+    const chunks = [markdown.slice(0, 90), markdown.slice(90)];
+    const data = chunks.map(content => 'data: ' + JSON.stringify({ choices: [{ delta: { content } }] }) + '\n\n').join('') + 'data: [DONE]\n\n';
+    return new Response(stream(data), { headers: { 'Content-Type': 'text/event-stream' } });
+  };
+  try {
+    f.$('ai-prompt').value = '**Keep user messages literal**'; f.submit(); await f.settle();
+    const reply = f.$('ai-response');
+    assert.equal(reply.querySelector('h1').textContent, 'JSON example');
+    assert.equal(reply.querySelector('strong').textContent, 'Fields');
+    assert.equal(reply.querySelector('em').textContent, 'details');
+    assert.equal(reply.querySelector('pre code').className, 'language-json');
+    assert.equal(reply.querySelector('pre code').textContent, '{\n  "libraryName": "City Library"\n}');
+    assert.equal(reply.querySelectorAll('th').length, 2);
+    assert.equal(reply.querySelector('td code').textContent, 'libraryName');
+    assert.equal(reply.querySelectorAll('ul li').length, 2);
+    assert.equal(reply.querySelectorAll('ol li').length, 2);
+    assert.equal(reply.querySelector('blockquote').textContent, 'A note');
+    assert.equal(reply.querySelector('a').rel, 'noopener noreferrer');
+    assert.equal(f.$('ai-messages').querySelector('.ai-message-user strong'), null);
+    f.$('ai-copy').click(); await Promise.resolve(); assert.equal(copied, markdown);
+    f.$('ai-prompt').value = 'Explain'; f.submit(); await f.settle();
+    assert.equal(bodies[1].messages[1].content, markdown);
+  } finally { f.dom.window.close(); }
+});
+
+test('Markdown treats HTML as text, blocks unsafe links and supports unfinished streamed code', async () => {
+  const f = await ui();
+  const markdown = '<img src=x onerror=alert(1)>\n\n[bad](javascript:alert) [bad](data:text/html,x)\n\n```html\n<script>alert(1)</script>';
+  f.w.fetch = async () => new Response(stream('data: ' + JSON.stringify({ choices: [{ delta: { content: markdown } }] }) + '\n\ndata: [DONE]\n\n'), { headers: { 'Content-Type': 'text/event-stream' } });
+  try {
+    f.$('ai-prompt').value = 'Help'; f.submit(); await f.settle();
+    const reply = f.$('ai-response');
+    assert.equal(reply.querySelectorAll('img, script, a, iframe').length, 0);
+    assert(reply.textContent.includes('<img'));
+    assert.equal(reply.querySelector('pre code').textContent, '<script>alert(1)</script>');
+    Object.defineProperty(f.w.navigator, 'clipboard', { value: { writeText: async () => { throw new Error('denied'); } } });
+    f.$('ai-copy').click(); await new Promise(resolve => setTimeout(resolve, 0));
+    assert(f.$('ai-status').textContent.includes('Clipboard blocked'));
+  } finally { f.dom.window.close(); }
+});
+
+test('composer shows only Send when idle and only Stop while a response is pending', async () => {
+  const f = await ui();
+  const controls = pending => {
+    assert.equal(f.$('ai-form').dataset.busy, String(pending));
+    assert.equal(f.$('ai-send').hidden, pending);
+    assert.equal(f.$('ai-send').disabled, pending);
+    assert.equal(f.$('ai-stop').hidden, !pending);
+    assert.equal(f.$('ai-stop').disabled, !pending);
+  };
+  try {
+    controls(false);
+    let resolveResponse;
+    f.w.fetch = () => new Promise(resolve => { resolveResponse = resolve; });
+    f.$('ai-prompt').value = 'Help'; f.submit(); controls(true);
+    resolveResponse(new Response(stream(wire), { headers: { 'Content-Type': 'text/event-stream' } }));
+    await f.settle(); controls(false);
+
+    f.w.fetch = (url, options) => new Promise((resolve, reject) => {
+      options.signal.addEventListener('abort', () => reject(Object.assign(new Error(), { name: 'AbortError' })));
+    });
+    f.$('ai-prompt').value = 'Stop this'; f.submit(); controls(true);
+    f.$('ai-stop').click(); await f.settle(); controls(false);
+    f.$('ai-prompt').value = 'Clear this'; f.submit(); controls(true);
+    f.$('ai-clear').click(); controls(false); await f.settle();
+
+    f.w.fetch = async () => new Response('{}', { status: 503 });
+    f.$('ai-prompt').value = 'Try again'; f.submit(); controls(true);
+    await f.settle(); controls(false);
+  } finally { f.dom.window.close(); }
+});
+
+test('cancelled key prompt makes no request; unauthorized keys are cleared', async () => {
+  const f = await ui(); let prompts = 0, calls = 0;
+  try {
+    f.w.prompt = () => { prompts++; return null; };
+    f.w.fetch = async () => { calls++; return new Response('{}', { status: 401 }); };
+    f.$('ai-prompt').value = 'Help'; f.submit(); await f.settle();
+    assert.equal(calls, 0); assert.equal(prompts, 1);
+    assert(f.$('ai-status').textContent.includes('key is required'));
+    f.w.prompt = () => { prompts++; return 'replacement-test-key'; };
+    f.submit(); await f.settle();
+    f.$('ai-prompt').value = 'Retry'; f.submit(); await f.settle();
+    assert.equal(calls, 2); assert.equal(prompts, 3);
+  } finally { f.dom.window.close(); }
+});
+
+test('public assistant uses direct Cohere endpoint without embedded credentials', async () => {
+  const source = await readFile(new URL('../assets/ai-assistant.js', import.meta.url), 'utf8');
+  assert(!source.includes('COHERE_API_KEY'));
+  assert(source.includes('Bearer '));
+  assert(source.includes(COHERE_API_URL));
+  assert(!source.includes('/api/ai/chat'));
+  assert(!source.includes('localStorage'));
+  assert(!source.includes('sessionStorage'));
 });
