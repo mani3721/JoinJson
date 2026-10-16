@@ -1256,7 +1256,59 @@ kbd {
   <p class="privacy-note">Conversion stays in this tab: no uploads or saved inputs. The YAML library loads from jsDelivr; your data is never sent there. Supports one YAML document with JSON-compatible values. Comments and formatting are not preserved; dates remain strings. Circular aliases, non-finite numbers, inputs over 1 MB, and excessive nesting or alias expansion are rejected.</p>
 </section>
 <ol class="steps" aria-label="Merge progress"><li id="step-1" aria-current="step"><span class="step-number">1</span>Add JSON A + B</li><li id="step-2"><span class="step-number">2</span>Merge</li><li id="step-3"><span class="step-number">3</span>Result</li></ol>
-<section aria-labelledby="inputs-heading"><div class="section-heading"><h2 id="inputs-heading"><span aria-hidden="true">1</span>Add your JSON</h2><div class="workspace-actions"><button id="example" class="link-button" type="button">Try an example</button><button id="swap" class="quiet-button" type="button" aria-label="Swap first and second JSON">Swap A ↔ B</button><button id="clear" class="quiet-button" type="button">Clear all</button></div></div><div id="inputs" class="input-grid"></div></section>
+<section aria-labelledby="inputs-heading"><div class="section-heading"><h2 id="inputs-heading"><span aria-hidden="true">1</span>Add your JSON</h2><div class="workspace-actions"><button id="example" class="link-button" type="button">Try an example</button><button id="swap" class="quiet-button" type="button" aria-label="Swap first and second JSON">Swap A ↔ B</button><button id="clear" class="quiet-button" type="button">Clear all</button></div></div><div id="inputs" class="input-grid"><article class="input-card" data-state="empty" aria-labelledby="first-heading">
+      <div class="card-heading"><h3 id="first-heading">First JSON <span class="muted">A</span></h3><span id="first-status" class="badge" data-state="empty" role="status" aria-live="polite">Empty</span></div>
+      <div class="segments" role="tablist" aria-label="First JSON input method">
+        <button id="first-tab-paste" type="button" role="tab" aria-selected="true" aria-controls="first-paste" data-method="paste">Paste</button>
+        <button id="first-tab-upload" type="button" role="tab" aria-selected="false" aria-controls="first-upload" tabindex="-1" data-method="upload">Upload</button>
+        <button id="first-tab-url" type="button" role="tab" aria-selected="false" aria-controls="first-url-panel" tabindex="-1" data-method="url">From URL</button>
+      </div>
+      <div id="first-paste" class="method-panel" role="tabpanel" aria-labelledby="first-tab-paste">
+        <div class="editor"><div class="editor-top"><label class="editor-label" for="first">first.json</label><div class="icon-tools" role="group" aria-label="First JSON editor tools">
+          <button type="button" class="icon-button" data-action="find" title="Find" aria-label="Find in first JSON" aria-expanded="false" aria-controls="first-find-bar"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6"></circle><path d="m15 15 5 5"></path></svg></button>
+          <button type="button" class="icon-button" data-action="wrap" title="Wrap lines" aria-label="Wrap lines in first JSON" aria-pressed="false">↵</button>
+          <button type="button" class="icon-button" data-action="format" title="Format JSON" aria-label="Format first JSON">{ }</button>
+          <details class="help-popover"><summary aria-label="Editor keyboard help" title="Editor help">?</summary><p>Tab moves to the next control. Ctrl/Cmd+F opens Find in this editor. Escape closes Find. Ctrl/Cmd+Enter merges both inputs.</p></details>
+        </div></div>
+        <div id="first-find-bar" class="find-bar" hidden><label class="sr-only" for="first-find">Find text in first JSON</label><input id="first-find" type="search" placeholder="Find text…" autocomplete="off"><button type="button" data-action="next" class="icon-button" title="Next match" aria-label="Next match">↓</button><button type="button" data-action="close-find" class="icon-button" title="Close Find" aria-label="Close Find">×</button><span class="find-status" role="status"></span></div>
+        <div class="edit-body"><pre id="first-lines" class="line-numbers" aria-hidden="true">1</pre><textarea id="first" class="json-input" rows="10" wrap="off" placeholder='{"name": "Ana"}' spellcheck="false" autocomplete="off" autocapitalize="off" aria-describedby="first-status"></textarea></div></div>
+      </div>
+      <div id="first-upload" class="method-panel" role="tabpanel" aria-labelledby="first-tab-upload" hidden>
+        <input id="first-file" type="file" accept=".json,application/json" class="sr-only" tabindex="-1" aria-label="Upload first JSON file">
+        <button type="button" class="drop-zone" data-action="browse"><span class="drop-icon" aria-hidden="true">⇧</span><span>Drop a .json file here or click to browse</span><span class="muted">Up to 20 MB · stays in your browser</span></button>
+        <div id="first-file-info" class="file-info" hidden><div class="file-description"><strong></strong><span class="muted"></span></div><button type="button" class="icon-button" data-action="remove" aria-label="Remove first JSON file" title="Remove file">×</button></div>
+        <button type="button" class="link-button" data-action="edit-upload" hidden>Edit loaded JSON</button>
+      </div>
+      <div id="first-url-panel" class="method-panel" role="tabpanel" aria-labelledby="first-tab-url" hidden>
+        <label class="url-label" for="first-url">First JSON URL</label><div class="url-controls"><input id="first-url" type="url" placeholder="https://example.com/data.json" autocomplete="off" spellcheck="false" aria-describedby="first-url-help"><button type="button" data-action="load">Load</button><button type="button" data-action="cancel" hidden>Cancel</button></div>
+        <p id="first-url-help" class="url-help">Must be a public HTTPS link with CORS enabled, up to 20 MB</p><button type="button" class="link-button" data-action="edit-url" hidden>Edit loaded JSON</button>
+      </div><p id="first-import-status" class="import-status" role="status" aria-live="polite"></p></article><article class="input-card" data-state="empty" aria-labelledby="second-heading">
+      <div class="card-heading"><h3 id="second-heading">Second JSON <span class="muted">B</span></h3><span id="second-status" class="badge" data-state="empty" role="status" aria-live="polite">Empty</span></div>
+      <div class="segments" role="tablist" aria-label="Second JSON input method">
+        <button id="second-tab-paste" type="button" role="tab" aria-selected="true" aria-controls="second-paste" data-method="paste">Paste</button>
+        <button id="second-tab-upload" type="button" role="tab" aria-selected="false" aria-controls="second-upload" tabindex="-1" data-method="upload">Upload</button>
+        <button id="second-tab-url" type="button" role="tab" aria-selected="false" aria-controls="second-url-panel" tabindex="-1" data-method="url">From URL</button>
+      </div>
+      <div id="second-paste" class="method-panel" role="tabpanel" aria-labelledby="second-tab-paste">
+        <div class="editor"><div class="editor-top"><label class="editor-label" for="second">second.json</label><div class="icon-tools" role="group" aria-label="Second JSON editor tools">
+          <button type="button" class="icon-button" data-action="find" title="Find" aria-label="Find in second JSON" aria-expanded="false" aria-controls="second-find-bar"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6"></circle><path d="m15 15 5 5"></path></svg></button>
+          <button type="button" class="icon-button" data-action="wrap" title="Wrap lines" aria-label="Wrap lines in second JSON" aria-pressed="false">↵</button>
+          <button type="button" class="icon-button" data-action="format" title="Format JSON" aria-label="Format second JSON">{ }</button>
+          <details class="help-popover"><summary aria-label="Editor keyboard help" title="Editor help">?</summary><p>Tab moves to the next control. Ctrl/Cmd+F opens Find in this editor. Escape closes Find. Ctrl/Cmd+Enter merges both inputs.</p></details>
+        </div></div>
+        <div id="second-find-bar" class="find-bar" hidden><label class="sr-only" for="second-find">Find text in second JSON</label><input id="second-find" type="search" placeholder="Find text…" autocomplete="off"><button type="button" data-action="next" class="icon-button" title="Next match" aria-label="Next match">↓</button><button type="button" data-action="close-find" class="icon-button" title="Close Find" aria-label="Close Find">×</button><span class="find-status" role="status"></span></div>
+        <div class="edit-body"><pre id="second-lines" class="line-numbers" aria-hidden="true">1</pre><textarea id="second" class="json-input" rows="10" wrap="off" placeholder='{"name": "Ana"}' spellcheck="false" autocomplete="off" autocapitalize="off" aria-describedby="second-status"></textarea></div></div>
+      </div>
+      <div id="second-upload" class="method-panel" role="tabpanel" aria-labelledby="second-tab-upload" hidden>
+        <input id="second-file" type="file" accept=".json,application/json" class="sr-only" tabindex="-1" aria-label="Upload second JSON file">
+        <button type="button" class="drop-zone" data-action="browse"><span class="drop-icon" aria-hidden="true">⇧</span><span>Drop a .json file here or click to browse</span><span class="muted">Up to 20 MB · stays in your browser</span></button>
+        <div id="second-file-info" class="file-info" hidden><div class="file-description"><strong></strong><span class="muted"></span></div><button type="button" class="icon-button" data-action="remove" aria-label="Remove second JSON file" title="Remove file">×</button></div>
+        <button type="button" class="link-button" data-action="edit-upload" hidden>Edit loaded JSON</button>
+      </div>
+      <div id="second-url-panel" class="method-panel" role="tabpanel" aria-labelledby="second-tab-url" hidden>
+        <label class="url-label" for="second-url">Second JSON URL</label><div class="url-controls"><input id="second-url" type="url" placeholder="https://example.com/data.json" autocomplete="off" spellcheck="false" aria-describedby="second-url-help"><button type="button" data-action="load">Load</button><button type="button" data-action="cancel" hidden>Cancel</button></div>
+        <p id="second-url-help" class="url-help">Must be a public HTTPS link with CORS enabled, up to 20 MB</p><button type="button" class="link-button" data-action="edit-url" hidden>Edit loaded JSON</button>
+      </div><p id="second-import-status" class="import-status" role="status" aria-live="polite"></p></article></div></section>
 <section class="merge-section" aria-labelledby="merge-heading"><h2 id="merge-heading" class="merge-title"><span aria-hidden="true">2 · </span>Merge</h2><button id="merge" class="primary merge-button" type="button" disabled aria-describedby="merge-rule merge-reason">Merge JSON</button><p id="merge-rule" class="rule">If both have the same key, review conflicts below or keep the second JSON as the default winner.</p><p id="merge-reason" class="muted">Add valid JSON to both inputs to continue.</p><p class="shortcut"><kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>Enter</kbd> to merge</p><details class="advanced"><summary>Advanced options</summary><div class="options"><label class="check-label"><input id="deep" type="checkbox" checked>Deep merge nested objects</label><label class="array-option" for="arrays">Arrays<select id="arrays"><option value="replace">Replace with second</option><option value="concat">Concatenate both</option><option value="merge-id">Merge by ID</option></select></label><label id="array-id-wrap" class="array-id-option" for="array-key" hidden>ID field<input id="array-key" type="text" value="id" autocomplete="off" spellcheck="false"></label></div><p class="advanced-note">Objects combine their keys. Other value types use the selected conflict choice. Arrays can be replaced, concatenated, or joined by a shared identifier.</p></details></section>
 <section id="result" class="result-panel" aria-labelledby="result-heading"><div class="result-heading"><h2 id="result-heading" class="result-title" tabindex="-1"><span aria-hidden="true">3</span>Result</h2><div class="result-actions"><button id="copy" type="button" disabled>Copy</button><button id="download" type="button" disabled>Download .json</button><button id="format-result" type="button" disabled>Format</button></div></div><div id="result-empty" class="result-empty">Your merged JSON will appear here.</div><div id="result-output" class="result-output" role="region" aria-label="Merged JSON with line numbers" tabindex="0" hidden><ol id="result-lines" class="result-lines"></ol></div><p id="preview-notice" class="result-notice" hidden></p><div id="result-legend" class="result-legend" hidden><span class="legend-key"><span class="swatch" aria-hidden="true"></span>Added key</span><span class="legend-key"><span class="swatch changed" aria-hidden="true"></span>Overridden value</span><span id="change-count"></span></div><section id="conflict-panel" class="conflict-panel" aria-labelledby="conflict-heading" hidden><h3 id="conflict-heading">Conflict resolution</h3><p class="muted">Choose which value wins for each conflicting path. The result updates automatically.</p><div id="conflict-list" class="conflict-list"></div></section><section id="diff-panel" class="diff-panel" aria-labelledby="diff-heading" hidden><h3 id="diff-heading">Live visual diff</h3><p id="diff-summary" class="muted"></p><div id="diff-list" class="diff-list" role="list"></div></section></section>
 <div class="result-actions merger-converter-actions"><button id="merge-typescript" type="button" disabled>Convert Output to TypeScript</button><button id="merge-python" type="button" disabled>Convert Output to Python</button><button id="merge-yaml" type="button" disabled>Convert Output to YAML</button><button id="merge-diff" type="button" disabled>Compare merged JSON</button></div>
@@ -1350,11 +1402,11 @@ Second JSON:
   const searchIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6"></circle><path d="m15 15 5 5"></path></svg>';
   ["First", "Second"].forEach((name, index) => {
     const id = index === 0 ? "first" : "second";
-    const card = document.createElement("article");
+    const card = $(id + "-heading")?.closest(".input-card") || document.createElement("article");
     card.className = "input-card";
     card.dataset.state = "empty";
     card.setAttribute("aria-labelledby", id + "-heading");
-    card.innerHTML = `
+    if (!card.hasChildNodes()) card.innerHTML = `
       <div class="card-heading"><h3 id="${id}-heading">${name} JSON <span class="muted">${index ? "B" : "A"}</span></h3><span id="${id}-status" class="badge" data-state="empty" role="status" aria-live="polite">Empty</span></div>
       <div class="segments" role="tablist" aria-label="${name} JSON input method">
         <button id="${id}-tab-paste" type="button" role="tab" aria-selected="true" aria-controls="${id}-paste" data-method="paste">Paste</button>
@@ -1381,7 +1433,7 @@ Second JSON:
         <label class="url-label" for="${id}-url">${name} JSON URL</label><div class="url-controls"><input id="${id}-url" type="url" placeholder="https://example.com/data.json" autocomplete="off" spellcheck="false" aria-describedby="${id}-url-help"><button type="button" data-action="load">Load</button><button type="button" data-action="cancel" hidden>Cancel</button></div>
         <p id="${id}-url-help" class="url-help">Must be a public HTTPS link with CORS enabled, up to 20 MB</p><button type="button" class="link-button" data-action="edit-url" hidden>Edit loaded JSON</button>
       </div><p id="${id}-import-status" class="import-status" role="status" aria-live="polite"></p>`;
-    $("inputs").append(card);
+    if (!card.isConnected) $("inputs").append(card);
     const state = { id, card, editor: $(id), value: void 0, valid: false, method: "paste", revision: 0, controller: null, timer: null, file: null };
     states.push(state);
     const action = (name2) => card.querySelector('[data-action="' + name2 + '"]');

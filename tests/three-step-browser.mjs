@@ -35,7 +35,7 @@ try {
       const layout = await evaluate(`(() => {
         ['first','second'].forEach(id => document.getElementById(id+'-tab-${mode}').click());
         return { overflow:document.documentElement.scrollWidth > innerWidth,
-          panels:[...document.querySelectorAll('.input-card')].map(c=>[...c.querySelectorAll('.method-panel')].filter(p=>getComputedStyle(p).display!=='none').length),
+          panels:[...document.querySelectorAll('#inputs .input-card')].map(c=>[...c.querySelectorAll('.method-panel')].filter(p=>getComputedStyle(p).display!=='none').length),
           buttons:[...document.querySelectorAll('button')].filter(b=>b.getClientRects().length).every(b=>b.getBoundingClientRect().height>=44) };
       })()`);
       assert.equal(layout.overflow, false, width + ' ' + mode + ' horizontal overflow');

@@ -25,7 +25,7 @@ const security = headers.split('\n').filter(line => /^  [A-Z][^:]+:/.test(line))
 config.headers = [
   { source: '/(.*)', headers: security.filter(item => item.key !== 'Cache-Control') },
   { source: '/assets/(.*)', headers: [{ key: 'Cache-Control', value: 'public, max-age=3600, must-revalidate' }] },
-  { source: '/favicon.svg', headers: [{ key: 'Cache-Control', value: 'public, max-age=86400' }] }
+  { source: '/favicon.svg', headers: [{ key: 'Cache-Control', value: 'public, max-age=2592000' }] }
 ];
 await writeFile(new URL('vercel.json', root), JSON.stringify(config, null, 2) + '\n');
 console.log(`Synchronized ${hashes.size} inline script hashes for source, production, and Vercel.`);

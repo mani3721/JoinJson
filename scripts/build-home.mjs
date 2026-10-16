@@ -7,6 +7,17 @@ import { gzipSync, brotliCompressSync } from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
+// These small, first-party styles are required before first paint. Embed them in
+// document order, rather than deferring CSS and risking an unstyled layout shift.
+export async function inlineHomeStyles(source) {
+  let output = source;
+  for (const match of source.matchAll(/<link rel="stylesheet" href="(\/assets\/[\w-]+\.css)">/g)) {
+    const css = await readFile(join(root, match[1]), 'utf8');
+    const result = await transform(css, { loader: 'css', minify: true, target: 'es2020' });
+    output = output.replace(match[0], () => `<style data-source="${match[1]}">${result.code.trim()}</style>`);
+  }
+  return output;
+}
 export async function minifyHome(source) {
   let output = source;
   for (const match of [...source.matchAll(/<style([^>]*)>([\s\S]*?)<\/style>/g)]) {
@@ -29,7 +40,7 @@ export function sizes(source) {
 export async function buildHome(outputDirectory) {
   if (outputDirectory instanceof URL) outputDirectory = fileURLToPath(outputDirectory);
   const readable = await readFile(join(root, 'index.html'), 'utf8');
-  const minified = await minifyHome(readable);
+  const minified = await minifyHome(await inlineHomeStyles(readable));
   await mkdir(outputDirectory, { recursive: true });
   await writeFile(join(outputDirectory, 'index.html'), minified);
   return { readable: sizes(readable), minified: sizes(minified) };

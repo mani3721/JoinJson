@@ -63,7 +63,10 @@ test('deep merge, array policies, conflict choices, live diff and shallow option
   assert.deepEqual(JSON.parse(s.output()).tags, [1, 2]);
   s.get('arrays').value = 'merge-id'; s.get('arrays').dispatchEvent(new s.win.Event('change', { bubbles: true }));
   s.set('first', JSON.stringify({ users: [{ id: 1, name: 'Ana', role: 'old' }] }));
-  s.set('second', JSON.stringify({ users: [{ id: 1, role: 'new' }, { id: 2, name: 'Bea' }] })); await wait(260);
+  s.set('second', JSON.stringify({ users: [{ id: 1, role: 'new' }, { id: 2, name: 'Bea' }] }));
+  // Input validation and live rendering each debounce; wait for the result, not
+  // a fixed delay shorter than their combined duration.
+  for (let i = 0; i < 100 && !s.get('result-lines').textContent; i++) await wait(20);
   assert.deepEqual(JSON.parse(s.output()).users, [{ id: 1, name: 'Ana', role: 'new' }, { id: 2, name: 'Bea' }]);
   s.get('deep').checked = false; s.get('deep').dispatchEvent(new s.win.Event('change', { bubbles: true })); await wait(220);
   assert.deepEqual(JSON.parse(s.output()).users, [{ id: 1, role: 'new' }, { id: 2, name: 'Bea' }]);

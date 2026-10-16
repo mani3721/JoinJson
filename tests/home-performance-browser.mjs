@@ -42,22 +42,29 @@ try {
   await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
   await send('Emulation.setCPUThrottlingRate', { rate: 4 });
   await send('Page.addScriptToEvaluateOnNewDocument', { source: `
-    window.perfResults = { lcp: 0, lcpElement: '', cls: 0, longTasks: [] };
+    window.perfResults = { lcp: 0, lcpElement: '', cls: 0, shifts: [], longTasks: [] };
     new PerformanceObserver(list => { for (const e of list.getEntries()) {
       perfResults.lcp = e.startTime; perfResults.lcpElement = e.element?.id || e.element?.tagName;
     }}).observe({type:'largest-contentful-paint', buffered:true});
-    new PerformanceObserver(list => { for (const e of list.getEntries()) if (!e.hadRecentInput) perfResults.cls += e.value; }).observe({type:'layout-shift', buffered:true});
+    new PerformanceObserver(list => { for (const e of list.getEntries()) if (!e.hadRecentInput) {
+      perfResults.cls += e.value;
+      perfResults.shifts.push({value:e.value, elements:e.sources.map(s=>s.node?.id || s.node?.className || s.node?.tagName)});
+    }}).observe({type:'layout-shift', buffered:true});
     new PerformanceObserver(list => { for (const e of list.getEntries()) perfResults.longTasks.push(e.duration); }).observe({type:'longtask', buffered:true});
   ` });
+  if (process.env.THROTTLE_NETWORK) await send('Network.emulateNetworkConditions', {
+    offline: false, latency: 150, downloadThroughput: 200000, uploadThroughput: 93750
+  });
   const samples = [];
   for (let run = 0; run < 3; run++) {
     await send('Page.navigate', { url: 'http://localhost:8793/' });
-    await wait(2400);
+    await wait(process.env.THROTTLE_NETWORK ? 7000 : 2400);
     samples.push(await evaluate(`(() => {
       const nav=performance.getEntriesByType('navigation')[0];
       const nodes=[...document.querySelectorAll('body *')];
       return {...perfResults, fcp:performance.getEntriesByName('first-contentful-paint')[0]?.startTime,
-        ttfb:nav.responseStart, renderDelay:perfResults.lcp-nav.responseEnd,
+        ttfb:nav.responseStart, documentDownload:nav.responseEnd-nav.responseStart,
+        lcpAfterResponse:Math.max(0,perfResults.lcp-nav.responseEnd),
         elements:document.querySelectorAll('*').length,
         maxDepth:Math.max(...nodes.map(n=>{let depth=0;while(n.parentElement){depth++;n=n.parentElement;}return depth;})),
         blocking:perfResults.longTasks.reduce((n,d)=>n+Math.max(0,d-50),0),
@@ -72,7 +79,8 @@ try {
     return {guide:heading.height>0 && heading.top<innerHeight, overflow:document.documentElement.scrollWidth>innerWidth};
   })()`);
   assert.equal(visible.guide, true); assert.equal(visible.overflow, false);
-  const report = { environment: 'Local Chrome, cold cache, 390x844, 4x CPU slowdown; no network throttling', samples };
+  if (!process.env.PERF_BASELINE) for (const sample of samples) assert.ok(sample.cls < 0.1, 'startup CLS must stay below 0.1: ' + JSON.stringify(sample.shifts));
+  const report = { environment: 'Local Chrome, cold cache, 390x844, 4x CPU slowdown; ' + (process.env.THROTTLE_NETWORK ? '150ms latency, 1.6Mbps download' : 'no network throttling'), samples };
   if (process.env.PERF_REPORT) await writeFile(process.env.PERF_REPORT, JSON.stringify(report, null, 2) + '\n');
   console.log(JSON.stringify(report, null, 2));
 } finally {

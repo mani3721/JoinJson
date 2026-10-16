@@ -1,13 +1,42 @@
 /* Standalone converter uses the exact shared homepage editor cards and tokens. */
-#curl-tool .edit-body { height:360px; }
-#curl-tool .json-input { width:100%; height:100%; resize:vertical; }
-#curl-tool .zod-actions { margin-top:14px; }
-#curl-tool .badge { white-space:normal; }
-#curl-tool .badge[data-state=error] { color:var(--bad); background:var(--bad-bg); }
-#curl-tool .global-status { margin-bottom:0; }
-#curl-tool [aria-invalid=true] { outline:2px solid var(--bad); outline-offset:-2px; }
-#curl-tool .card-heading label { display:flex; gap:8px; align-items:center; flex-wrap:wrap; font-size:13px; }
-@media (max-width:700px) {
-  #curl-tool .edit-body { height:300px; }
-  #curl-tool .result-actions button { flex-basis:100%; }
+ #curl-tool .edit-body {
+     height:360px;
 }
+ #curl-tool .json-input {
+     width:100%;
+     height:100%;
+     resize:vertical;
+}
+ #curl-tool .zod-actions {
+     margin-top:14px;
+}
+ #curl-tool .badge {
+     white-space:normal;
+}
+ #curl-tool .badge[data-state=error] {
+     color:var(--bad);
+     background:var(--bad-bg);
+}
+ #curl-tool .global-status {
+     margin-bottom:0;
+}
+ #curl-tool [aria-invalid=true] {
+     outline:2px solid var(--bad);
+     outline-offset:-2px;
+}
+ #curl-tool .card-heading label {
+     display:flex;
+     gap:8px;
+     align-items:center;
+     flex-wrap:wrap;
+     font-size:13px;
+}
+ @media (max-width:700px) {
+     #curl-tool .edit-body {
+         height:300px;
+    }
+     #curl-tool .result-actions button {
+         flex-basis:100%;
+    }
+}
+ 

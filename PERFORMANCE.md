@@ -1,5 +1,77 @@
 # Homepage rendering performance
 
+## Current fix: startup CLS and critical stylesheet requests
+
+The supplied report identifies `.merge-section` with CLS 0.488. The input
+container was empty in the response, and the inline controller created both input
+cards only after the browser could paint. On a streamed/throttled connection this
+pushed the Merge and Result sections down. Unthrottled local runs hid the problem.
+
+Changes:
+- Render both complete input cards in `index.html` before JavaScript. The existing
+  controller reuses those nodes and preserves early typed input. All IDs, controls,
+  validation, merge rules, advertisements and consent behavior remain unchanged.
+- In production, inline and minify the six local homepage stylesheets in their
+  original cascade order. The generated tool-route pages inherit these styles.
+  This removes six render-blocking CSS requests without a late style swap, a
+  flash of unstyled content, or changing the final design. Source files stay
+  separate and readable. Tradeoff: styles travel with the HTML rather than being
+  cached independently on these routes.
+- Cache the existing, unversioned favicon for 30 days instead of one day in both
+  hosting configurations and the security-header generator. Do not mark this
+  unversioned asset immutable; when changing it, change its URL to invalidate
+  existing browser caches.
+- Add pre-JavaScript markup, hydration, production CSS-order and cache tests.
+  Extend browser diagnostics with shift sources, optional network throttling and
+  a CLS <0.1 assertion. Scope the merger browser test to its own input cards.
+  Fix a pre-existing unit-test timing issue: validation plus live-render debounce
+  exceeded its fixed 260ms wait; wait for output instead. No tool timing changed.
+
+Measured in isolated local Chrome at 390×844, cold cache, 4× CPU slowdown,
+150ms emulated latency and 1.6Mbps download (three samples per version):
+
+| Metric | Previous production-style HTML | Updated production HTML |
+| --- | --- | --- |
+| CLS | 0 / 0.499 / 0.499 | 0 / 0 / 0 |
+| LCP | 1012 / 908 / 904ms | 488 / 476 / 524ms |
+| Render-blocking external CSS requests | 6 | 0 |
+
+The comparison uses minified previous committed homepage HTML and the new build,
+with the same current local assets. Measurements are diagnostics, not Lighthouse
+scores or field Core Web Vitals. The local Python server does not emulate CDN
+compression or production caching. Different runs were not concurrent. Actual
+production gains are **UNVERIFIED** until deployment and a clean-browser audit.
+
+Browser regression checks passed at 320, 375, 768 and 1440px, covering all three
+input modes, keyboard merge, real background-worker execution, advertisement
+visibility, reserved ad height and control clearance. Existing local stylesheet
+edits were preserved.
+
+Validation: production build passed; 40 focused tests passed; the built-site SEO
+audit passed for all 16 pages. The full `npm test` chain stops at the existing
+advertising test that expects zero external script elements (there are 19,
+including local tool scripts and existing analytics). Ad behavior was not changed.
+The remaining suites after that stop were not run through the full chain.
+
+The reported `chrome-extension://` scripts belong to an installed extension, not
+this site's payload. Do not modify site logic to address their minification.
+Repeat Lighthouse in a fresh profile with extensions disabled. The new Lighthouse
+score, live cache headers, deployed CLS and real-user INP are **UNVERIFIED**.
+
+Reproduce with Node 20.6+:
+
+```sh
+npm run build
+npm run test:audit
+SITE_DIR=public THROTTLE_NETWORK=1 PERF_REPORT=/tmp/joinjson-performance.json npm run test:performance
+SITE_DIR=public node tests/three-step-browser.mjs
+```
+
+Set `PERF_BASELINE=1` only when diagnosing an older build to report its CLS without
+failing the new threshold assertion.
+
+## Historical measurements (prior site version; not current results)
+
 ## Diagnosis
 
 The reported 241 elements, depth 12 and maximum 14 children are a modest DOM, not evidence of excessive DOM size. The supplied report's 2,010 ms element render delay and 3,468 ms of unattributed main-thread work need a deployed Chrome/Lighthouse trace to establish their full cause. Local measurements cannot identify that production work or guarantee a Lighthouse score.
