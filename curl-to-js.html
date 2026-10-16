@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cURL to Fetch and Axios Converter | JoinJson</title>
+<meta name="description" content="Convert cURL commands to Fetch or Axios JavaScript in your browser. Paste a command, review the generated code, then copy or download it.">
+<link rel="canonical" href="https://www.joinjson.com/curl-to-js">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="JoinJson">
+<meta property="og:title" content="cURL to Fetch and Axios Converter | JoinJson">
+<meta property="og:description" content="Convert cURL commands to Fetch or Axios JavaScript in your browser. Paste a command, review the generated code, then copy or download it.">
+<meta property="og:url" content="https://www.joinjson.com/curl-to-js">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="cURL to Fetch and Axios Converter | JoinJson">
+<meta name="twitter:description" content="Convert cURL commands to Fetch or Axios JavaScript in your browser. Paste a command, review the generated code, then copy or download it.">
+<meta name="theme-color" content="#faf8f5">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/converter-page.css">
+<link rel="stylesheet" href="/assets/site-layout.css">
+<link rel="stylesheet" href="/assets/home-theme.css">
+<link rel="stylesheet" href="/assets/json-to-zod.css">
+<link rel="stylesheet" href="/assets/curl-to-js.css">
+<script src="/assets/theme.js" defer></script>
+<script src="/assets/json-to-zod-ui.js" defer></script>
+<script src="/assets/curl-to-js.js" defer></script>
+<script src="/assets/curl-to-js-ui.js" defer></script>
+<link rel="stylesheet" href="/assets/header.css">
+<script src="/assets/header.js" defer></script>
+<meta property="og:image" content="https://www.joinjson.com/assets/social-card.svg">
+<meta name="twitter:image" content="https://www.joinjson.com/assets/social-card.svg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="JoinJson — JSON tools and guides in your browser">
+<meta name="twitter:image:alt" content="JoinJson — JSON tools and guides in your browser">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header shared-header join-header" data-flat-tools="false">
+  <div class="header-inner">
+    <a class="brand" href="/" aria-label="JoinJson home"><img src="/favicon.svg" width="32" height="32" alt=""><span>JoinJson</span></a>
+    <button class="nav-control mobile-menu" id="site-menu-toggle" type="button" aria-expanded="false" aria-controls="site-navigation">Menu <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    <div class="nav-shell" id="site-navigation">
+      <div class="sheet-heading"><span id="sheet-title">Navigation</span><button class="nav-control" id="site-menu-close" type="button">Close <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+      <nav class="primary-nav" aria-label="Primary">
+        <div class="nav-disclosure" id="tool-menu">
+          <button class="nav-control disclosure-trigger" id="tools-trigger" type="button" aria-expanded="false" aria-controls="tool-panel">Tools <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m7 10 5 5 5-5"/></svg></button>
+          <span id="tool-current" class="layout-status">JSON Merger</span>
+          <div class="nav-panel tools-panel" id="tool-panel" hidden>
+<section class="nav-group"><h2>Merge and compare</h2><ul><li><a class="nav-tool" href="/" data-tool="merge"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 5h6v6H4zM14 13h6v6h-6zM14 5h6M17 2v6M4 16h6"/></svg><span class="nav-copy"><span class="nav-title">JSON Merger</span><span class="nav-description">Combine files, keep every record</span></span></a></li><li><a class="nav-tool" href="/json-diff" data-tool="json-diff"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4h6v16H4zM14 4h6v16h-6zM6 8h2M16 8h2M16 12h2"/></svg><span class="nav-copy"><span class="nav-title">JSON Diff and Compare</span><span class="nav-description">See every change side by side</span></span></a></li></ul></section>
+<section class="nav-group"><h2>Convert</h2><ul><li><a class="nav-tool" href="/json-to-yaml" data-tool="json-to-yaml"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 8h16M16 4l4 4-4 4M20 16H4M8 12l-4 4 4 4"/></svg><span class="nav-copy"><span class="nav-title">JSON to YAML</span><span class="nav-description">Convert YAML and JSON both ways</span></span></a></li></ul></section>
+<section class="nav-group"><h2>Generate code</h2><ul><li><a class="nav-tool" href="/json-to-typescript" data-tool="json-to-typescript"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m8 5-6 7 6 7M16 5l6 7-6 7M14 3l-4 18"/></svg><span class="nav-copy"><span class="nav-title">JSON to TypeScript</span><span class="nav-description">Create typed interfaces from JSON</span></span></a></li><li><a class="nav-tool" href="/json-to-python" data-tool="json-to-python"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 4H5v16h3M16 4h3v16h-3M10 8h4v8h-4z"/></svg><span class="nav-copy"><span class="nav-title">JSON to Pydantic</span><span class="nav-description">Build validated Python models</span></span></a></li><li><a class="nav-tool" href="/json-to-zod" data-tool="json-to-zod"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 3 8 4v5c0 5-8 9-8 9s-8-4-8-9V7zM8 12l3 3 5-6"/></svg><span class="nav-copy"><span class="nav-title">JSON to Zod</span><span class="nav-description">Generate runtime validation schemas</span></span></a></li></ul></section>
+          </div>
+        </div>
+        <div class="nav-disclosure" id="guides-disclosure">
+          <button class="nav-control disclosure-trigger" id="guides-trigger" type="button" aria-expanded="false" aria-controls="guides-panel">Guides <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m7 10 5 5 5-5"/></svg></button>
+          <div class="nav-panel guides-panel" id="guides-panel" hidden><ul>
+            <li><a href="/merge-json-files-python/">Merge JSON files in Python</a></li>
+            <li><a href="/merge-json-arrays-by-id/">Merge JSON arrays by ID</a></li>
+            <li><a href="/deep-merge-vs-shallow-merge-json/">Deep vs shallow merge</a></li>
+          </ul></div>
+        </div>
+      </nav>
+      <div class="theme-control">
+        <button type="button" id="theme-toggle" class="nav-control theme-toggle" aria-label="System theme; switch to light mode" title="System theme; switch to light mode"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 3h8M12 3v2M5 6l2 2M19 6l-2 2M3 12h2M19 12h2M5 18l2-2M19 18l-2-2M12 19v2M8 21h8M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0"/></svg><span class="theme-toggle-label layout-status">System</span></button>
+        <span class="theme-tooltip" role="tooltip" id="theme-tooltip">System theme; switch to light mode</span>
+      </div>
+    </div>
+  </div>
+</header>
+<main id="main">
+<section id="curl-tool" class="tool-section" aria-labelledby="curl-title">
+  <div class="hero"><div class="eyebrow">One command. Modern JavaScript.</div><h1 id="curl-title">cURL to <span>Fetch &amp; Axios</span></h1><p>Convert a cURL request into JavaScript. Everything stays in your browser.</p></div>
+  <div class="section-heading"><h2>cURL to JavaScript Converter</h2><div class="workspace-actions"><button id="curl-example" class="link-button" type="button">Try an example</button><button id="curl-clear" class="quiet-button" type="button">Clear</button></div></div>
+  <div class="input-grid">
+    <article class="input-card" aria-labelledby="curl-input-heading">
+      <div class="card-heading"><h3 id="curl-input-heading">cURL Command Input</h3></div>
+      <div class="editor"><div class="editor-top"><label class="editor-label" for="curl-input">request.sh</label></div><div class="edit-body"><textarea id="curl-input" class="json-input" spellcheck="false" autocomplete="off" autocapitalize="off" aria-describedby="curl-input-status" placeholder="Paste cURL command here (e.g., curl -X POST https://api.example.com/data -H 'Content-Type: application/json' -d '{...}')"></textarea></div></div>
+      <p id="curl-input-status" class="badge" data-state="empty" role="status" aria-live="polite">Paste one cURL command to generate JavaScript.</p>
+    </article>
+    <article class="input-card" aria-labelledby="curl-output-heading">
+      <div class="card-heading"><h3 id="curl-output-heading">Generated Code Output</h3><label for="curl-target">Target <select id="curl-target"><option value="fetch">Fetch (async/await)</option><option value="axios">Axios</option></select></label></div>
+      <div class="editor"><div class="editor-top"><label class="editor-label" for="curl-output">request.js</label></div><div class="edit-body"><textarea id="curl-output" class="json-input" readonly spellcheck="false" placeholder="JavaScript code will appear here..."></textarea></div></div>
+      <div class="result-actions zod-actions"><button id="curl-copy" type="button" disabled>Copy Code</button><button id="curl-download" type="button" disabled>Download .js File</button><button id="curl-extract" type="button" disabled>Extract JSON to Merger</button></div>
+      <p id="curl-action-status" class="global-status" role="status" aria-live="polite"></p>
+    </article>
+  </div>
+  <p class="privacy-note">No requests are executed and no API keys are uploaded. Inputs remain in memory unless you explicitly choose Extract JSON to Merger: that stores only the JSON body locally for a one-time transfer, removed when the merger opens. Avoid sharing snippets containing secrets.</p>
+</section>
+<section class="editorial" aria-labelledby="curl-help"><h2 id="curl-help">Convert cURL into Fetch or Axios JavaScript</h2><p>Paste one cURL command copied from your terminal or browser developer tools. Choose Fetch for native async/await JavaScript, or Axios for a project that already installs Axios. Copy the result or download a JavaScript file.</p><h3>Supported cURL options</h3><p>Supports HTTP(S) URLs, quoted strings, line continuations, -X/--request, -H/--header, -d/--data, --data-raw, --data-binary, --user, and --get. Repeated data flags are joined with an ampersand as in cURL. Literal bodies are preserved without rewriting JSON.</p><h3>Browser and shell limitations</h3><p>Shell expressions, scripts, file uploads and unsupported flags are rejected instead of executed. Basic Auth accepts explicit ASCII username:password credentials. Browser CORS policies and forbidden headers still apply. Fetch cannot send a GET or HEAD body. JSON extraction is available only for a valid JSON request body. Generated code does not run automatically.</p><p><a href="/">JSON Merger</a> · <a href="/json-to-zod">JSON to Zod</a> · <a href="/json-to-typescript">JSON to TypeScript</a> · <a href="/json-to-python">JSON to Python</a> · <a href="/json-to-yaml">JSON to YAML</a></p></section>
+</main>
+<footer class="site-footer shared-footer"><span>© JoinJson · Built for your browser</span><nav aria-label="Site information"><a href="/">Home</a><a href="/about/">About US</a><a href="/contact/">Contact US</a><a href="/privacy/">Privacy Policy</a><a href="/terms/">Terms of use</a><a href="/disclaimer/">Disclaimer</a></nav></footer>
+</body>
+</html>

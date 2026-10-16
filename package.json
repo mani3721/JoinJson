@@ -7,6 +7,9 @@
     "test:editors": "node --test tests/codemirror.test.mjs",
     "test:ai": "node --test tests/ai-assistant.test.mjs",
     "start": "node --env-file=.env server/ai-server.mjs",
+    "test:python": "node --test tests/json-to-python.test.mjs tests/json-to-python-editors.test.mjs tests/tool-routes.test.mjs",
+    "test:typescript": "node --test tests/json-to-typescript.test.mjs tests/json-to-typescript-editors.test.mjs tests/tool-menu.test.mjs tests/tool-routes.test.mjs",
+    "test:zod": "node --test tests/json-to-zod.test.mjs tests/json-to-zod-editors.test.mjs",
     "test:urls": "node --test tests/json-url.test.mjs",
     "test:flow": "node --test tests/three-step.test.mjs",
     "test:ads": "node --test tests/adsense.test.mjs",
@@ -14,17 +17,27 @@
     "audit:headers": "node scripts/sync-security.mjs",
     "test:audit": "node --test tests/home-audit.test.mjs tests/home-performance.test.mjs tests/security.test.mjs",
     "test:performance": "node tests/home-performance-browser.mjs",
-    "test": "npm run test:editors && npm run test:ai && npm run test:urls && npm run test:flow && npm run test:ads && npm run test:audit"
+    "test": "npm run test:editors && npm run test:ai && npm run test:urls && npm run test:flow && npm run test:ads && npm run test:audit && npm run test:zod && npm run test:typescript && npm run test:python && npm run test:yaml && npm run test:diff",
+    "test:yaml": "node --test tests/json-to-yaml.test.mjs tests/json-to-yaml-editors.test.mjs tests/tool-menu.test.mjs tests/tool-routes.test.mjs",
+    "test:diff": "node --test tests/json-diff.test.mjs tests/json-diff-editors.test.mjs tests/tool-routes.test.mjs tests/tool-menu.test.mjs",
+    "test:curl": "node --test tests/curl-to-js.test.mjs"
   },
   "dependencies": {
-    "@codemirror/state": "^6.5.0",
-    "@codemirror/view": "^6.36.0",
     "@codemirror/commands": "^6.8.0",
+    "@codemirror/lang-json": "^6.0.1",
     "@codemirror/language": "^6.11.0",
-    "@codemirror/search": "^6.5.0",
     "@codemirror/lint": "^6.8.0",
-    "@codemirror/lang-json": "^6.0.1"
+    "@codemirror/search": "^6.5.0",
+    "@codemirror/state": "^6.5.0",
+    "@codemirror/view": "^6.36.0"
   },
-  "devDependencies": { "esbuild": "^0.25.0", "jsdom": "^26.0.0" },
-  "engines": { "node": ">=20.6" }
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "js-yaml": "4.3.2",
+    "jsdom": "^26.0.0",
+    "jsondiffpatch": "0.7.6"
+  },
+  "engines": {
+    "node": ">=20.6"
+  }
 }

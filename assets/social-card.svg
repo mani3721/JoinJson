@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
+  <title id="title">JoinJson — JSON tools and guides</title>
+  <desc id="description">Free JSON tools and guides in your browser.</desc>
+  <rect width="1200" height="630" fill="#faf8f5"/>
+  <rect x="48" y="48" width="1104" height="534" rx="24" fill="#ffffff" stroke="#d7d9dd"/>
+  <text x="96" y="180" fill="#9b3c20" font-family="system-ui,sans-serif" font-size="52" font-weight="700">JoinJson</text>
+  <text x="96" y="300" fill="#242b35" font-family="system-ui,sans-serif" font-size="60" font-weight="700">JSON tools and guides</text>
+  <text x="96" y="390" fill="#586170" font-family="system-ui,sans-serif" font-size="34">Free. In your browser.</text>
+  <text x="96" y="500" fill="#586170" font-family="system-ui,sans-serif" font-size="28">www.joinjson.com</text>
+</svg>

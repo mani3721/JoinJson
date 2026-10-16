@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="google-site-verification" content="qMFGFaStXgAs2KAMK_W9EIARt2v16SJW6lTCyvHCAhE" />
+<meta name="msvalidate.01" content="3F8AA40E7B776E8B2E23D88CD887655A" />
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-NXESFTN9W5"></script>
 <script id="google-analytics">
@@ -13,12 +14,12 @@
 
   gtag('config', 'G-NXESFTN9W5');
 </script>
-<title>Merge JSON Files Online — Free &amp; Private | JoinJson</title>
-<meta name="description" content="Merge JSON files online: paste, upload, or load a URL. Combine nested objects, review highlighted changes, and download results privately in your browser.">
+<title>Merge JSON Files Online: See Every Change | JoinJson</title>
+<meta name="description" content="Merge JSON files online. Deep merge objects, join arrays by ID and see every change highlighted. Paste, upload or load a URL. Private in your browser.">
 <link rel="canonical" href="https://www.joinjson.com/">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<meta property="og:title" content="Merge JSON Files Online — Free &amp; Private | JoinJson">
-<meta property="og:description" content="Merge JSON files online: paste, upload, or load a URL. Combine nested objects, review highlighted changes, and download results privately in your browser.">
+<meta property="og:title" content="Merge JSON Files Online: See Every Change | JoinJson">
+<meta property="og:description" content="Merge JSON files online. Deep merge objects, join arrays by ID and see every change highlighted. Paste, upload or load a URL. Private in your browser.">
 <meta property="og:url" content="https://www.joinjson.com/">
 <meta property="og:type" content="website">
 
@@ -26,10 +27,10 @@
 <meta name="theme-color" content="#faf8f5">
 <meta property="og:site_name" content="JoinJson">
 <meta property="og:locale" content="en_US">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Merge JSON Files Online — Free &amp; Private | JoinJson">
-<meta name="twitter:description" content="Merge JSON files online: paste, upload, or load a URL. Combine nested objects, review highlighted changes, and download results privately in your browser.">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"JoinJson","url":"https://www.joinjson.com/","description":"Merge JSON files online: paste, upload, or load a URL. Combine nested objects, review highlighted changes, and download results privately in your browser.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript and a modern browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isAccessibleForFree":true}</script>
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Merge JSON Files Online: See Every Change | JoinJson">
+<meta name="twitter:description" content="Merge JSON files online. Deep merge objects, join arrays by ID and see every change highlighted. Paste, upload or load a URL. Private in your browser.">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"JoinJson","url":"https://www.joinjson.com/","description":"Merge JSON files online. Deep merge objects, join arrays by ID and see every change highlighted. Paste, upload or load a URL. Private in your browser.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","offers":{"@type":"Offer","price":0,"priceCurrency":"USD"},"isAccessibleForFree":true}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Are pasted or uploaded JSON files sent to a server?","acceptedAnswer":{"@type":"Answer","text":"No. Parsing, validation, merging, and result rendering run in your browser. Load from URL contacts the source host to obtain the document. Copy and Download export data only when you request them. See the Privacy Policy for hosting and advertising disclosures."}},{"@type":"Question","name":"What happens when both documents contain the same key?","acceptedAnswer":{"@type":"Answer","text":"The second JSON wins a conflicting value. With deep merge enabled, matching objects are combined recursively first. Keys unique to the first object remain, and keys unique to the second are added. Swap the inputs to reverse priority."}},{"@type":"Question","name":"Can I combine arrays without losing their existing items?","acceptedAnswer":{"@type":"Answer","text":"Yes. Select Concatenate both to append items, or Merge by ID to join array objects that share a field such as id. Replace with second keeps the updated array only. In shallow object mode, a conflicting nested array is handled with the selected array rule."}},{"@type":"Question","name":"Why does a JSON URL fail even when it opens in another tab?","acceptedAnswer":{"@type":"Answer","text":"A browser can display a page while still blocking another website from reading it. The source needs to permit CORS access, use HTTPS, return valid JSON, and stay within the 20 MB limit. Private endpoints requiring cookies are not supported. You can upload a downloaded .json file instead."}},{"@type":"Question","name":"Does a highlighted change mean the result is incorrect?","acceptedAnswer":{"@type":"Answer","text":"No. Colors explain differences from the first input: added keys and overridden values. They are not schema validation or an assessment of correctness. Review the changes against your intended update and run your project’s normal checks before using the output."}}]}</script>
 <!-- Google CMP placeholder: install your Google-certified consent platform here.
      No CMP is configured and no consent is assumed. Keep advertising disabled until reviewed. -->
@@ -1079,23 +1080,193 @@ kbd {
 <link rel="stylesheet" href="/assets/site-layout.css">
 <link rel="stylesheet" href="/assets/home-theme.css">
 <script src="/assets/theme.js" defer></script>
+<link rel="stylesheet" href="/assets/codemirror.css">
+<link rel="stylesheet" href="/assets/json-to-zod.css">
+<script src="/assets/json-error-helper.js" defer></script>
+<script src="/assets/editor-find.js" defer></script>
+<script src="/assets/json-to-zod.js" defer></script>
+<script src="/assets/json-to-zod-ui.js" defer></script>
+<script src="/assets/json-to-typescript.js" defer></script>
+<script src="/assets/json-to-typescript-ui.js" defer></script>
+<script src="/assets/json-to-python.js" defer></script>
+<script src="/assets/json-to-python-ui.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/js-yaml@4.3.2/dist/js-yaml.min.js" integrity="sha384-uwLg6oO8ZhFG2SuQfgmkMtosjtrFYlkPspa/cXS+b3D8GLRTHMDl/mTwqImdlKQO" crossorigin="anonymous" defer></script>
+<script src="/assets/json-to-yaml.js" defer></script>
+<script src="/assets/json-to-yaml-ui.js" defer></script>
+<link rel="stylesheet" href="/assets/json-diff.css">
+<script src="/assets/json-diff.js" defer></script>
+<script src="/assets/json-diff-ui.js" defer></script>
+<script src="/assets/editor-loader.js" defer></script>
+<script src="/assets/curl-merger-import.js" defer></script>
+<link rel="stylesheet" href="/assets/header.css">
+<script src="/assets/header.js" defer></script>
+<meta property="og:image" content="https://www.joinjson.com/assets/social-card.svg">
+<meta name="twitter:image" content="https://www.joinjson.com/assets/social-card.svg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="JoinJson — JSON tools and guides in your browser">
+<meta name="twitter:image:alt" content="JoinJson — JSON tools and guides in your browser">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"JoinJson","url":"https://www.joinjson.com/"}</script>
+<script src="/assets/seo.js" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<header class="site-header shared-header"><div class="header-inner"><a class="brand" href="/" aria-label="JoinJson home"><img src="/favicon.svg" width="32" height="32" alt=""><span>JoinJson</span></a><nav class="header-links" aria-label="Main"><details class="guide-dropdown"><summary>Guides</summary><div class="guide-menu"><a href="/merge-json-files-python/">Python guide</a><a href="/merge-json-arrays-by-id/">Join by ID</a><a href="/deep-merge-vs-shallow-merge-json/">Merge methods</a></div></details><a href="/privacy/">Privacy</a></nav><button type="button" id="theme-toggle" class="theme-toggle" aria-label="Dark mode" aria-pressed="false" title="Switch to dark mode"><svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14A8 8 0 0 1 10 4a8 8 0 1 0 10 10Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2"/></svg><span class="theme-toggle-label">Dark</span></button></div></header>
+<header class="site-header shared-header join-header" data-flat-tools="false">
+  <div class="header-inner">
+    <a class="brand" href="/" aria-label="JoinJson home"><img src="/favicon.svg" width="32" height="32" alt=""><span>JoinJson</span></a>
+    <button class="nav-control mobile-menu" id="site-menu-toggle" type="button" aria-expanded="false" aria-controls="site-navigation">Menu <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    <div class="nav-shell" id="site-navigation">
+      <div class="sheet-heading"><span id="sheet-title">Navigation</span><button class="nav-control" id="site-menu-close" type="button">Close <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+      <nav class="primary-nav" aria-label="Primary">
+        <div class="nav-disclosure" id="tool-menu">
+          <button class="nav-control disclosure-trigger" id="tools-trigger" type="button" aria-expanded="false" aria-controls="tool-panel">Tools <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m7 10 5 5 5-5"/></svg></button>
+          <span id="tool-current" class="layout-status">JSON Merger</span>
+          <div class="nav-panel tools-panel" id="tool-panel" hidden>
+<section class="nav-group"><h2>Merge and compare</h2><ul><li><a class="nav-tool" href="/" data-tool="merge"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 5h6v6H4zM14 13h6v6h-6zM14 5h6M17 2v6M4 16h6"/></svg><span class="nav-copy"><span class="nav-title">JSON Merger</span><span class="nav-description">Combine files, keep every record</span></span></a></li><li><a class="nav-tool" href="/json-diff" data-tool="json-diff"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4h6v16H4zM14 4h6v16h-6zM6 8h2M16 8h2M16 12h2"/></svg><span class="nav-copy"><span class="nav-title">JSON Diff and Compare</span><span class="nav-description">See every change side by side</span></span></a></li></ul></section>
+<section class="nav-group"><h2>Convert</h2><ul><li><a class="nav-tool" href="/json-to-yaml" data-tool="json-to-yaml"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 8h16M16 4l4 4-4 4M20 16H4M8 12l-4 4 4 4"/></svg><span class="nav-copy"><span class="nav-title">JSON to YAML</span><span class="nav-description">Convert YAML and JSON both ways</span></span></a></li></ul></section>
+<section class="nav-group"><h2>Generate code</h2><ul><li><a class="nav-tool" href="/json-to-typescript" data-tool="json-to-typescript"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m8 5-6 7 6 7M16 5l6 7-6 7M14 3l-4 18"/></svg><span class="nav-copy"><span class="nav-title">JSON to TypeScript</span><span class="nav-description">Create typed interfaces from JSON</span></span></a></li><li><a class="nav-tool" href="/json-to-python" data-tool="json-to-python"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 4H5v16h3M16 4h3v16h-3M10 8h4v8h-4z"/></svg><span class="nav-copy"><span class="nav-title">JSON to Pydantic</span><span class="nav-description">Build validated Python models</span></span></a></li><li><a class="nav-tool" href="/json-to-zod" data-tool="json-to-zod"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 3 8 4v5c0 5-8 9-8 9s-8-4-8-9V7zM8 12l3 3 5-6"/></svg><span class="nav-copy"><span class="nav-title">JSON to Zod</span><span class="nav-description">Generate runtime validation schemas</span></span></a></li></ul></section>
+          </div>
+        </div>
+        <div class="nav-disclosure" id="guides-disclosure">
+          <button class="nav-control disclosure-trigger" id="guides-trigger" type="button" aria-expanded="false" aria-controls="guides-panel">Guides <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m7 10 5 5 5-5"/></svg></button>
+          <div class="nav-panel guides-panel" id="guides-panel" hidden><ul>
+            <li><a href="/merge-json-files-python/">Merge JSON files in Python</a></li>
+            <li><a href="/merge-json-arrays-by-id/">Merge JSON arrays by ID</a></li>
+            <li><a href="/deep-merge-vs-shallow-merge-json/">Deep vs shallow merge</a></li>
+          </ul></div>
+        </div>
+      </nav>
+      <div class="theme-control">
+        <button type="button" id="theme-toggle" class="nav-control theme-toggle" aria-label="System theme; switch to light mode" title="System theme; switch to light mode"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 3h8M12 3v2M5 6l2 2M19 6l-2 2M3 12h2M19 12h2M5 18l2-2M19 18l-2-2M12 19v2M8 21h8M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0"/></svg><span class="theme-toggle-label layout-status">System</span></button>
+        <span class="theme-tooltip" role="tooltip" id="theme-tooltip">System theme; switch to light mode</span>
+      </div>
+    </div>
+  </div>
+</header>
 <main id="main">
-<section class="hero" aria-labelledby="page-title"><div class="eyebrow">Simple inputs. One clean result.</div><h1 id="page-title">Merge <span>{ JSON }</span> files into one</h1><p>Bring two JSON values together. Review exactly what changed.</p></section>
+
+<section class="hero" aria-labelledby="page-title"><div class="eyebrow">Simple inputs. One clean result.</div><h1 id="page-title">Merge <span><span aria-hidden="true">{ </span>JSON<span aria-hidden="true"> }</span></span> files into one</h1><p>Merge JSON files online. Review every highlighted change before you copy or download.</p></section>
+<section id="json-diff-tool" aria-labelledby="json-diff-title" hidden>
+  <div class="hero"><div class="eyebrow">Two documents. Every change.</div><div id="json-diff-title" role="heading" aria-level="1" tabindex="-1">JSON <span>Diff and Compare</span></div><p>Compare two JSON documents side by side. Your data stays in your browser.</p></div>
+  <div class="section-heading"><h2>Compare JSON documents</h2><div class="workspace-actions"><button id="diff-example" class="link-button" type="button">Try an example</button><button id="diff-clear" class="quiet-button" type="button">Clear</button></div></div>
+  <div class="input-grid">
+    <article id="diff-card-a" class="input-card" aria-labelledby="diff-heading-a">
+      <div class="card-heading"><h3 id="diff-heading-a">Original JSON</h3></div>
+      <div class="editor"><div class="editor-top"><label class="editor-label" for="diff-input-a">original.json</label></div><div class="edit-body"><textarea id="diff-input-a" class="json-input" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="Original JSON" aria-describedby="diff-status-a" placeholder="Paste original JSON here..."></textarea></div></div>
+      <p id="diff-status-a" class="badge" role="status" aria-live="polite" data-state="empty">Enter original JSON.</p>
+    </article>
+    <article id="diff-card-b" class="input-card" aria-labelledby="diff-heading-b">
+      <div class="card-heading"><h3 id="diff-heading-b">Modified JSON</h3></div>
+      <div class="editor"><div class="editor-top"><label class="editor-label" for="diff-input-b">modified.json</label></div><div class="edit-body"><textarea id="diff-input-b" class="json-input" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="Modified JSON" aria-describedby="diff-status-b" placeholder="Paste modified JSON here..."></textarea></div></div>
+      <p id="diff-status-b" class="badge" role="status" aria-live="polite" data-state="empty">Enter modified JSON.</p>
+    </article>
+  </div>
+  <div class="diff-controls"><button id="diff-compare" class="primary" type="button">Compare JSON</button><button id="diff-swap" type="button">Swap original and modified</button></div>
+  <p id="diff-action-status" class="global-status" role="status" aria-live="polite" aria-atomic="true"></p>
+  <section aria-labelledby="diff-results-title"><h2 id="diff-results-title">Comparison results</h2><p class="diff-legend">Changes are labeled Added, Deleted, or Modified, with their JSON pointer paths. Object key order is ignored.</p><div id="diff-output-container" class="diff-result-box"><p>Enter two JSON documents, then select Compare JSON.</p></div></section>
+  <p class="privacy-note">Comparison runs in this tab with no uploads or saved inputs. The comparison library loads from jsDelivr; your JSON is never sent there. Inputs are limited to 1 MB each.</p>
+</section>
+<section id="zod-tool" aria-labelledby="zod-title" hidden>
+  <div class="hero"><div class="eyebrow">Simple input. Type-safe output.</div><div id="zod-title" role="heading" aria-level="1" tabindex="-1">JSON to <span>Zod Schema</span></div><p>Generate a schema from your JSON sample. Everything stays in your browser.</p></div>
+  <div class="section-heading"><h2>JSON to Zod Schema Converter</h2><div class="workspace-actions"><button id="zod-example" class="link-button" type="button">Try an example</button><button id="zod-clear" class="quiet-button" type="button">Clear</button></div></div>
+  <div class="input-grid">
+    <article id="zod-input-card" class="input-card" aria-labelledby="zod-input-heading">
+      <div class="card-heading"><h3 id="zod-input-heading">Input JSON</h3></div>
+      <div class="editor"><div class="editor-top"><label class="editor-label" for="zod-input">input.json</label></div><div class="edit-body"><textarea id="zod-input" class="json-input" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="Input JSON for Zod schema" aria-describedby="zod-input-status" placeholder='{"name": "Ana", "active": true}'></textarea></div></div>
+      <p id="zod-input-status" class="badge" role="status" aria-live="polite" data-state="empty">Enter JSON to generate a schema.</p>
+    </article>
+    <article class="input-card" aria-labelledby="zod-output-heading">
+      <div class="card-heading"><h3 id="zod-output-heading">Generated Code Output</h3><span class="badge">TypeScript · Zod</span></div>
+      <div class="editor"><div class="editor-top"><label class="editor-label" for="zod-output">schema.ts</label></div><div class="edit-body"><textarea id="zod-output" class="json-input" readonly spellcheck="false" aria-label="Generated Zod schema" placeholder="Your Zod schema will appear here."></textarea></div></div>
+      <div class="result-actions zod-actions"><button id="zod-copy" type="button" disabled>Copy Code</button><button id="zod-download" type="button" disabled>Download .ts File</button><button id="zod-type" type="button" aria-pressed="false">Toggle TypeScript Type Export</button></div>
+      <p id="zod-action-status" class="global-status" role="status" aria-live="polite"></p>
+    </article>
+  </div>
+  <p class="privacy-note">No uploads, API calls, or saved inputs. Schemas infer types from the supplied sample, not your full data model. Empty arrays use z.unknown(); mixed arrays use a union.</p>
+</section>
+<section id="typescript-tool" aria-labelledby="typescript-title" hidden>
+  <div class="hero"><div class="eyebrow">Simple input. Type-safe output.</div><div id="typescript-title" role="heading" aria-level="1" tabindex="-1">JSON to <span>TypeScript</span></div><p>Generate interfaces or types from your JSON sample. Everything stays in your browser.</p></div>
+  <div class="section-heading"><h2>JSON to TypeScript Converter</h2><div class="workspace-actions"><button id="typescript-example" class="link-button" type="button">Try an example</button><button id="typescript-clear" class="quiet-button" type="button">Clear</button></div></div>
+  <div class="input-grid">
+    <article id="typescript-input-card" class="input-card" aria-labelledby="typescript-input-heading">
+      <div class="card-heading"><h3 id="typescript-input-heading">Input JSON</h3></div>
+      <div class="editor"><div class="editor-top"><label class="editor-label" for="typescript-input">input.json</label></div><div class="edit-body"><textarea id="typescript-input" class="json-input" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="Input JSON for TypeScript definitions" aria-describedby="typescript-input-status" placeholder='{"name": "Ana", "active": true}'></textarea></div></div>
+      <p id="typescript-input-status" class="badge" role="status" aria-live="polite" data-state="empty">Enter JSON to generate TypeScript.</p>
+    </article>
+    <article class="input-card" aria-labelledby="typescript-output-heading">
+      <div class="card-heading"><h3 id="typescript-output-heading">Generated Code Output</h3><span class="badge">TypeScript</span></div>
+      <div class="editor"><div class="editor-top"><label class="editor-label" for="typescript-output">types.ts</label></div><div class="edit-body"><textarea id="typescript-output" class="json-input" readonly spellcheck="false" aria-label="Generated TypeScript definitions" placeholder="Your TypeScript definitions will appear here."></textarea></div></div>
+      <div class="typescript-options" role="group" aria-label="TypeScript generation options">
+        <label class="array-option" for="typescript-mode">Mode<select id="typescript-mode"><option value="interface">Interface</option><option value="type">Type</option></select></label>
+        <label class="array-option" for="typescript-root">Root Type Name<input id="typescript-root" type="text" value="Root" autocomplete="off" spellcheck="false" aria-describedby="typescript-options-status"></label>
+        <label class="check-label"><input id="typescript-optional" type="checkbox">Make all properties optional</label>
+        <label class="check-label"><input id="typescript-export" type="checkbox" checked>Export Interfaces / Types</label>
+      </div>
+      <p id="typescript-options-status" class="global-status" role="status" aria-live="polite"></p>
+      <div class="result-actions zod-actions"><button id="typescript-copy" type="button" disabled>Copy TypeScript</button><button id="typescript-download" type="button" disabled>Download .ts File</button><button id="typescript-zod" type="button" disabled>Convert to Zod Schema</button></div>
+      <p id="typescript-action-status" class="global-status" role="status" aria-live="polite"></p>
+    </article>
+  </div>
+  <p class="privacy-note">No uploads, API calls, or saved inputs. Types are inferred from this sample, not your full data model. Empty arrays use unknown; mixed arrays use unions. Non-object roots use a type alias in either mode.</p>
+</section>
+<section id="python-converter-tool" class="tool-section" aria-labelledby="python-title" hidden>
+  <div class="hero"><div class="eyebrow">Simple input. Typed Python output.</div><div id="python-title" role="heading" aria-level="1" tabindex="-1">JSON to <span>Python</span></div><p>Generate Pydantic models or standard dataclasses. Everything stays in your browser.</p></div>
+  <div class="section-heading"><h2>JSON to Python Converter</h2><div class="workspace-actions"><button id="python-example" class="link-button" type="button">Try an example</button><button id="python-clear" class="quiet-button" type="button">Clear</button></div></div>
+  <div class="input-grid">
+    <article id="python-input-card" class="input-card" aria-labelledby="python-input-heading">
+      <div class="card-heading"><h3 id="python-input-heading">Input JSON</h3></div>
+      <div class="editor"><div class="editor-top"><label class="editor-label" for="python-json-input">input.json</label></div><div class="edit-body"><textarea id="python-json-input" class="json-input" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="Input JSON for Python models" aria-describedby="python-input-status" placeholder="Paste JSON here..."></textarea></div></div>
+      <p id="python-input-status" class="badge" role="status" aria-live="polite" data-state="empty">Enter JSON to generate Python models.</p>
+    </article>
+    <article class="input-card" aria-labelledby="python-output-heading">
+      <div class="card-heading"><h3 id="python-output-heading">Python Output</h3><span class="badge">Python</span></div>
+      <div class="editor"><div class="editor-top"><label class="editor-label" for="python-output">models.py</label></div><div class="edit-body"><textarea id="python-output" class="json-input" readonly spellcheck="false" aria-label="Generated Python models" placeholder="Generated Python code will appear here..."></textarea></div></div>
+      <div class="typescript-options" role="group" aria-label="Python generation options">
+        <label class="check-label"><input name="python-framework" id="python-pydantic" type="radio" value="pydantic" checked>Pydantic (BaseModel)</label>
+        <label class="check-label"><input name="python-framework" id="python-dataclass" type="radio" value="dataclass">Python Dataclasses</label>
+        <label class="check-label"><input id="python-optional" type="checkbox">Use Optional types (Optional[T])</label>
+      </div>
+      <div class="result-actions zod-actions"><button id="python-copy" type="button" disabled>Copy Python Code</button><button id="python-download" type="button" disabled>Download .py File</button></div>
+      <p id="python-action-status" class="global-status" role="status" aria-live="polite"></p>
+    </article>
+  </div>
+  <p class="privacy-note">No uploads, API calls, or saved inputs. Models infer types from this sample only. Requires Python 3.9+. Arrays and primitive roots use a Root model with a value field. Empty arrays use Any; mixed arrays use unions. Optional types allow None and default all fields to None. Pydantic preserves renamed keys with aliases; dataclasses record original keys in field metadata but do not parse or validate JSON automatically.</p>
+</section>
+<section id="yaml-converter-tool" class="tool-section" aria-labelledby="yaml-title" hidden>
+  <div class="hero"><div class="eyebrow">Simple input. Two-way conversion.</div><div id="yaml-title" role="heading" aria-level="1" tabindex="-1">JSON <span>⇄ YAML</span></div><p>Convert JSON to YAML or YAML to JSON. Everything stays in your browser.</p></div>
+  <div class="section-heading"><h2>JSON ⇄ YAML Converter</h2><div class="workspace-actions"><button id="yaml-example" class="link-button" type="button">Try an example</button><button id="yaml-clear" class="quiet-button" type="button">Clear</button></div></div>
+  <div class="input-grid">
+    <article id="yaml-input-card" class="input-card" aria-labelledby="yaml-input-heading">
+      <div class="card-heading"><h3 id="yaml-input-heading">Input JSON</h3></div>
+      <div class="editor"><div class="editor-top"><label id="yaml-input-label" class="editor-label" for="yaml-input">input.json</label></div><div class="edit-body"><textarea id="yaml-input" class="json-input" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="Input JSON for conversion" aria-describedby="yaml-input-status" placeholder="Paste JSON or YAML here..."></textarea></div></div>
+      <p id="yaml-input-status" class="badge" role="status" aria-live="polite" data-state="empty">Enter JSON to convert to YAML.</p>
+    </article>
+    <article class="input-card" aria-labelledby="yaml-output-heading">
+      <div class="card-heading"><h3 id="yaml-output-heading">YAML Output</h3><span id="yaml-output-format" class="badge">YAML</span></div>
+      <div class="editor"><div class="editor-top"><label id="yaml-output-label" class="editor-label" for="yaml-output">output.yaml</label></div><div class="edit-body"><textarea id="yaml-output" class="json-input" readonly spellcheck="false" aria-label="Converted YAML output" placeholder="Converted output will appear here..."></textarea></div></div>
+      <div class="typescript-options" role="group" aria-label="YAML conversion options">
+        <label class="check-label"><input name="yaml-direction" id="yaml-to-yaml" type="radio" value="json-to-yaml" checked>JSON ➔ YAML</label>
+        <label class="check-label"><input name="yaml-direction" id="yaml-to-json" type="radio" value="yaml-to-json">YAML ➔ JSON</label>
+        <label class="array-option" for="yaml-indent">Indentation<select id="yaml-indent"><option value="2">2 Spaces</option><option value="4">4 Spaces</option></select></label>
+      </div>
+      <div class="result-actions zod-actions"><button id="yaml-copy" type="button" disabled>Copy Output</button><button id="yaml-download" type="button" disabled>Download .yaml File</button></div>
+      <p id="yaml-action-status" class="global-status" role="status" aria-live="polite"></p>
+    </article>
+  </div>
+  <p class="privacy-note">Conversion stays in this tab: no uploads or saved inputs. The YAML library loads from jsDelivr; your data is never sent there. Supports one YAML document with JSON-compatible values. Comments and formatting are not preserved; dates remain strings. Circular aliases, non-finite numbers, inputs over 1 MB, and excessive nesting or alias expansion are rejected.</p>
+</section>
 <ol class="steps" aria-label="Merge progress"><li id="step-1" aria-current="step"><span class="step-number">1</span>Add JSON A + B</li><li id="step-2"><span class="step-number">2</span>Merge</li><li id="step-3"><span class="step-number">3</span>Result</li></ol>
 <section aria-labelledby="inputs-heading"><div class="section-heading"><h2 id="inputs-heading"><span aria-hidden="true">1</span>Add your JSON</h2><div class="workspace-actions"><button id="example" class="link-button" type="button">Try an example</button><button id="swap" class="quiet-button" type="button" aria-label="Swap first and second JSON">Swap A ↔ B</button><button id="clear" class="quiet-button" type="button">Clear all</button></div></div><div id="inputs" class="input-grid"></div></section>
 <section class="merge-section" aria-labelledby="merge-heading"><h2 id="merge-heading" class="merge-title"><span aria-hidden="true">2 · </span>Merge</h2><button id="merge" class="primary merge-button" type="button" disabled aria-describedby="merge-rule merge-reason">Merge JSON</button><p id="merge-rule" class="rule">If both have the same key, review conflicts below or keep the second JSON as the default winner.</p><p id="merge-reason" class="muted">Add valid JSON to both inputs to continue.</p><p class="shortcut"><kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>Enter</kbd> to merge</p><details class="advanced"><summary>Advanced options</summary><div class="options"><label class="check-label"><input id="deep" type="checkbox" checked>Deep merge nested objects</label><label class="array-option" for="arrays">Arrays<select id="arrays"><option value="replace">Replace with second</option><option value="concat">Concatenate both</option><option value="merge-id">Merge by ID</option></select></label><label id="array-id-wrap" class="array-id-option" for="array-key" hidden>ID field<input id="array-key" type="text" value="id" autocomplete="off" spellcheck="false"></label></div><p class="advanced-note">Objects combine their keys. Other value types use the selected conflict choice. Arrays can be replaced, concatenated, or joined by a shared identifier.</p></details></section>
 <section id="result" class="result-panel" aria-labelledby="result-heading"><div class="result-heading"><h2 id="result-heading" class="result-title" tabindex="-1"><span aria-hidden="true">3</span>Result</h2><div class="result-actions"><button id="copy" type="button" disabled>Copy</button><button id="download" type="button" disabled>Download .json</button><button id="format-result" type="button" disabled>Format</button></div></div><div id="result-empty" class="result-empty">Your merged JSON will appear here.</div><div id="result-output" class="result-output" role="region" aria-label="Merged JSON with line numbers" tabindex="0" hidden><ol id="result-lines" class="result-lines"></ol></div><p id="preview-notice" class="result-notice" hidden></p><div id="result-legend" class="result-legend" hidden><span class="legend-key"><span class="swatch" aria-hidden="true"></span>Added key</span><span class="legend-key"><span class="swatch changed" aria-hidden="true"></span>Overridden value</span><span id="change-count"></span></div><section id="conflict-panel" class="conflict-panel" aria-labelledby="conflict-heading" hidden><h3 id="conflict-heading">Conflict resolution</h3><p class="muted">Choose which value wins for each conflicting path. The result updates automatically.</p><div id="conflict-list" class="conflict-list"></div></section><section id="diff-panel" class="diff-panel" aria-labelledby="diff-heading" hidden><h3 id="diff-heading">Live visual diff</h3><p id="diff-summary" class="muted"></p><div id="diff-list" class="diff-list" role="list"></div></section></section>
+<div class="result-actions merger-converter-actions"><button id="merge-typescript" type="button" disabled>Convert Output to TypeScript</button><button id="merge-python" type="button" disabled>Convert Output to Python</button><button id="merge-yaml" type="button" disabled>Convert Output to YAML</button><button id="merge-diff" type="button" disabled>Compare merged JSON</button></div>
 <p id="status" class="global-status" role="status" aria-live="polite" aria-atomic="true"></p><p class="privacy-note">Your JSON stays in this tab. Loading a URL contacts that source directly; no inputs are saved.</p>
 <noscript><p>This tool needs JavaScript. You can also use the <a href="/merge-json-files-python/">Python merge guide</a>.</p></noscript>
 <!-- Manual placements only; hidden until a successful merge with no input/import errors. -->
 <div id="ad-after-result" class="ad-slot" role="region" aria-label="Advertisement" hidden><span class="ad-label">Advertisement</span><div class="ad-mount" data-placement="after-result"></div></div>
 <article id="merge-guide" class="editorial" aria-labelledby="guide-heading">
 <h2 id="guide-heading">How to merge JSON</h2>
-<p>Merging JSON means bringing two structured values together using a consistent rule for conflicts. It is useful when you have a base configuration and an environment override, two exports containing related information, or a small update that needs to be applied to an existing document. JoinJson gives you a place to inspect both inputs and the result before you copy anything back into your project. Start by keeping untouched copies of your source files: a merge can be valid JSON without being the right data for your application.</p>
+<p>Use this JSON file merger to combine JSON files with explicit rules for conflicts. To merge multiple JSON files, combine two at a time and use each result as the next base. It is useful when you have a base configuration and an environment override, two exports containing related information, or a small update that needs to be applied to an existing document. JoinJson gives you a place to inspect both inputs and the result before you copy anything back into your project. Start by keeping untouched copies of your source files: a merge can be valid JSON without being the right data for your application.</p>
 <h3>1. Choose the order of your inputs</h3>
 <p>Put your base document in First JSON and your update in Second JSON. Order matters because the second input wins when values conflict. For example, if the first document sets a user’s role to “Designer” and the second sets it to “Developer”, the result uses “Developer”. Keys that exist only in the first object are retained when the containing objects are combined, and new keys from the second object are added. Use Swap A ↔ B if you need to reverse that priority, then merge again to see the new result.</p>
 <h3>2. Add each document using one input method</h3>
@@ -1104,7 +1275,7 @@ kbd {
 <h3>3. Resolve validation errors before merging</h3>
 <p>Each input has a live status badge. Empty means no document has been supplied, Valid JSON means the text can be parsed, and an error identifies a line to inspect. An error may originate just before the reported line, such as a missing comma or an unclosed string. The Format icon helps make a valid document easier to read, while Find locates a key or value and Wrap reduces horizontal scrolling. Validation checks JSON syntax, not your business rules: it cannot tell whether a product price or account identifier is correct.</p>
 <h3>4. Pick the right merge rules</h3>
-<p>Open Advanced options if you need to change how nested objects or arrays behave. Deep merge is enabled initially, so matching nested objects are combined recursively. With deep merge disabled, a nested value supplied by the second object replaces the first value as a whole unless you choose a different conflict winner. Arrays are replaced by the second array by default. Concatenate appends the second array to the first, while Merge by ID joins array objects that share the selected identifier field.</p>
+<p>Open Advanced options if you need to change how nested objects or arrays behave. To deep merge JSON, leave Deep merge enabled so matching nested objects are combined recursively. With deep merge disabled, a nested value supplied by the second object replaces the first value as a whole unless you choose a different conflict winner. Arrays are replaced by the second array by default. Concatenate appends the second array to the first, while Merge by ID lets you merge JSON by ID using the selected identifier field.</p>
 <h3>5. Merge, inspect, and export</h3>
 <p>Select Merge JSON once both badges are valid, or press Ctrl/Cmd+Enter. Review the full-width Result panel rather than assuming a successful parse guarantees a suitable output. Subtle colors identify added keys and overridden values compared with the first document. Check important nested fields, list lengths, and any deliberately changed values. Very large documents have a bounded preview to keep the page responsive, but Copy and Download include the complete serialized result. Download .json saves a new file; it does not edit either original source.</p>
 <p>After exporting, validate the result with any schema or application checks your project normally uses. JavaScript numbers can lose precision for very large integer identifiers, so keep such identifiers as strings where appropriate. Changing an input or a merge option clears the previous result so it cannot be mistaken for a current merge. Clear all removes the working inputs from the interface. The homepage does not save your JSON in app storage, but clipboard history, downloaded files, and browser extensions remain outside the tool’s control.</p>
@@ -1451,7 +1622,7 @@ Second JSON:
     resultText = "";
     lastResult = null;
     resultReady = false;
-    ["copy", "download", "format-result"].forEach((id) => {
+    ["copy", "download", "format-result", "merge-typescript", "merge-python", "merge-yaml", "merge-diff"].forEach((id) => {
       $(id).disabled = true;
     });
     $("result-output").hidden = $("result-legend").hidden = $("preview-notice").hidden = true;
@@ -1712,7 +1883,7 @@ Second JSON:
     renderResult(preview);
     renderConflicts();
     renderDiff(diffRows || (lastResult === null ? [] : collectDiffRows(states[0].value, lastResult)));
-    ["copy", "download", "format-result"].forEach((id) => {
+    ["copy", "download", "format-result", "merge-typescript", "merge-python", "merge-yaml", "merge-diff"].forEach((id) => {
       $(id).disabled = false;
     });
     updateReady();
@@ -1979,6 +2150,18 @@ Second JSON:
     link.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1e3);
     announce("Merged JSON downloaded.");
+  };
+  $("merge-diff").onclick = () => {
+    if (resultReady) document.dispatchEvent(new CustomEvent('jm:tool-open', { detail: { tool: 'json-diff', text: resultText } }));
+  };
+  $("merge-yaml").onclick = () => {
+    if (resultReady) document.dispatchEvent(new CustomEvent('jm:tool-open', { detail: { tool: 'json-to-yaml', text: resultText } }));
+  };
+  $("merge-python").onclick = () => {
+    if (resultReady) document.dispatchEvent(new CustomEvent('jm:tool-open', { detail: { tool: 'json-to-python', text: resultText } }));
+  };
+  $("merge-typescript").onclick = () => {
+    if (resultReady) document.dispatchEvent(new CustomEvent('jm:tool-open', { detail: { tool: 'json-to-typescript', text: resultText } }));
   };
   $("format-result").onclick = () => {
     if (resultReady) {

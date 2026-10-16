@@ -1,74 +1,44 @@
 'use strict';
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const vm = require('node:vm');
 const {test} = require('node:test');
+const {JSDOM} = require('jsdom');
 const source = fs.readFileSync(require('node:path').join(__dirname, '../assets/theme.js'), 'utf8');
-
-function setup({saved = null, dark = false, blocked = false} = {}) {
-  const attributes = {};
-  const label = {};
-  const listeners = {};
-  const toggle = {
-    setAttribute: (name, value) => { attributes[name] = value; },
-    querySelector: () => label,
-    addEventListener: (name, callback) => { listeners[name] = callback; }
-  };
-  const status = {isConnected: true};
-  const document = {
-    documentElement: {dataset: {}},
-    getElementById: id => ({'theme-toggle': toggle, 'preference-status': status})[id],
-    querySelectorAll: () => []
-  };
-  let systemChanged;
-  const media = {matches: dark, addEventListener: (_, callback) => { systemChanged = callback; }};
-  const storage = new Map(saved ? [['jm:v1:theme', JSON.stringify(saved)]] : []);
-  const window = {
-    document,
-    matchMedia: () => media,
-    localStorage: {
-      getItem(key) { if (blocked) throw Error('blocked'); return storage.get(key) || null; },
-      setItem(key, value) { if (blocked) throw Error('blocked'); storage.set(key, value); }
-    }
-  };
-  vm.runInNewContext(source, {window, document});
-  return {document, attributes, label, storage, status, click: () => listeners.click(), systemChange(value) { media.matches = value; systemChanged(); }};
+function setup(t, {saved, dark = false, blocked = false} = {}) {
+  const dom = new JSDOM('<button id="theme-toggle"><span class="theme-toggle-label"></span></button><span id="theme-tooltip"></span><p id="preference-status"></p>', {url:'https://www.joinjson.com', runScripts:'outside-only'});
+  t.after(() => dom.window.close());
+  const w = dom.window; let change;
+  const media = {matches:dark, addEventListener:(_, callback) => {change = callback;}};
+  w.matchMedia = () => media;
+  if (saved) w.localStorage.setItem('jm:v1:theme', JSON.stringify(saved));
+  if (blocked) Object.defineProperty(w, 'localStorage', {get() {throw Error('blocked');}});
+  w.eval(source);
+  return {w, d:w.document, toggle:w.document.getElementById('theme-toggle'), change(value) {media.matches = value; change();}};
 }
-
-test('toggles both ways and persists only the theme preference', () => {
-  const app = setup();
-  assert.equal(app.attributes['aria-pressed'], 'false');
-  app.click();
-  assert.equal(app.document.documentElement.dataset.theme, 'dark');
-  assert.equal(app.attributes['aria-pressed'], 'true');
-  assert.equal(app.label.textContent, 'Light');
-  assert.equal(app.storage.get('jm:v1:theme'), '"dark"');
-  app.click();
-  assert.equal(app.document.documentElement.dataset.theme, 'light');
-  assert.equal(app.label.textContent, 'Dark');
-  assert.deepEqual([...app.storage], [['jm:v1:theme', '"light"']]);
+test('cycles System, Light, Dark and back to System with explicit accessible action', t => {
+  const {w, d, toggle} = setup(t);
+  for (const [mode, next] of [['system','light'], ['light','dark'], ['dark','system']]) {
+    assert.equal(d.documentElement.dataset.theme, mode);
+    assert.match(toggle.getAttribute('aria-label'), new RegExp('switch to ' + next + ' mode'));
+    assert.equal(d.getElementById('theme-tooltip').textContent, toggle.getAttribute('aria-label'));
+    toggle.click();
+    assert.equal(w.localStorage.getItem('jm:v1:theme'), JSON.stringify(next));
+  }
+  assert.equal(w.localStorage.length, 1);
 });
-
-test('restores a saved dark preference', () => {
-  const app = setup({saved: 'dark'});
-  assert.equal(app.attributes['aria-pressed'], 'true');
-  app.click();
-  assert.equal(app.document.documentElement.dataset.theme, 'light');
+test('restores dark and returns to System', t => {
+  const {d, toggle} = setup(t, {saved:'dark'});
+  assert.equal(d.documentElement.dataset.theme, 'dark');
+  toggle.click(); assert.equal(d.documentElement.dataset.theme, 'system');
 });
-
-test('follows system changes until the user chooses a theme', () => {
-  const app = setup({dark: true});
-  assert.equal(app.attributes['aria-pressed'], 'true');
-  app.systemChange(false);
-  assert.equal(app.attributes['aria-pressed'], 'false');
-  app.click();
-  app.systemChange(false);
-  assert.equal(app.attributes['aria-pressed'], 'true');
+test('system changes update effective mode but not explicit preferences', t => {
+  const {toggle, change} = setup(t, {dark:true});
+  assert.match(toggle.getAttribute('aria-label'), /System theme \(dark\)/);
+  change(false); assert.match(toggle.getAttribute('aria-label'), /System theme \(light\)/);
+  toggle.click(); change(true); assert.match(toggle.getAttribute('aria-label'), /Light theme \(light\)/);
 });
-
-test('blocked storage does not prevent switching themes', () => {
-  const app = setup({blocked: true});
-  app.click();
-  assert.equal(app.document.documentElement.dataset.theme, 'dark');
-  assert.match(app.status.textContent, /storage is unavailable/);
+test('blocked storage permits theme changes with an announcement', t => {
+  const {toggle, d} = setup(t, {blocked:true});
+  toggle.click(); assert.equal(d.documentElement.dataset.theme, 'light');
+  assert.match(d.getElementById('preference-status').textContent, /storage is unavailable/);
 });

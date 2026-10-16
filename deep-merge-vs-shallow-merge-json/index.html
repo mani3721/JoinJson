@@ -19,23 +19,59 @@
     <meta property="og:title" content="Deep Merge vs Shallow Merge in JSON: The Difference">
     <meta property="og:description" content="Shallow merge replaces whole objects; deep merge combines nested keys. See side-by-side JSON examples, how arrays behave and when to use each.">
     <meta property="og:url" content="https://www.joinjson.com/deep-merge-vs-shallow-merge-json/">
-    <meta property="og:site_name" content="joinjson.com">
+    <meta property="og:site_name" content="JoinJson">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Deep Merge vs Shallow Merge in JSON: The Difference">
     <meta name="twitter:description" content="Shallow merge replaces whole objects; deep merge combines nested keys. See side-by-side JSON examples, how arrays behave and when to use each.">
     <script
         type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Merge JSON files","item":"https://www.joinjson.com/"},{"@type":"ListItem","position":2,"name":"Deep versus shallow merge","item":"https://www.joinjson.com/deep-merge-vs-shallow-merge-json/"}]}</script>
-<meta property="og:image" content="https://www.joinjson.com/assets/og-placeholder.svg">
+<meta property="og:image" content="https://www.joinjson.com/assets/social-card.svg">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Merge JSON files: join records by ID and review conflicts">
-<meta name="twitter:image" content="https://www.joinjson.com/assets/og-placeholder.svg">
-<meta name="twitter:image:alt" content="Merge JSON files: join records by ID and review conflicts">
+<meta property="og:image:alt" content="JoinJson — JSON tools and guides in your browser">
+<meta name="twitter:image" content="https://www.joinjson.com/assets/social-card.svg">
+<meta name="twitter:image:alt" content="JoinJson — JSON tools and guides in your browser">
 <link rel="stylesheet" href="/assets/site-layout.css">
+<link rel="stylesheet" href="/assets/json-to-zod.css">
+<script src="/assets/json-to-zod-ui.js" defer></script>
+<link rel="stylesheet" href="/assets/header.css">
+<script src="/assets/header.js" defer></script>
+<meta name="robots" content="index,follow,max-image-preview:large">
 </head>
 
 <body>
     <a class="skip" href="#main">Skip to content</a>
-    <header class="site-header shared-header"><div class="header-inner"><a class="brand" href="/" aria-label="JoinJson home"><img src="/favicon.svg" width="32" height="32" alt=""><span>JoinJson</span></a><nav class="header-links" aria-label="Main"><details class="guide-dropdown"><summary>Guides</summary><div class="guide-menu"><a href="/merge-json-files-python/">Python guide</a><a href="/merge-json-arrays-by-id/">Join by ID</a><a href="/deep-merge-vs-shallow-merge-json/">Merge methods</a></div></details><a href="/privacy/">Privacy</a></nav><button type="button" id="theme-toggle" class="theme-toggle" aria-label="Dark mode" aria-pressed="false" title="Switch to dark mode"><svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14A8 8 0 0 1 10 4a8 8 0 1 0 10 10Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2"/></svg><span class="theme-toggle-label">Dark</span></button></div></header>
+    <header class="site-header shared-header join-header" data-flat-tools="false">
+  <div class="header-inner">
+    <a class="brand" href="/" aria-label="JoinJson home"><img src="/favicon.svg" width="32" height="32" alt=""><span>JoinJson</span></a>
+    <button class="nav-control mobile-menu" id="site-menu-toggle" type="button" aria-expanded="false" aria-controls="site-navigation">Menu <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    <div class="nav-shell" id="site-navigation">
+      <div class="sheet-heading"><span id="sheet-title">Navigation</span><button class="nav-control" id="site-menu-close" type="button">Close <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+      <nav class="primary-nav" aria-label="Primary">
+        <div class="nav-disclosure" id="tool-menu">
+          <button class="nav-control disclosure-trigger" id="tools-trigger" type="button" aria-expanded="false" aria-controls="tool-panel">Tools <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m7 10 5 5 5-5"/></svg></button>
+          <span id="tool-current" class="layout-status">JSON Merger</span>
+          <div class="nav-panel tools-panel" id="tool-panel" hidden>
+<section class="nav-group"><h2>Merge and compare</h2><ul><li><a class="nav-tool" href="/" data-tool="merge"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 5h6v6H4zM14 13h6v6h-6zM14 5h6M17 2v6M4 16h6"/></svg><span class="nav-copy"><span class="nav-title">JSON Merger</span><span class="nav-description">Combine files, keep every record</span></span></a></li><li><a class="nav-tool" href="/json-diff" data-tool="json-diff"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4h6v16H4zM14 4h6v16h-6zM6 8h2M16 8h2M16 12h2"/></svg><span class="nav-copy"><span class="nav-title">JSON Diff and Compare</span><span class="nav-description">See every change side by side</span></span></a></li></ul></section>
+<section class="nav-group"><h2>Convert</h2><ul><li><a class="nav-tool" href="/json-to-yaml" data-tool="json-to-yaml"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 8h16M16 4l4 4-4 4M20 16H4M8 12l-4 4 4 4"/></svg><span class="nav-copy"><span class="nav-title">JSON to YAML</span><span class="nav-description">Convert YAML and JSON both ways</span></span></a></li></ul></section>
+<section class="nav-group"><h2>Generate code</h2><ul><li><a class="nav-tool" href="/json-to-typescript" data-tool="json-to-typescript"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m8 5-6 7 6 7M16 5l6 7-6 7M14 3l-4 18"/></svg><span class="nav-copy"><span class="nav-title">JSON to TypeScript</span><span class="nav-description">Create typed interfaces from JSON</span></span></a></li><li><a class="nav-tool" href="/json-to-python" data-tool="json-to-python"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 4H5v16h3M16 4h3v16h-3M10 8h4v8h-4z"/></svg><span class="nav-copy"><span class="nav-title">JSON to Pydantic</span><span class="nav-description">Build validated Python models</span></span></a></li><li><a class="nav-tool" href="/json-to-zod" data-tool="json-to-zod"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 3 8 4v5c0 5-8 9-8 9s-8-4-8-9V7zM8 12l3 3 5-6"/></svg><span class="nav-copy"><span class="nav-title">JSON to Zod</span><span class="nav-description">Generate runtime validation schemas</span></span></a></li></ul></section>
+          </div>
+        </div>
+        <div class="nav-disclosure" id="guides-disclosure">
+          <button class="nav-control disclosure-trigger" id="guides-trigger" type="button" aria-expanded="false" aria-controls="guides-panel">Guides <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m7 10 5 5 5-5"/></svg></button>
+          <div class="nav-panel guides-panel" id="guides-panel" hidden><ul>
+            <li><a href="/merge-json-files-python/">Merge JSON files in Python</a></li>
+            <li><a href="/merge-json-arrays-by-id/">Merge JSON arrays by ID</a></li>
+            <li><a href="/deep-merge-vs-shallow-merge-json/">Deep vs shallow merge</a></li>
+          </ul></div>
+        </div>
+      </nav>
+      <div class="theme-control">
+        <button type="button" id="theme-toggle" class="nav-control theme-toggle" aria-label="System theme; switch to light mode" title="System theme; switch to light mode"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 3h8M12 3v2M5 6l2 2M19 6l-2 2M3 12h2M19 12h2M5 18l2-2M19 18l-2-2M12 19v2M8 21h8M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0"/></svg><span class="theme-toggle-label layout-status">System</span></button>
+        <span class="theme-tooltip" role="tooltip" id="theme-tooltip">System theme; switch to light mode</span>
+      </div>
+    </div>
+  </div>
+</header>
     <main id="main" class="article" data-ads="editorial">
         <p class="breadcrumb"><a href="/">Merge JSON files</a> / Deep versus shallow merge</p>
         <h1>Deep merge vs shallow merge JSON</h1>
@@ -43,20 +79,14 @@
             combines their fields. Neither phrase fully specifies array handling, conflict priority, or deletion
             semantics. Before combining configuration files, agree on those rules. A merge that is technically correct
             can still remove a setting your application needs.</p>
-        <p>Use the <a href="/">merge JSON files tool</a> to compare results locally. Its object method is recursive,
-            preserves non-conflicting fields, and records differences with the source filenames. You can choose earlier
-            or later conflicting values and select how lists behave. The examples below isolate these decisions so you
-            can recognize the result before downloading it.</p>
+        <p>Use the <a href="/">merge JSON files tool</a> to inspect highlighted changes in your browser. Deep merge is enabled initially. Arrays can be replaced, concatenated, or merged by ID. The examples below isolate these choices so you can review the expected result before downloading it.</p>
         <h2>The difference appears at a nested boundary</h2>
         <p>Imagine a base configuration with a service host and timeout, then an override that changes only the timeout.
             A shallow merge replaces the entire service object. The host disappears because it was inside the replaced
             value. A deep merge descends into service, keeps the host, and updates timeout. If the override instead
             replaces service with null, there are no two objects to recurse into; under a later-wins policy the entire
             value becomes null.</p>
-        <p>The following standalone Python block demonstrates both outcomes. Its deep function recursively combines
-            dictionaries, replaces arrays and scalar values with the later value, and copies inputs so they are not
-            mutated. It intentionally uses array replacement; the browser tool defaults to concatenation, so select
-            Replace using winner rule to reproduce this function there.</p>
+        <p>The following standalone Python block demonstrates both outcomes. Its deep function combines dictionaries recursively, replaces arrays and scalar values with the later value, and copies inputs. The browser tool also defaults to array replacement; leave Replace with second selected to reproduce that array rule.</p>
         <pre><code class="language-python" data-test="python-deep">from copy import deepcopy
 
 
@@ -92,26 +122,15 @@ print(deep)
             with the first item in another is usually unsafe. Common policies are to concatenate every item, concatenate
             and remove structurally equal duplicates, or replace the entire array. These policies produce different
             results even when object fields are merged recursively.</p>
-        <p>For example, combining [1, 2] with [2, 3] yields [1, 2, 2, 3] under concatenation and [1, 2, 3] under unique
-            combination. Later replacement gives [2, 3]. Earlier replacement gives [1, 2]. Unique combination in this
-            tool ignores object key order when comparing objects, but respects array order. It does not identify records
-            by their ID. To reconcile customer or product records, use a <a href="/merge-json-arrays-by-id/">keyed array
-                join</a> instead.</p>
+        <p>For example, combining [1, 2] with [2, 3] yields [1, 2, 2, 3] under concatenation. Replacement initially gives [2, 3]. The browser tool does not have a unique-combination option. To reconcile objects with shared identifiers, select Merge by ID and review the <a href="/merge-json-arrays-by-id/">JSON array ID guide</a>.</p>
         <h2>Earlier wins does not mean ignore later files</h2>
-        <p>Earlier-wins is a conflict policy, not a stop-reading policy. A field that exists only in a later file is
-            still added. When both values are objects, their non-overlapping nested fields are preserved. Only competing
-            values use the earlier/later decision. Array concatenation and unique combination are independent of that
-            winner switch; choose replacement if you want one whole list to win.</p>
+        <p>A conflict choice determines which competing value survives; it does not discard unrelated keys in a deep merge. The second value is selected initially. Deep merge combines matching nested objects, while disabling it replaces a conflicting nested object as a whole. Array concatenation appends both inputs rather than selecting one winner.</p>
         <p>Null, false, zero, and an empty string are real values. They should not be treated as missing simply because
             they are false-like in a programming language. This tool detects whether a property exists rather than
             relying on truthiness. It also preserves a property named __proto__ as JSON data instead of treating it as
             an instruction to modify an object prototype.</p>
         <h2>Validate the result against your application</h2>
-        <p>JSON syntax validation only proves that a parser can read a value. It does not prove that required fields
-            exist, that a port is in range, or that a configuration combination makes sense. Run your application’s
-            schema checks after merging. If you have no schema, at least compare a representative sample and review each
-            conflict. The browser tool reports differences encountered while processing files in order, not a semantic
-            explanation of whether each difference is safe.</p>
+        <p>JSON syntax validation only proves that a parser can read a value. It does not establish required fields, valid port ranges, or application correctness. Run your application checks after merging and review the highlighted changes. The browser output is not a semantic explanation of whether each change is safe.</p>
         <p>Choose shallow merging when whole nested blocks are intentionally replaceable. Choose deep merging when
             independent nested settings should survive. Choose keyed joining when arrays represent entities with stable
             IDs. For a repeatable local pipeline, see <a href="/merge-json-files-python/">merging JSON files with

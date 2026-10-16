@@ -1,0 +1,386 @@
+{
+  "report": [
+    {
+      "page": "/",
+      "theme": "light",
+      "width": 320,
+      "closed": {
+        "height": 56,
+        "width": 320,
+        "body": 320
+      },
+      "left": 9,
+      "right": 312,
+      "panelScroll": 303,
+      "panelWidth": 303,
+      "titleRatio": 14.27,
+      "mutedRatio": 6.25,
+      "focusRatio": 6.38,
+      "titlesFit": true,
+      "sheet": "true"
+    },
+    {
+      "page": "/",
+      "theme": "light",
+      "width": 375,
+      "closed": {
+        "height": 56,
+        "width": 375,
+        "body": 375
+      },
+      "left": 9,
+      "right": 367,
+      "panelScroll": 358,
+      "panelWidth": 358,
+      "titleRatio": 14.27,
+      "mutedRatio": 6.25,
+      "focusRatio": 6.38,
+      "titlesFit": true,
+      "sheet": "true"
+    },
+    {
+      "page": "/",
+      "theme": "light",
+      "width": 768,
+      "closed": {
+        "height": 56,
+        "width": 768,
+        "body": 768
+      },
+      "left": 337,
+      "right": 760,
+      "panelScroll": 423,
+      "panelWidth": 423,
+      "titleRatio": 14.27,
+      "mutedRatio": 6.25,
+      "focusRatio": 6.38,
+      "titlesFit": true,
+      "sheet": "true"
+    },
+    {
+      "page": "/",
+      "theme": "light",
+      "width": 1024,
+      "closed": {
+        "height": 64,
+        "width": 1024,
+        "body": 1024
+      },
+      "left": 388,
+      "right": 1008,
+      "panelScroll": 618,
+      "panelWidth": 618,
+      "titleRatio": 14.27,
+      "mutedRatio": 6.25,
+      "focusRatio": 6.38,
+      "titlesFit": true,
+      "sheet": null
+    },
+    {
+      "page": "/",
+      "theme": "light",
+      "width": 1440,
+      "closed": {
+        "height": 64,
+        "width": 1440,
+        "body": 1440
+      },
+      "left": 804,
+      "right": 1424,
+      "panelScroll": 618,
+      "panelWidth": 618,
+      "titleRatio": 14.27,
+      "mutedRatio": 6.25,
+      "focusRatio": 6.38,
+      "titlesFit": true,
+      "sheet": null
+    },
+    {
+      "page": "/",
+      "theme": "dark",
+      "width": 320,
+      "closed": {
+        "height": 56,
+        "width": 320,
+        "body": 320
+      },
+      "left": 9,
+      "right": 312,
+      "panelScroll": 303,
+      "panelWidth": 303,
+      "titleRatio": 13.9,
+      "mutedRatio": 8.31,
+      "focusRatio": 8.26,
+      "titlesFit": true,
+      "sheet": "true"
+    },
+    {
+      "page": "/",
+      "theme": "dark",
+      "width": 375,
+      "closed": {
+        "height": 56,
+        "width": 375,
+        "body": 375
+      },
+      "left": 9,
+      "right": 367,
+      "panelScroll": 358,
+      "panelWidth": 358,
+      "titleRatio": 13.9,
+      "mutedRatio": 8.31,
+      "focusRatio": 8.26,
+      "titlesFit": true,
+      "sheet": "true"
+    },
+    {
+      "page": "/",
+      "theme": "dark",
+      "width": 768,
+      "closed": {
+        "height": 56,
+        "width": 768,
+        "body": 768
+      },
+      "left": 337,
+      "right": 760,
+      "panelScroll": 423,
+      "panelWidth": 423,
+      "titleRatio": 13.9,
+      "mutedRatio": 8.31,
+      "focusRatio": 8.26,
+      "titlesFit": true,
+      "sheet": "true"
+    },
+    {
+      "page": "/",
+      "theme": "dark",
+      "width": 1024,
+      "closed": {
+        "height": 64,
+        "width": 1024,
+        "body": 1024
+      },
+      "left": 388,
+      "right": 1008,
+      "panelScroll": 618,
+      "panelWidth": 618,
+      "titleRatio": 13.9,
+      "mutedRatio": 8.31,
+      "focusRatio": 8.26,
+      "titlesFit": true,
+      "sheet": null
+    },
+    {
+      "page": "/",
+      "theme": "dark",
+      "width": 1440,
+      "closed": {
+        "height": 64,
+        "width": 1440,
+        "body": 1440
+      },
+      "left": 804,
+      "right": 1424,
+      "panelScroll": 618,
+      "panelWidth": 618,
+      "titleRatio": 13.9,
+      "mutedRatio": 8.31,
+      "focusRatio": 8.26,
+      "titlesFit": true,
+      "sheet": null
+    },
+    {
+      "page": "/about/",
+      "theme": "light",
+      "width": 320,
+      "closed": {
+        "height": 56,
+        "width": 320,
+        "body": 320
+      },
+      "left": 9,
+      "right": 312,
+      "panelScroll": 303,
+      "panelWidth": 303,
+      "titleRatio": 12.7,
+      "mutedRatio": 5.74,
+      "focusRatio": 6.22,
+      "titlesFit": true,
+      "sheet": "true"
+    },
+    {
+      "page": "/about/",
+      "theme": "light",
+      "width": 375,
+      "closed": {
+        "height": 56,
+        "width": 375,
+        "body": 375
+      },
+      "left": 9,
+      "right": 367,
+      "panelScroll": 358,
+      "panelWidth": 358,
+      "titleRatio": 12.7,
+      "mutedRatio": 5.74,
+      "focusRatio": 6.22,
+      "titlesFit": true,
+      "sheet": "true"
+    },
+    {
+      "page": "/about/",
+      "theme": "light",
+      "width": 768,
+      "closed": {
+        "height": 56,
+        "width": 768,
+        "body": 768
+      },
+      "left": 337,
+      "right": 760,
+      "panelScroll": 423,
+      "panelWidth": 423,
+      "titleRatio": 12.7,
+      "mutedRatio": 5.74,
+      "focusRatio": 6.22,
+      "titlesFit": true,
+      "sheet": "true"
+    },
+    {
+      "page": "/about/",
+      "theme": "light",
+      "width": 1024,
+      "closed": {
+        "height": 64,
+        "width": 1024,
+        "body": 1024
+      },
+      "left": 388,
+      "right": 1008,
+      "panelScroll": 618,
+      "panelWidth": 618,
+      "titleRatio": 12.7,
+      "mutedRatio": 5.74,
+      "focusRatio": 6.22,
+      "titlesFit": true,
+      "sheet": null
+    },
+    {
+      "page": "/about/",
+      "theme": "light",
+      "width": 1440,
+      "closed": {
+        "height": 64,
+        "width": 1440,
+        "body": 1440
+      },
+      "left": 804,
+      "right": 1424,
+      "panelScroll": 618,
+      "panelWidth": 618,
+      "titleRatio": 12.7,
+      "mutedRatio": 5.74,
+      "focusRatio": 6.22,
+      "titlesFit": true,
+      "sheet": null
+    },
+    {
+      "page": "/about/",
+      "theme": "dark",
+      "width": 320,
+      "closed": {
+        "height": 56,
+        "width": 320,
+        "body": 320
+      },
+      "left": 9,
+      "right": 312,
+      "panelScroll": 303,
+      "panelWidth": 303,
+      "titleRatio": 14.2,
+      "mutedRatio": 7.7,
+      "focusRatio": 8.66,
+      "titlesFit": true,
+      "sheet": "true"
+    },
+    {
+      "page": "/about/",
+      "theme": "dark",
+      "width": 375,
+      "closed": {
+        "height": 56,
+        "width": 375,
+        "body": 375
+      },
+      "left": 9,
+      "right": 367,
+      "panelScroll": 358,
+      "panelWidth": 358,
+      "titleRatio": 14.2,
+      "mutedRatio": 7.7,
+      "focusRatio": 8.66,
+      "titlesFit": true,
+      "sheet": "true"
+    },
+    {
+      "page": "/about/",
+      "theme": "dark",
+      "width": 768,
+      "closed": {
+        "height": 56,
+        "width": 768,
+        "body": 768
+      },
+      "left": 337,
+      "right": 760,
+      "panelScroll": 423,
+      "panelWidth": 423,
+      "titleRatio": 14.2,
+      "mutedRatio": 7.7,
+      "focusRatio": 8.66,
+      "titlesFit": true,
+      "sheet": "true"
+    },
+    {
+      "page": "/about/",
+      "theme": "dark",
+      "width": 1024,
+      "closed": {
+        "height": 64,
+        "width": 1024,
+        "body": 1024
+      },
+      "left": 388,
+      "right": 1008,
+      "panelScroll": 618,
+      "panelWidth": 618,
+      "titleRatio": 14.2,
+      "mutedRatio": 7.7,
+      "focusRatio": 8.66,
+      "titlesFit": true,
+      "sheet": null
+    },
+    {
+      "page": "/about/",
+      "theme": "dark",
+      "width": 1440,
+      "closed": {
+        "height": 64,
+        "width": 1440,
+        "body": 1440
+      },
+      "left": 804,
+      "right": 1424,
+      "panelScroll": 618,
+      "panelWidth": 618,
+      "titleRatio": 14.2,
+      "mutedRatio": 7.7,
+      "focusRatio": 8.66,
+      "titlesFit": true,
+      "sheet": null
+    }
+  ],
+  "nativeKeyboard": true,
+  "note": "Headless Chrome geometry/contrast checks; not human visual review or screen reader certification."
+}

@@ -19,23 +19,59 @@
     <meta property="og:title" content="Merge JSON Files in Python: Examples and Pitfalls">
     <meta property="og:description" content="Merge multiple JSON files in Python: combine lists, deep merge objects and join records by key. Includes tested code and a no-code online tool.">
     <meta property="og:url" content="https://www.joinjson.com/merge-json-files-python/">
-    <meta property="og:site_name" content="joinjson.com">
+    <meta property="og:site_name" content="JoinJson">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Merge JSON Files in Python: Examples and Pitfalls">
     <meta name="twitter:description" content="Merge multiple JSON files in Python: combine lists, deep merge objects and join records by key. Includes tested code and a no-code online tool.">
     <script
         type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Merge JSON files","item":"https://www.joinjson.com/"},{"@type":"ListItem","position":2,"name":"Merge JSON files with Python","item":"https://www.joinjson.com/merge-json-files-python/"}]}</script>
-<meta property="og:image" content="https://www.joinjson.com/assets/og-placeholder.svg">
+<meta property="og:image" content="https://www.joinjson.com/assets/social-card.svg">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Merge JSON files: join records by ID and review conflicts">
-<meta name="twitter:image" content="https://www.joinjson.com/assets/og-placeholder.svg">
-<meta name="twitter:image:alt" content="Merge JSON files: join records by ID and review conflicts">
+<meta property="og:image:alt" content="JoinJson — JSON tools and guides in your browser">
+<meta name="twitter:image" content="https://www.joinjson.com/assets/social-card.svg">
+<meta name="twitter:image:alt" content="JoinJson — JSON tools and guides in your browser">
 <link rel="stylesheet" href="/assets/site-layout.css">
+<link rel="stylesheet" href="/assets/json-to-zod.css">
+<script src="/assets/json-to-zod-ui.js" defer></script>
+<link rel="stylesheet" href="/assets/header.css">
+<script src="/assets/header.js" defer></script>
+<meta name="robots" content="index,follow,max-image-preview:large">
 </head>
 
 <body>
     <a class="skip" href="#main">Skip to content</a>
-    <header class="site-header shared-header"><div class="header-inner"><a class="brand" href="/" aria-label="JoinJson home"><img src="/favicon.svg" width="32" height="32" alt=""><span>JoinJson</span></a><nav class="header-links" aria-label="Main"><details class="guide-dropdown"><summary>Guides</summary><div class="guide-menu"><a href="/merge-json-files-python/">Python guide</a><a href="/merge-json-arrays-by-id/">Join by ID</a><a href="/deep-merge-vs-shallow-merge-json/">Merge methods</a></div></details><a href="/privacy/">Privacy</a></nav><button type="button" id="theme-toggle" class="theme-toggle" aria-label="Dark mode" aria-pressed="false" title="Switch to dark mode"><svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14A8 8 0 0 1 10 4a8 8 0 1 0 10 10Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2"/></svg><span class="theme-toggle-label">Dark</span></button></div></header>
+    <header class="site-header shared-header join-header" data-flat-tools="false">
+  <div class="header-inner">
+    <a class="brand" href="/" aria-label="JoinJson home"><img src="/favicon.svg" width="32" height="32" alt=""><span>JoinJson</span></a>
+    <button class="nav-control mobile-menu" id="site-menu-toggle" type="button" aria-expanded="false" aria-controls="site-navigation">Menu <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    <div class="nav-shell" id="site-navigation">
+      <div class="sheet-heading"><span id="sheet-title">Navigation</span><button class="nav-control" id="site-menu-close" type="button">Close <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+      <nav class="primary-nav" aria-label="Primary">
+        <div class="nav-disclosure" id="tool-menu">
+          <button class="nav-control disclosure-trigger" id="tools-trigger" type="button" aria-expanded="false" aria-controls="tool-panel">Tools <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m7 10 5 5 5-5"/></svg></button>
+          <span id="tool-current" class="layout-status">JSON Merger</span>
+          <div class="nav-panel tools-panel" id="tool-panel" hidden>
+<section class="nav-group"><h2>Merge and compare</h2><ul><li><a class="nav-tool" href="/" data-tool="merge"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 5h6v6H4zM14 13h6v6h-6zM14 5h6M17 2v6M4 16h6"/></svg><span class="nav-copy"><span class="nav-title">JSON Merger</span><span class="nav-description">Combine files, keep every record</span></span></a></li><li><a class="nav-tool" href="/json-diff" data-tool="json-diff"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4h6v16H4zM14 4h6v16h-6zM6 8h2M16 8h2M16 12h2"/></svg><span class="nav-copy"><span class="nav-title">JSON Diff and Compare</span><span class="nav-description">See every change side by side</span></span></a></li></ul></section>
+<section class="nav-group"><h2>Convert</h2><ul><li><a class="nav-tool" href="/json-to-yaml" data-tool="json-to-yaml"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 8h16M16 4l4 4-4 4M20 16H4M8 12l-4 4 4 4"/></svg><span class="nav-copy"><span class="nav-title">JSON to YAML</span><span class="nav-description">Convert YAML and JSON both ways</span></span></a></li></ul></section>
+<section class="nav-group"><h2>Generate code</h2><ul><li><a class="nav-tool" href="/json-to-typescript" data-tool="json-to-typescript"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m8 5-6 7 6 7M16 5l6 7-6 7M14 3l-4 18"/></svg><span class="nav-copy"><span class="nav-title">JSON to TypeScript</span><span class="nav-description">Create typed interfaces from JSON</span></span></a></li><li><a class="nav-tool" href="/json-to-python" data-tool="json-to-python"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 4H5v16h3M16 4h3v16h-3M10 8h4v8h-4z"/></svg><span class="nav-copy"><span class="nav-title">JSON to Pydantic</span><span class="nav-description">Build validated Python models</span></span></a></li><li><a class="nav-tool" href="/json-to-zod" data-tool="json-to-zod"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 3 8 4v5c0 5-8 9-8 9s-8-4-8-9V7zM8 12l3 3 5-6"/></svg><span class="nav-copy"><span class="nav-title">JSON to Zod</span><span class="nav-description">Generate runtime validation schemas</span></span></a></li></ul></section>
+          </div>
+        </div>
+        <div class="nav-disclosure" id="guides-disclosure">
+          <button class="nav-control disclosure-trigger" id="guides-trigger" type="button" aria-expanded="false" aria-controls="guides-panel">Guides <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m7 10 5 5 5-5"/></svg></button>
+          <div class="nav-panel guides-panel" id="guides-panel" hidden><ul>
+            <li><a href="/merge-json-files-python/">Merge JSON files in Python</a></li>
+            <li><a href="/merge-json-arrays-by-id/">Merge JSON arrays by ID</a></li>
+            <li><a href="/deep-merge-vs-shallow-merge-json/">Deep vs shallow merge</a></li>
+          </ul></div>
+        </div>
+      </nav>
+      <div class="theme-control">
+        <button type="button" id="theme-toggle" class="nav-control theme-toggle" aria-label="System theme; switch to light mode" title="System theme; switch to light mode"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 3h8M12 3v2M5 6l2 2M19 6l-2 2M3 12h2M19 12h2M5 18l2-2M19 18l-2-2M12 19v2M8 21h8M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0"/></svg><span class="theme-toggle-label layout-status">System</span></button>
+        <span class="theme-tooltip" role="tooltip" id="theme-tooltip">System theme; switch to light mode</span>
+      </div>
+    </div>
+  </div>
+</header>
     <main id="main" class="article" data-ads="editorial">
         <p class="breadcrumb"><a href="/">Merge JSON files</a> / Python guide</p>
         <h1>Merge JSON files with Python</h1>
@@ -43,10 +79,7 @@
             data cleanup. Its standard library can read and write JSON without an extra package. The important decision
             is not which library to install. It is what “merge” means for your data. Appending two arrays is different
             from matching records by ID, and replacing an object is different from preserving its nested fields.</p>
-        <p>If you only need a one-time result, use the <a href="/">browser JSON file merger</a>. It lets you inspect
-            conflicts with their source files before downloading. The scripts below are deliberately smaller: they
-            demonstrate explicit rules, reject unexpected top-level shapes, and do not reproduce the browser tool’s
-            complete conflict report.</p>
+        <p>If you only need a one-time result, use the <a href="/">browser JSON file merger</a>. Paste, upload or load two inputs from URLs, review highlighted changes, then copy or download the result. The scripts below demonstrate explicit rules for local file processing.</p>
         <h2>Choose your rule before writing files</h2>
         <p>Start by checking the outermost value in each input. A list of independent events often needs concatenation.
             Two configuration objects may need a shallow or deep merge. Two customer exports usually need a keyed join
@@ -128,10 +161,7 @@ python3 -m json.tool settings.json
             cannot solve that because the top-level inputs are arrays. A keyed join builds an index and combines
             matching records according to a field-level policy. See the <a href="/merge-json-arrays-by-id/">array join
                 guide</a> for a tested Python function and the decisions that go with it.</p>
-        <p>For a visual review, return to the <a href="/">merge JSON files tool</a>, use advanced mode, and select Join
-            records by key. Try the sample files first. Compare earlier-wins and later-wins results, inspect the
-            conflict sources, then apply the same rules to your own data. Automation is useful only after the desired
-            output is clear.</p>
+        <p>For a visual review, return to the <a href="/">merge JSON files tool</a>. Open Advanced options and select Merge by ID for arrays with a shared identifier. Use small sample inputs first and inspect highlighted changes before applying the same rules to your data.</p>
         <h2>Make the workflow reproducible</h2>
         <p>Keep an explicit input manifest when a job grows beyond two files. A shell wildcard can be convenient, but
             alphabetical order is not necessarily business priority. Name the base file first and list overrides in

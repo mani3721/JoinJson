@@ -1,0 +1,15 @@
+/* Shared theme tokens keep the comparison accessible in both themes. */
+body[data-tool=json-diff] #main > :not(#json-diff-tool) { display:none !important; }
+#json-diff-tool .diff-controls { margin:16px 0; display:flex; flex-wrap:wrap; gap:10px; }
+.diff-result-box { border:1px solid var(--line); border-radius:10px; background:var(--surface); padding:16px; overflow:auto; }
+.diff-result-box > p { color:var(--muted); margin:0; }
+.diff-result-box table { width:100%; border-collapse:collapse; table-layout:fixed; font-size:13px; }
+.diff-result-box caption { text-align:left; padding:0 0 12px; font-weight:600; }
+.diff-result-box th, .diff-result-box td { text-align:left; vertical-align:top; padding:12px; border-bottom:1px solid var(--line); overflow-wrap:anywhere; }
+.diff-result-box pre { white-space:pre-wrap; overflow-wrap:anywhere; margin:0; font:inherit; font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.diff-result-box .diff-added { border-left:4px solid var(--good); background:color-mix(in srgb, var(--good) 10%, var(--surface)); }
+.diff-result-box .diff-removed { border-left:4px solid var(--bad); background:color-mix(in srgb, var(--bad) 10%, var(--surface)); }
+.diff-result-box .diff-modified { border-left:4px solid var(--warn, #b78103); background:color-mix(in srgb, var(--warn, #b78103) 10%, var(--surface)); }
+.diff-result-box .diff-path { display:block; margin-top:6px; font-weight:400; }
+#json-diff-tool .diff-legend { color:var(--muted); font-size:13px; }
+@media(max-width:700px) { .diff-result-box { padding:8px; } .diff-result-box th, .diff-result-box td { padding:8px; } }

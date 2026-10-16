@@ -1,187 +1,217 @@
-"""Static SEO audit. Python standard library only; makes no network requests.
-Run: python3 tests/seo-audit.py [--origin https://example.com]
-Placeholders are accepted for source checks, not proof of deployment readiness.
+"""Offline SEO audit of publishable pages (standard library only).
+Run: python3 tests/seo-audit.py [--directory public]
+Build output includes server-rendered metadata for the existing SPA tool routes.
 """
 import argparse
-from datetime import date
+from datetime import date, datetime
+from html import unescape
 from html.parser import HTMLParser
 import json
 from pathlib import Path
 import re
+import sys
 import xml.etree.ElementTree as ET
-from urllib.parse import urlsplit, unquote
+from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
-parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--origin', default='https://www.joinjson.com')
-args = parser.parse_args()
-ORIGIN = args.origin.rstrip('/')
-assert ORIGIN.startswith('https://'), 'Canonical origin must use HTTPS'
+ORIGIN = 'https://www.joinjson.com'
+GUIDES = ['merge-json-files-python', 'merge-json-arrays-by-id', 'deep-merge-vs-shallow-merge-json']
+SOURCE = ['index.html', 'curl-to-js.html', '404.html'] + [x + '/index.html' for x in GUIDES + ['about', 'contact', 'privacy', 'terms', 'disclaimer']]
+TOOLS = list(json.loads((ROOT / 'scripts/seo-pages.json').read_text()))[1:]
 errors = []
-
 def check(condition, message):
-    if not condition:
-        errors.append(message)
+    if not condition: errors.append(message)
+def normalized(value): return ' '.join(value.split())
 
+# HTMLParser intentionally recovers malformed attributes. This strict lexical pass
+# rejects recovery cases such as content="a "quote"", including extra bare attrs.
+ATTRIBUTE = re.compile(r'''\s+([^\s=<>/"']+)(?:\s*=\s*("[^"]*"|'[^']*'|[^\s<>"'=\x60]+))?''')
+BOOLEAN = set('allowfullscreen async autofocus autoplay checked controls default defer disabled formnovalidate hidden inert ismap itemscope loop multiple muted nomodule novalidate open playsinline readonly required reversed selected'.split())
+ENTITY = re.compile(r'&(?:amp|lt|gt|quot|apos|#[0-9]+|#x[0-9a-fA-F]+);')
+def encoding_errors(text):
+    found = []
+    if re.search(r'&amp;(?:amp|lt|gt|quot|apos|#\d+|#x[\da-f]+);', text, re.I): found.append('double-encoded entity')
+    clean = re.sub(r'<(script|style)\b[^>]*>[\s\S]*?</\1\s*>', '', text, flags=re.I)
+    clean = re.sub(r'<!--[\s\S]*?-->', '', clean)
+    tag_pattern = re.compile(r'''</?[a-zA-Z][\w:-]*(?:[^>"']|"[^"]*"|'[^']*')*>''')
+    for match in tag_pattern.finditer(clean):
+        tag = match[0]
+        if tag.startswith('</'): continue
+        name = re.match(r'<[\w:-]+', tag).end()
+        end = len(tag) - (2 if tag.endswith('/>') else 1)
+        pos, names = name, set()
+        while pos < end:
+            if not tag[pos:end].strip(): break
+            attribute = ATTRIBUTE.match(tag, pos)
+            if not attribute or attribute.end() > end:
+                found.append('malformed/unescaped quote in attribute: ' + tag[:90]); break
+            key, value = attribute.groups()
+            if key in names: found.append('duplicate attribute: ' + key)
+            names.add(key)
+            if value is None and key.lower() not in BOOLEAN and not key.startswith('data-'): found.append('unexpected bare attribute/possible unescaped quote: ' + key)
+            if value:
+                if '<' in value: found.append('unescaped < in attribute ' + key)
+                if re.search(r'&(?![a-zA-Z][\w]+;|#\d+;|#x[\da-fA-F]+;)', value): found.append('unescaped ampersand in attribute ' + key)
+                if not value.startswith(('"', "'")): found.append('attribute value must be quoted: ' + key)
+            pos = attribute.end()
+    prose = tag_pattern.sub('', clean)
+    prose = re.sub(r'<!doctype[^>]*>', '', prose, flags=re.I)
+    if '<' in prose: found.append('unescaped < or malformed tag in HTML text')
+    if re.search(r'&(?![a-zA-Z][\w]+;|#\d+;|#x[\da-fA-F]+;)', prose): found.append('unescaped ampersand in HTML text')
+    return found
 
 class Page(HTMLParser):
     def __init__(self, text):
         super().__init__(convert_charrefs=True)
         self.tags, self.ids, self.ld, self.headings = [], set(), [], []
-        self.title, self.main_text, self.intro = '', [], []
-        self.faq, self.question, self.answer = [], '', ''
-        self.in_title = self.in_main = self.in_intro = self.in_faq = False
-        self.in_summary = self.in_answer = False
-        self.script = None
+        self.title, self.script = '', None
+        self.in_title = self.in_main = False
         self.feed(text)
-
     def handle_starttag(self, tag, pairs):
-        a = dict(pairs)
-        self.tags.append((tag, a))
-        if 'id' in a:
-            check(a['id'] not in self.ids, 'Duplicate ID: ' + a['id'])
-            self.ids.add(a['id'])
-        if tag == 'title': self.in_title = True
+        attrs = dict(pairs); self.tags.append((tag, attrs))
+        if 'id' in attrs:
+            check(attrs['id'] not in self.ids, 'Duplicate ID: ' + attrs['id']); self.ids.add(attrs['id'])
         if tag == 'main': self.in_main = True
-        if re.fullmatch(r'h[1-6]', tag): self.headings.append(int(tag[1]))
-        if tag == 'script': self.script = (a.get('type'), [])
-        if tag == 'p' and 'data-seo-intro' in a: self.in_intro = True
-        if tag == 'section' and a.get('aria-labelledby') == 'faq': self.in_faq = True
-        if self.in_faq and tag == 'details': self.question = self.answer = ''
-        if self.in_faq and tag == 'summary': self.in_summary = True
-        if self.in_faq and tag == 'p': self.in_answer = True
-
+        if tag == 'title': self.in_title = True
+        if self.in_main and re.fullmatch(r'h[1-6]', tag): self.headings.append(int(tag[1]))
+        if tag == 'script': self.script = (attrs.get('type'), [])
+    def handle_startendtag(self, tag, attrs): self.handle_starttag(tag, attrs)
     def handle_endtag(self, tag):
         if tag == 'title': self.in_title = False
         if tag == 'main': self.in_main = False
-        if tag == 'p': self.in_intro = self.in_answer = False
-        if tag == 'summary': self.in_summary = False
-        if tag == 'details' and self.in_faq:
-            self.faq.append((' '.join(self.question.split()), ' '.join(self.answer.split())))
-        if tag == 'section': self.in_faq = False
-        if tag == 'script' and self.script is not None:
+        if tag == 'script' and self.script:
             kind, parts = self.script
             if kind == 'application/ld+json':
-                try: self.ld.append(json.loads(''.join(parts)))
+                raw = ''.join(parts)
+                check(not ENTITY.search(raw), 'HTML entities in JSON-LD; use plain characters')
+                try:
+                    data = json.loads(raw)
+                    check(isinstance(data, dict), 'JSON-LD must be an object')
+                    if isinstance(data, dict): self.ld.append(data)
                 except ValueError as error: errors.append('Invalid JSON-LD: ' + str(error))
             self.script = None
-
     def handle_data(self, value):
-        if self.script is not None:
-            self.script[1].append(value)
-            return
-        if self.in_title: self.title += value
-        if self.in_main: self.main_text.append(value)
-        if self.in_intro: self.intro.append(value)
-        if self.in_summary: self.question += value
-        if self.in_answer: self.answer += value
+        if self.script is not None: self.script[1].append(value)
+        elif self.in_title: self.title += value
 
+def route(relative):
+    if relative == 'index.html': return '/'
+    if relative == 'curl-to-js.html': return '/curl-to-js'
+    path = '/' + relative.removesuffix('index.html')
+    return path.rstrip('/') if path.rstrip('/') in TOOLS else path
 
-def route(path):
-    relative = path.relative_to(ROOT).as_posix()
-    return '/' if relative == 'index.html' else '/' + relative[:-len('index.html')] if relative.endswith('/index.html') else '/' + relative
+def audit(directory):
+    production = directory.resolve() != ROOT
+    paths = SOURCE + [x[1:] + '/index.html' for x in TOOLS] if production else SOURCE
+    texts = {name: (directory / name).read_text(encoding='utf-8') for name in paths}
+    pages = {name: Page(text) for name, text in texts.items()}
+    routes = {route(name): name for name in paths}
+    # In source mode the verified deployment rewrites resolve these existing tools.
+    aliases = {} if production else {tool: 'index.html' for tool in TOOLS}
+    routes.update(aliases)
+    incoming = {name: set() for name in paths}
+    titles, descriptions = set(), set()
+    for name, page in pages.items():
+        label = name + ': '
+        for error in encoding_errors(texts[name]): errors.append(label + error)
+        check(bool(re.search(r'<head>\s*<meta charset="utf-8">', texts[name], re.I)), label + 'charset must be first in head')
+        metas = {}
+        for tag, attrs in page.tags:
+            if tag == 'meta':
+                key = attrs.get('name', attrs.get('property', 'charset'))
+                check(key not in metas, label + 'duplicate meta ' + key)
+                metas[key] = attrs.get('content', '')
+        check(sum(tag == 'title' for tag, _ in page.tags) == 1, label + 'one title')
+        check(0 < len(page.title) < 60, label + 'title under 60 characters')
+        description = metas.get('description', '')
+        check(0 < len(description) < 155, label + 'description under 155 characters')
+        check(page.title not in titles, label + 'duplicate title'); titles.add(page.title)
+        check(description not in descriptions, label + 'duplicate description'); descriptions.add(description)
+        check(page.headings.count(1) == 1, label + 'exactly one H1')
+        for a, b in zip(page.headings, page.headings[1:]): check(b <= a + 1, label + 'skipped main heading level')
+        check(any(t == 'html' and a.get('lang') == 'en' for t, a in page.tags), label + 'lang=en')
+        check('viewport' in metas, label + 'viewport')
+        expected = ORIGIN + route(name)
+        check([a.get('href') for t, a in page.tags if t == 'link' and a.get('rel') == 'canonical'] == [expected], label + 'canonical route/host')
+        check(metas.get('og:url') == expected, label + 'og:url')
+        check(metas.get('og:site_name') == 'JoinJson', label + 'site name')
+        check(metas.get('robots') == ('noindex' if name == '404.html' else 'index,follow,max-image-preview:large'), label + 'robots')
+        for prefix in ['og:', 'twitter:']:
+            check(metas.get(prefix + 'title') == page.title, label + prefix + 'title mismatch')
+            check(metas.get(prefix + 'description') == description, label + prefix + 'description mismatch')
+            image = metas.get(prefix + 'image', '')
+            check(image.startswith(ORIGIN + '/') and (directory / image.removeprefix(ORIGIN + '/')).is_file(), label + 'social image missing')
+            check(bool(metas.get(prefix + 'image:alt')), label + 'social image alt')
+        check(metas.get('og:image:width') == '1200' and metas.get('og:image:height') == '630', label + 'social image dimensions')
+        check(metas.get('twitter:card') == 'summary_large_image', label + 'twitter card')
+        for data in page.ld:
+            check('https://joinjson.com' not in json.dumps(data), label + 'JSON-LD host mismatch')
+            if data.get('@type') == 'FAQPage':
+                faq = re.search(r'<section id="faq"[\s\S]*?</section>', texts[name])
+                visible = []
+                if faq:
+                    for question, answer in re.findall(r'<summary>([\s\S]*?)</summary><p>([\s\S]*?)</p>', faq[0]):
+                        visible.append((normalized(unescape(re.sub('<[^>]+>', '', question))), normalized(unescape(re.sub('<[^>]+>', '', answer)))))
+                schema = [(q['name'], q['acceptedAnswer']['text']) for q in data.get('mainEntity', [])]
+                check(bool(visible) and schema == visible, label + 'FAQ schema must match visible text exactly')
+        if name.split('/')[0] in GUIDES:
+            check(any(d.get('@type') == 'BreadcrumbList' for d in page.ld), label + 'guide breadcrumbs')
+            check(any(t == 'a' and a.get('href') == '/' for t, a in page.tags), label + 'guide link home')
+        for tag, attrs in page.tags:
+            if tag == 'img': check('alt' in attrs and bool(attrs.get('width')) and bool(attrs.get('height')), label + 'image alt/dimensions')
+            if tag == 'script' and attrs.get('src', '').startswith('http'):
+                check('async' in attrs or 'defer' in attrs or attrs.get('type') == 'module', label + 'blocking third-party script')
+            if tag == 'link' and attrs.get('rel') == 'stylesheet': check(not attrs.get('href', '').startswith(('http', '//')), label + 'third-party stylesheet')
+            for attribute in ['href', 'src']:
+                value = attrs.get(attribute, '')
+                if not value or value.startswith(('mailto:', 'tel:', 'data:', 'blob:')): continue
+                parts = urlsplit(value)
+                if parts.netloc:
+                    if parts.hostname in ['joinjson.com', 'www.joinjson.com']:
+                        check(parts.scheme + '://' + parts.netloc == ORIGIN, label + 'internal host mismatch: ' + value)
+                    else: continue
+                target_route = unquote(parts.path)
+                target_name = routes.get(target_route) if target_route else name
+                if target_name is None:
+                    target = directory / target_route.lstrip('/') if target_route.startswith('/') else (directory / name).parent / target_route
+                    if target.is_dir(): target /= 'index.html'
+                    check(target.is_file(), label + 'unresolved local link: ' + value)
+                else:
+                    if target_name != name: incoming[target_name].add(name)
+                    if parts.fragment: check(unquote(parts.fragment) in pages[target_name].ids, label + 'broken fragment: ' + value)
+        print(f'PAGE {name}: title={len(page.title)}, description={len(description)}, H1={page.headings.count(1)}')
+    home = pages['index.html']
+    for guide in GUIDES: check(any(t == 'a' and a.get('href') == '/' + guide + '/' for t, a in home.tags), 'Home link missing: ' + guide)
+    for name in paths:
+        if name != '404.html': check(bool(incoming[name]), 'Orphan page: ' + name)
+    data = home.ld
+    app = next((d for d in data if d.get('@type') == 'WebApplication'), {})
+    check(app.get('applicationCategory') == 'DeveloperApplication' and app.get('operatingSystem') == 'Any' and app.get('browserRequirements') == 'Requires JavaScript' and str(app.get('offers', {}).get('price')) == '0', 'Home WebApplication fields')
+    check(app.get('name') == 'JoinJson' and app.get('url') == ORIGIN + '/', 'Home WebApplication identity')
+    check(any(d.get('@type') == 'WebSite' and d.get('name') == 'JoinJson' for d in data), 'Home WebSite')
+    check(any(t == 'meta' and a.get('name') == 'google-site-verification' and a.get('content') for t, a in home.tags), 'Search Console verification missing')
+    try:
+        tree = ET.parse(directory / 'sitemap.xml'); ns = {'s': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
+        check(tree.getroot().tag == '{' + ns['s'] + '}urlset', 'Sitemap namespace')
+        locations = [node.text for node in tree.findall('s:url/s:loc', ns)]
+        check(len(locations) == len(set(locations)), 'Duplicate sitemap URL')
+        check(set(locations) == {ORIGIN + r for r in routes if r != '/404.html'}, 'Sitemap completeness/host')
+        for node in tree.findall('s:url/s:lastmod', ns):
+            try: check(datetime.fromisoformat(node.text.replace('Z', '+00:00')).date() <= date.today(), 'Future sitemap lastmod')
+            except (ValueError, TypeError): errors.append('Invalid sitemap lastmod')
+    except ET.ParseError as error: errors.append('Invalid sitemap XML: ' + str(error))
+    robots = (directory / 'robots.txt').read_text()
+    check('Allow: /' in robots and 'Sitemap: ' + ORIGIN + '/sitemap.xml' in robots, 'Robots allow/sitemap')
+    config = json.loads((ROOT / 'vercel.json').read_text())
+    check(any(r.get('statusCode') == 301 and r.get('destination') == ORIGIN + '/:path*' and {'type': 'host', 'value': 'joinjson.com'} in r.get('has', []) for r in config['redirects']), 'Apex must explicitly 301 to www')
+    if errors:
+        print('\n'.join('FAIL ' + error for error in errors)); return 1
+    print(f'PASS: {len(pages)} pages; {len(routes)-1} indexable URLs; metadata, links, encoding, JSON-LD and sitemap valid.')
+    print('UNVERIFIED: deployment, live indexing, rankings, social image crawler support, Lighthouse, field Core Web Vitals, full WCAG conformance.')
+    return 0
 
-# Enumerate HTML from the filesystem, not the sitemap, so omissions are caught.
-paths = sorted(ROOT.rglob('*.html'))
-pages = {path: Page(path.read_text()) for path in paths}
-titles, descriptions, incoming = {}, {}, {p: set() for p in paths}
-for path, page in pages.items():
-    label = path.relative_to(ROOT).as_posix()
-    metas = {}
-    for tag, a in page.tags:
-        if tag == 'meta':
-            key = a.get('name', a.get('property'))
-            check(key not in metas, label + ': duplicate meta ' + str(key))
-            metas[key] = a.get('content', '')
-    check(0 < len(page.title) < 60, label + ': title length')
-    description = metas.get('description', '')
-    check(0 < len(description) < 155, label + ': description length')
-    check(page.title not in titles, label + ': duplicate title')
-    check(description not in descriptions, label + ': duplicate description')
-    titles[page.title] = path
-    descriptions[description] = path
-    check(page.headings.count(1) == 1, label + ': exactly one H1')
-    for previous, current in zip(page.headings, page.headings[1:]):
-        check(current <= previous + 1, label + ': skipped heading level')
-    check(any(t == 'html' and a.get('lang') == 'en' for t,a in page.tags), label + ': lang')
-    check('viewport' in metas, label + ': viewport')
-    canonicals = [a.get('href') for t,a in page.tags if t == 'link' and a.get('rel') == 'canonical']
-    check(canonicals == [ORIGIN + route(path)], label + ': canonical route/HTTPS/slash consistency')
-    check(metas.get('og:url') == ORIGIN + route(path), label + ': og:url')
-    for prefix in ('og:', 'twitter:'):
-        check(metas.get(prefix + 'title') == page.title, label + ': social title mismatch')
-        check(metas.get(prefix + 'description') == description, label + ': social description mismatch')
-        image = metas.get(prefix + 'image', '')
-        check(image.startswith(ORIGIN + '/'), label + ': social image URL')
-        if image.startswith(ORIGIN + '/'):
-            check((ROOT / image[len(ORIGIN)+1:]).is_file(), label + ': missing social image')
-        check(bool(metas.get(prefix + 'image:alt')), label + ': social image alt')
-    check(metas.get('og:image:width') == '1200' and metas.get('og:image:height') == '630', label + ': image dimensions')
-    check(('noindex' in metas.get('robots', '')) == (path.name == '404.html'), label + ': indexability')
-    check(sum(t == 'header' for t,a in page.tags) == 1 and sum(t == 'footer' for t,a in page.tags) == 1, label + ': shared navigation')
-    for tag, a in page.tags:
-        if tag == 'img':
-            check('alt' in a, label + ': image missing alt')
-            check(bool(a.get('width')) and bool(a.get('height')), label + ': image missing dimensions')
-        if tag == 'script' and a.get('src'):
-            check(a.get('src', '').startswith('/') and ('defer' in a or 'async' in a), label + ': blocking/external script')
-        if tag == 'link':
-            check(a.get('rel') != 'preload', label + ': unexpected preload')
-            if a.get('rel') == 'stylesheet': check(a.get('href', '').startswith('/'), label + ': external stylesheet')
-        for attr in ('href', 'src'):
-            value = a.get(attr, '')
-            if not value or value.startswith(('mailto:', 'tel:')): continue
-            if value.startswith(ORIGIN): value = value[len(ORIGIN):]
-            if value.startswith(('http:', 'https:', '//')): continue
-            parts = urlsplit(value)
-            target = path if not parts.path else ROOT / unquote(parts.path).lstrip('/') if parts.path.startswith('/') else path.parent / unquote(parts.path)
-            target = target.resolve()
-            if target.is_dir(): target /= 'index.html'
-            check(target.is_file(), label + ': unresolved link ' + value)
-            if target in pages and target != path: incoming[target].add(path)
-            if parts.fragment and not parts.fragment.startswith(('example=', 'data=')):
-                check(target in pages and unquote(parts.fragment) in pages[target].ids, label + ': unresolved fragment ' + value)
-    if path.parent.name in ('merge-json-files-python', 'merge-json-arrays-by-id', 'deep-merge-vs-shallow-merge-json'):
-        check(any(v.get('@type') == 'BreadcrumbList' for v in page.ld), label + ': article breadcrumbs')
-        text = path.read_text().split('<main',1)[1].split('</main>',1)[0]
-        prose = re.sub(r'<pre>.*?</pre>', '', text, flags=re.S)
-        words = len(re.sub(r'<[^>]+>', ' ', prose).split())
-        check(words >= 800, label + ': under 800 prose words')
-        check('When not to use this approach' in text, label + ': missing limitations section')
-        print(f'ARTICLE {label}: {words} prose words')
-    for data in page.ld:
-        if data.get('@type') == 'FAQPage':
-            entries = [(v['name'],v['acceptedAnswer']['text']) for v in data['mainEntity']]
-            check(entries == page.faq, label + ': FAQ schema differs from visible answers')
-    print(f'PAGE {label}: title {len(page.title)}, description {len(description)} characters')
-
-home = pages[ROOT / 'index.html']
-check(100 <= len(' '.join(home.intro).split()) <= 150, 'Home: intro must be 100–150 words')
-check(len(home.faq) in range(6,9), 'Home: FAQ count')
-check(any(v.get('@type') == 'WebSite' for v in home.ld), 'Home: WebSite schema')
-app = next((v for v in home.ld if v.get('@type') == 'WebApplication'), {})
-check(app.get('operatingSystem') == 'Any' and app.get('applicationCategory') == 'DeveloperApplication' and app.get('offers',{}).get('price') == 0, 'Home: WebApplication values')
-check(app.get('url') == ORIGIN + '/' and bool(app.get('name')) and bool(app.get('description')), 'Home: WebApplication identity')
-check(any(t == 'meta' and a.get('name') == 'google-site-verification' for t,a in home.tags), 'Home: verification placeholder')
-# Inline decorative spans must not introduce spaces into visible words.
-text = ' '.join(''.join(p.main_text) for p in pages.values()).lower()
-for phrase in ('merge json files online','merge multiple json files','merge json files into one','combine json files into one','merge 2 json files','join json files','json file merger','merge json files by key','join json files by id','json merge conflicts'):
-    check(phrase in text, 'Missing natural phrase: ' + phrase)
-for path in pages:
-    if path.name != '404.html': check(bool(incoming[path]), 'Orphan page: ' + str(path))
-ns = {'s':'http://www.sitemaps.org/schemas/sitemap/0.9'}
-sitemap = ET.parse(ROOT / 'sitemap.xml').getroot()
-locations = [u.find('s:loc',ns).text for u in sitemap.findall('s:url',ns)]
-check(len(locations) == len(set(locations)), 'Duplicate sitemap entries')
-check(set(locations) == {ORIGIN + route(p) for p in pages if p.name != '404.html'}, 'Sitemap completeness')
-for item in sitemap.findall('s:url',ns):
-    try: check(date.fromisoformat(item.find('s:lastmod',ns).text) <= date.today(), 'Future lastmod')
-    except (ValueError, AttributeError): errors.append('Invalid lastmod')
-robots = (ROOT / 'robots.txt').read_text()
-check('Allow: /' in robots and 'Disallow:' not in robots, 'Robots must allow crawling')
-check('Sitemap: ' + ORIGIN + '/sitemap.xml' in robots, 'Robots sitemap origin')
-if errors:
-    print('\n'.join('FAIL ' + error for error in errors))
-    raise SystemExit(1)
-print(f'PASS SEO audit: {len(pages)} pages, {len(locations)} indexable sitemap URLs; no duplicate titles/descriptions; links and JSON-LD valid.')
-print('UNVERIFIED: live HTTP/indexing, rankings, rich results, Lighthouse, Core Web Vitals, rendering, accessibility, social-image crawler support.')
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--directory', type=Path, default=ROOT)
+    args = parser.parse_args()
+    sys.exit(audit(args.directory))

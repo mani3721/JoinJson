@@ -52,11 +52,14 @@
   }
   function updateToggle() {
     if (!toggle) return;
-    const dark = isDark();
-    toggle.setAttribute('aria-pressed', String(dark));
-    toggle.setAttribute('aria-label', 'Dark mode');
-    toggle.title = dark ? 'Switch to light mode' : 'Switch to dark mode';
-    toggle.querySelector('.theme-toggle-label').textContent = dark ? 'Light' : 'Dark';
+    const mode = document.documentElement.dataset.theme || 'system';
+    const next = {system:'light', light:'dark', dark:'system'}[mode];
+    const label = mode[0].toUpperCase() + mode.slice(1) + ' theme (' + (isDark() ? 'dark' : 'light') + '); switch to ' + next + ' mode';
+    toggle.setAttribute('aria-label', label);
+    toggle.title = label;
+    toggle.querySelector('.theme-toggle-label').textContent = mode[0].toUpperCase() + mode.slice(1);
+    const tooltip = document.getElementById('theme-tooltip');
+    if (tooltip) tooltip.textContent = label;
   }
   function applyTheme(value) {
     document.documentElement.dataset.theme = value;
@@ -65,7 +68,7 @@
   }
   if (systemTheme?.addEventListener) systemTheme.addEventListener('change', updateToggle);
   if (toggle) toggle.addEventListener('click', () => {
-    const value = isDark() ? 'light' : 'dark';
+    const value = {system:'light', light:'dark', dark:'system'}[document.documentElement.dataset.theme || 'system'];
     applyTheme(value);
     announce(store.write('theme', value) ? 'Theme saved on this device.' : 'Theme changed for this page; storage is unavailable.');
   });

@@ -19,6 +19,42 @@ JoinJson is a browser-based JSON merger built with HTML, CSS, and JavaScript. Pa
 - **Appearance:** system, light, and dark themes, responsive layouts, and reduced-motion support.
 - **Optional AI:** streaming chat and Markdown rendering; the floating AI Help button is currently hidden.
 
+## JSON to TypeScript
+
+All available tools use clean URLs: `/` for JSON Merger, `/json-to-zod` for JSON to Zod Schema, and `/json-to-typescript` for JSON to TypeScript. Legacy `/?tool=json-to-zod`, `/?tool=json-to-typescript`, and `/?tool=merge` links automatically update to their clean paths without reloading, preserving other query parameters and fragments. Menu navigation and cross-tool actions use the same routes. Vercel serves direct visits and reloads for both converter paths; other static hosts should rewrite those paths to `index.html`.
+
+Choose **Tool → Converters / Generators → JSON to TypeScript**, or open `/json-to-typescript`.
+
+The converter reuses the Zod converter's two-pane CodeMirror layout and theme. Choose interface or type mode, make all properties optional (including nested properties), enable exports, and set a valid root name (default `Root`). Nested objects stay inline; mixed arrays use unions, empty arrays use `Array<unknown>`, and primitive/array roots use type aliases even in interface mode. Inference describes only the supplied sample, not unseen fields or runtime validation. Input is limited to 1 MB and 100 nested levels.
+
+Copy or download the generated `.ts` file, or select **Convert to Zod Schema** to transfer the current JSON. The merger's **Convert Output to TypeScript** action transfers the complete merged result, not its potentially truncated preview. Conversion and transfers stay in memory in the current tab: no payloads in URLs, network calls, or browser storage. Switching tools preserves each workspace until cleared or the page is closed/reloaded.
+
+Run `npm run test:typescript` for inference, options, validation, exports, routing, cross-tool transfers, menu, and CodeMirror integration tests.
+
+## JSON to Python
+
+Open `/json-to-python` or choose **🐍 JSON to Python (Pydantic)** in the tool menu. The shared two-pane editor generates Pydantic `BaseModel` classes or standard Python dataclasses, with optional nullable fields defaulting to `None`. Nested objects generate separate classes; mixed arrays use unions and empty arrays use `Any`. Python 3.9+ is required; Pydantic mode also requires the `pydantic` package. Dataclasses provide type hints, not runtime validation or automatic nested JSON deserialization.
+
+Invalid or reserved field names are renamed safely: Pydantic uses `Field(alias=...)` and dataclasses store the source key in `field(metadata={"json_key": ...})`. Array and primitive roots use a `Root` class with a `value` field. Input is limited to 1 MB and 100 nested levels. Copy or download `models.py`, or use **Convert Output to Python** under the merger to transfer its complete result in memory, never via URL or storage.
+
+Clean routes, trailing slashes, legacy `/?tool=json-to-python` links, history navigation, and direct visits work like the other converters. Vercel rewrites `/json-to-python` to the SPA; configure the equivalent fallback on other hosts. Run `npm run test:python` for conversion, Python syntax/runtime checks, UI actions, merger transfer, routes, and editor integration.
+
+## JSON ⇄ YAML
+
+Open `/json-to-yaml` or select **⚙️ JSON ⇄ YAML Converter** from the existing tool panel. The shared two-pane CodeMirror layout supports JSON ➔ YAML and YAML ➔ JSON, 2- or 4-space indentation, inline line/column errors, copy, and direction-aware `.yaml`/`.json` downloads. **Convert Output to YAML** transfers the complete merger output in tab memory and selects JSON ➔ YAML. Direct visits, trailing slashes, history navigation, and legacy `/?tool=json-to-yaml` links use the clean route; Vercel rewrites it to the SPA. Other static hosts need the same fallback.
+
+Conversion uses `js-yaml` 4.3.2, pinned on jsDelivr with subresource integrity and an exact CSP script allowance. The CDN downloads only library code, never the JSON/YAML payload. A blocked/unavailable CDN produces inline feedback and disables exports. No payloads are uploaded, stored, or placed in URLs. The JSON-compatible YAML schema preserves date-like strings and rejects custom tags and multiple documents. Comments and formatting are not preserved. Cyclic aliases, non-finite numbers, input over 1 MB, depth over 100, and expansion over 100,000 values are rejected. YAML mode uses the shared editor without JSON-only lint/format controls.
+
+Run `npm run test:yaml` for conversion, validation, actions, transfers, clean routes, menu, and editor regression coverage. The pinned development dependency lets these tests run without CDN requests.
+
+## JSON Diff & Compare
+
+Open `/json-diff` or select **🔍 JSON Diff & Compare** from the tool panel. The shared editable JSON panes support validation, Find, formatting, Swap Left/Right, and Clear Both (including editor undo history). Select **Compare JSON** to view additions (green), deletions (red), and modifications (yellow), with text labels, JSON pointer paths, and original/modified values. Object key order is ignored; arrays compare by position, not identity. Large reports display the first 500 changes with total counts.
+
+**Compare Merged JSON** transfers the full merged result into the left editor without overwriting the right editor. Workspaces persist in tab memory while switching tools. Inputs are never uploaded, saved, or placed in URLs. The patched `jsondiffpatch` 0.7.6 library loads on demand from a version-pinned jsDelivr ES module allowed by the CSP; blocked loading produces a retryable inline message. Custom text-only rendering reuses site theme tokens instead of third-party colors and safely displays HTML-like keys. Each input is limited to 1 MB, 100 nested levels, and 100,000 values. Vercel rewrites direct visits to the SPA; other hosts need the equivalent fallback. Legacy `/?tool=json-diff` links update to the clean path.
+
+Run `npm run test:diff` for semantic comparison, validation, safe rendering, UI controls, merger transfers, routing, and CodeMirror regression checks.
+
 ## Requirements
 
 - **Node.js 20.6 or newer** and npm for builds, tests, and the optional Node server.

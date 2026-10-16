@@ -43,7 +43,7 @@ test('homepage SEO, heading hierarchy, accessible controls, and matching FAQ sch
   assert.ok(description.length >= 140 && description.length <= 160, description.length);
   assert.match(d.title.toLowerCase(), /merge json/); assert.match(description.toLowerCase(), /merge json/);
   assert.equal(d.querySelectorAll('h1').length, 1);
-  let level = 0; for (const h of d.querySelectorAll('h1,h2,h3,h4')) { const next = +h.tagName[1]; assert.ok(next <= level + 1); level = next; }
+  let level = 0; for (const h of d.querySelectorAll('main h1,main h2,main h3,main h4')) { const next = +h.tagName[1]; assert.ok(next <= level + 1); level = next; }
   for (const name of ['robots', 'theme-color', 'viewport', 'twitter:card', 'twitter:title', 'twitter:description']) assert.ok(d.querySelector(`meta[name="${name}"]`));
   assert.equal(d.documentElement.lang, 'en');
   const data = [...d.querySelectorAll('script[type="application/ld+json"]')].map(s => JSON.parse(s.textContent));

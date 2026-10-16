@@ -1,0 +1,195 @@
+/* Reuse the merger's palette, cards, responsive grid, and editor styling. */
+ .shared-header .tool-menu {
+     position:relative;
+     order:0;
+     min-width:0;
+     margin:0 0 0 auto;
+     padding:0;
+     border:0;
+     font-size:14px;
+}
+ .shared-header .tool-menu + .header-links {
+     margin-left:0;
+}
+ .shared-header .tool-menu > summary {
+     display:flex;
+     align-items:center;
+     gap:8px;
+     min-height:34px;
+     padding:0;
+     border:0;
+     background:transparent;
+     color:var(--text);
+     font-weight:600;
+     text-decoration:none;
+}
+ .shared-header .tool-menu > summary::after {
+     content:none;
+}
+ .shared-header .tool-label {
+     color:var(--muted);
+     font-weight:500;
+}
+ .shared-header .tool-selection {
+     display:inline-flex;
+     align-items:center;
+     justify-content:space-between;
+     gap:10px;
+     min-height:34px;
+     padding:5px 9px;
+     border:1px solid var(--line);
+     border-radius:7px;
+     background:var(--surface);
+     font-size:13px;
+}
+ .shared-header .tool-menu > summary:hover .tool-selection, .shared-header .tool-menu[open] .tool-selection {
+     background:var(--soft);
+}
+ .shared-header .tool-arrow {
+     font-size:10px;
+}
+ .shared-header .tool-menu[open] .tool-arrow {
+     transform:rotate(180deg);
+}
+ .shared-header .tool-panel {
+     position:absolute;
+     top:calc(100% + 6px);
+     right:0;
+     z-index:30;
+     display:grid;
+     grid-template-columns:repeat(2,minmax(0,1fr));
+     gap:10px;
+     width:400px;
+     max-width:calc(100vw - 32px);
+     padding:12px;
+     background:var(--surface);
+     border:1px solid var(--line);
+     border-radius:9px;
+     box-shadow:var(--shadow,0 8px 30px #30291e18);
+}
+ .shared-header .tool-panel > a, .shared-header .tool-unavailable {
+     display:flex;
+     flex-direction:column;
+     justify-content:center;
+     align-items:flex-start;
+     gap:5px;
+     padding:10px 12px;
+     border-radius:6px;
+     color:var(--text);
+     text-decoration:none;
+     font-size:13px;
+     line-height:1.3;
+}
+ .shared-header .tool-panel > a:hover {
+     background:var(--soft);
+}
+ .shared-header .tool-panel > a[aria-current=page] {
+     color:var(--accent);
+     background:var(--accent-soft);
+     font-weight:600;
+}
+ .shared-header .tool-panel small {
+     color:var(--muted);
+     font-size:11px;
+     font-weight:400;
+}
+ .shared-header .tool-unavailable {
+     color:var(--muted);
+     cursor:default;
+}
+ body[data-tool=json-to-zod] #main > :not(#zod-tool), body[data-tool=json-to-typescript] #main > :not(#typescript-tool), body[data-tool=json-to-python] #main > :not(#python-converter-tool), body[data-tool=json-to-yaml] #main > :not(#yaml-converter-tool) {
+     display:none !important;
+}
+ :is(#zod-tool, #typescript-tool, #python-converter-tool, #yaml-converter-tool, #json-diff-tool) {
+     --control-border:var(--line);
+     --border:var(--line);
+     --code:var(--surface);
+     --panel:var(--surface);
+     --raised:var(--soft);
+     --r1:10px;
+     --sm:13px;
+     --xs:12px;
+     --same:var(--good);
+     --different:var(--bad);
+}
+ :is(#zod-tool, #typescript-tool, #python-converter-tool, #yaml-converter-tool, #json-diff-tool) .edit-body {
+     height:360px;
+}
+ :is(#zod-tool, #typescript-tool, #python-converter-tool, #yaml-converter-tool, #json-diff-tool) .editor:has(.cm-host) .edit-body {
+     display:block;
+     height:auto;
+}
+ :is(#zod-tool, #typescript-tool, #python-converter-tool, #yaml-converter-tool, #json-diff-tool) .cm-host {
+     border:0;
+     border-radius:0;
+}
+ :is(#zod-tool, #typescript-tool, #python-converter-tool, #yaml-converter-tool, #json-diff-tool) .cm-host .cm-editor {
+     height:360px;
+}
+ :is(#zod-tool, #typescript-tool, #python-converter-tool, #yaml-converter-tool, #json-diff-tool) .cm-help {
+     margin:8px 12px;
+}
+ :is(#zod-tool, #typescript-tool, #python-converter-tool, #yaml-converter-tool, #json-diff-tool) .badge {
+     margin-bottom:0;
+}
+ :is(#zod-tool, #typescript-tool, #python-converter-tool, #yaml-converter-tool, #json-diff-tool) .zod-actions {
+     margin-top:14px;
+}
+ :is(#zod-tool, #typescript-tool, #python-converter-tool, #yaml-converter-tool, #json-diff-tool) [aria-pressed=true] {
+     background:var(--accent-soft);
+     color:var(--accent);
+     border-color:var(--accent);
+}
+ :is(#zod-tool, #typescript-tool, #python-converter-tool, #yaml-converter-tool, #json-diff-tool) .global-status {
+     margin-bottom:0;
+}
+ :is(#zod-title, #typescript-title, #python-title, #yaml-title, #json-diff-title) {
+     font-size:clamp(28px, 4.5vw, 46px);
+     line-height:1.2;
+     letter-spacing:-.045em;
+     margin:12px 0;
+}
+ :is(#zod-title, #typescript-title, #python-title, #yaml-title, #json-diff-title) span {
+     color:var(--accent);
+}
+ :is(#zod-title, #typescript-title, #python-title, #yaml-title, #json-diff-title):focus {
+     outline:none;
+}
+ @media(max-width:900px) {
+     .shared-header .header-inner:has(.tool-menu) {
+         flex-wrap:wrap;
+    }
+     .shared-header .tool-menu {
+         flex:0 1 auto;
+    }
+     .shared-header .tool-menu > summary {
+         width:fit-content;
+    }
+}
+ @media(max-width:380px) {
+     .shared-header .tool-panel {
+         gap:8px;
+         padding:10px;
+    }
+     .shared-header .tool-panel > a, .shared-header .tool-unavailable {
+         padding:10px 8px;
+         font-size:12px;
+    }
+}
+ @media(max-width:700px) {
+     :is(#zod-tool, #typescript-tool, #python-converter-tool, #yaml-converter-tool, #json-diff-tool) .edit-body, :is(#zod-tool, #typescript-tool, #python-converter-tool, #yaml-converter-tool, #json-diff-tool) .cm-host .cm-editor {
+         height:300px;
+    }
+     :is(#zod-tool, #typescript-tool, #python-converter-tool, #yaml-converter-tool, #json-diff-tool) .result-actions button {
+         flex-basis:100%;
+    }
+}
+ 
+.shared-header .tool-group-label { color:var(--muted); font-size:11px; font-weight:600; padding:4px 12px; grid-column:span 2; order:-1; }
+:is(#typescript-tool, #python-converter-tool, #yaml-converter-tool) .typescript-options { display:flex; flex-wrap:wrap; gap:8px 16px; margin-top:14px; }
+#typescript-tool .typescript-options .array-option { flex-wrap:wrap; }
+#typescript-root { width:140px; min-height:38px; padding:6px 9px; border:1px solid var(--line); border-radius:7px; background:var(--surface); }
+#typescript-root[aria-invalid=true] { border-color:var(--bad); }
+#typescript-options-status { color:var(--bad); }
+#typescript-options-status:empty { display:none; }
+.merger-converter-actions { margin-top:14px; }

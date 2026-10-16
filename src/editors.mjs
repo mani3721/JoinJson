@@ -33,6 +33,9 @@ function check(text, force = false) { return diagnostics(text, window.JsonErrorH
 function attach(fallback) {
   if (instances.has(fallback.id)) return instances.get(fallback.id);
   const result = fallback.id === 'preview';
+  const code = ['zod-output', 'typescript-output', 'python-output', 'yaml-output'].includes(fallback.id);
+  const yamlInput = fallback.id === 'yaml-input';
+  const readOnly = result || code;
   const hadFocus = document.activeElement === fallback;
   const initial = result ? (window.JMFlow && window.JMFlow.resultText() || fallback.textContent) : fallback.value;
   const host = document.createElement('div'); host.className = 'cm-host';
@@ -49,16 +52,17 @@ function attach(fallback) {
   }
   const label = fallback.getAttribute('aria-label') || (fallback.id === 'first' ? 'First JSON' : fallback.id === 'second' ? 'Second JSON' : 'JSON input');
   function attributes() {
-    return EditorView.contentAttributes.of({ 'aria-label': label, 'aria-describedby': [fallback.getAttribute('aria-describedby'), fallback.id + '-cm-help'].filter(Boolean).join(' '), 'aria-invalid': fallback.getAttribute('aria-invalid') || 'false', autocapitalize: 'off', spellcheck: 'false' });
+    return EditorView.contentAttributes.of({ 'aria-label': fallback.getAttribute('aria-label') || label, 'aria-describedby': [fallback.getAttribute('aria-describedby'), fallback.id + '-cm-help'].filter(Boolean).join(' '), 'aria-invalid': fallback.getAttribute('aria-invalid') || 'false', autocapitalize: 'off', spellcheck: 'false' });
   }
   function updateFallback() {
     syncing = true;
     const text = view.state.doc.toString();
-    if (!result) { nativeValue.set.call(fallback, text); fallback.dispatchEvent(new Event('input', { bubbles: true })); }
+    if (!result && !code) { nativeValue.set.call(fallback, text); fallback.dispatchEvent(new Event('input', { bubbles: true })); }
     syncing = false;
   }
   function lint(force = false) {
     clearTimeout(lintTimer);
+    if (code || yamlInput) return; // YAML input is validated by its converter, not the JSON linter.
     if (!force && view.state.doc.length > LARGE) { view.dispatch(setDiagnostics(view.state, [])); return; }
     lintTimer = setTimeout(() => view.dispatch(setDiagnostics(view.state, check(view.state.doc.toString(), force))), force ? 0 : 250);
   }
@@ -83,7 +87,7 @@ function attach(fallback) {
   function accept(found) { matches = found.matches; truncated = found.truncated; searchError = found.error || ''; active = -1; paint(); }
   function searchNow() {
     clearTimeout(searchTimer);
-    const text = view.state.doc.toString(), options = { scope, caseSensitive: matchCase, wholeWord, regex, maxMatches: 5000 };
+    const text = view.state.doc.toString(), options = { scope: code ? 'all' : scope, caseSensitive: matchCase, wholeWord, regex, maxMatches: 5000 };
     const token = ++searchRun;
     if (searchWorker) { searchWorker.terminate(); searchWorker = null; }
     if (!query) { accept({ matches: [], truncated: false, error: null }); return; }
@@ -146,16 +150,16 @@ function attach(fallback) {
     return true;
   }
   const nativeValue = !result ? Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value') : null;
-  const extensions = [lineNumbers(), highlightActiveLineGutter(), highlightActiveLine(), json(), bracketMatching(), foldGutter(), history(), marks, lintGutter(), EditorState.tabSize.of(2), syntaxHighlighting(colors),
+  const extensions = [lineNumbers(), highlightActiveLineGutter(), highlightActiveLine(), ...(code || yamlInput ? [] : [json()]), bracketMatching(), foldGutter(), history(), marks, lintGutter(), EditorState.tabSize.of(2), syntaxHighlighting(colors),
     wrapping.of(EditorView.lineWrapping), attrs.of(attributes()), search({ createPanel: panel }),
-    EditorState.readOnly.of(result), EditorView.editable.of(!result),
+    EditorState.readOnly.of(readOnly), EditorView.editable.of(!readOnly),
     keymap.of([{ key: 'Mod-f', run: showFind }, { key: 'Escape', run: () => { if (panelNodes) close(); else view.setTabFocusMode(true); return true; } }, ...defaultKeymap, ...historyKeymap, ...foldKeymap, indentWithTab]),
     EditorView.updateListener.of(update => {
       if (update.docChanged && !syncing) { if (!result) updateFallback(); lint(); scheduleSearch(); }
       if (update.viewportChanged && panelNodes && view.state.doc.length > 1024 * 1024) queueMicrotask(paint);
     }),
     EditorView.domEventHandlers({ blur: () => { if (!result && view.state.doc.length > LARGE) lint(true); }, drop: event => {
-      const files = event.dataTransfer && Array.from(event.dataTransfer.files); if (result || !files || !files.length) return false;
+      const files = event.dataTransfer && Array.from(event.dataTransfer.files); if (readOnly || !files || !files.length) return false;
       event.preventDefault(); const file = files.find(item => /\.json$/i.test(item.name));
       if (file) file.text().then(text => { if (!view.state.doc.length || window.confirm('Replace this JSON with the dropped file?')) replaceDocument(view, text); }).catch(() => {});
       return true;
@@ -173,7 +177,7 @@ function attach(fallback) {
   wrap.onchange = () => setWrap(wrap.checked);
   if (result) {
     const existingWrap = document.getElementById('wrap-lines'); setWrap(existingWrap.checked); existingWrap.addEventListener('change', () => setWrap(existingWrap.checked));
-  } else {
+  } else if (!code && !yamlInput) {
     const format = button('Format JSON', () => { const parsed = window.JsonErrorHelper.checkJson(view.state.doc.toString()); if (parsed.ok) replaceDocument(view, JSON.stringify(parsed.value, null, 2)); });
     toolbar.append(format);
     function valid() { format.disabled = view.state.doc.length > LARGE || !window.JsonErrorHelper.checkJson(view.state.doc.toString()).ok; }
@@ -193,7 +197,7 @@ function attach(fallback) {
     Object.defineProperty(fallback, 'selectionEnd', { configurable: true, get: () => view.state.selection.main.to });
   }
   const attributeObserver = new MutationObserver(() => { view.dispatch({ effects: attrs.reconfigure(attributes()) }); });
-  attributeObserver.observe(fallback, { attributes: true, attributeFilter: ['aria-describedby', 'aria-invalid'] });
+  attributeObserver.observe(fallback, { attributes: true, attributeFilter: ['aria-describedby', 'aria-invalid', 'aria-label'] });
   if (result) {
     new MutationObserver(() => { const full = window.JMFlow && window.JMFlow.resultText() || fallback.textContent; if (full !== view.state.doc.toString()) { syncing = true; replaceDocument(view, full); syncing = false; } }).observe(fallback, { childList: true, characterData: true, subtree: true });
     document.addEventListener('jm:result-ready', event => { syncing = true; replaceDocument(view, event.detail.text); syncing = false; });
@@ -208,15 +212,25 @@ function attach(fallback) {
     syncing = false;
     if (!result) nativeValue.set.call(fallback, '');
   });
+  const converter = fallback.id.startsWith('zod-') ? 'zod' : fallback.id.startsWith('typescript-') ? 'typescript' : fallback.id.startsWith('python-') ? 'python' : fallback.id.startsWith('yaml-') ? 'yaml' : fallback.id.startsWith('diff-input-') ? 'diff' : null;
+  if (converter) document.addEventListener('jm:' + converter + '-clear', () => {
+    syncing = true;
+    view.setState(EditorState.create({ doc: '', extensions }));
+    nativeValue.set.call(fallback, '');
+    syncing = false;
+  });
   lint();
   if (hadFocus) view.focus();
   const controller = { view, text: () => view.state.doc.toString(), set: text => replaceDocument(view, text), find: showFind, destroy() { clearTimeout(lintTimer); clearTimeout(searchTimer); searchRun++; if (searchWorker) searchWorker.terminate(); attributeObserver.disconnect(); view.destroy(); } };
   instances.set(fallback.id, controller); return controller;
 }
 export function enhance() {
-  if (window.JMEditors) return;
+  if (window.JMEditors) {
+    ['zod-input', 'zod-output', 'typescript-input', 'typescript-output', 'python-json-input', 'python-output', 'yaml-input', 'yaml-output', 'diff-input-a', 'diff-input-b'].forEach(id => { const node = document.getElementById(id); if (node && !node.closest('[hidden]')) { try { attach(node); } catch (_) {} } });
+    return;
+  }
   window.JMEditors = { get: id => instances.get(id), text: (id, otherwise = '') => instances.has(id) ? instances.get(id).text() : otherwise };
-  ['first', 'second', 'preview', 'paste'].forEach(id => { const node = document.getElementById(id); if (node) { try { attach(node); } catch (_) { /* Keep working fallback. */ } } });
+  ['first', 'second', 'preview', 'paste', 'zod-input', 'zod-output', 'typescript-input', 'typescript-output', 'python-json-input', 'python-output', 'yaml-input', 'yaml-output', 'diff-input-a', 'diff-input-b'].forEach(id => { const node = document.getElementById(id); if (node && !(document.getElementById('zod-tool') && ['first', 'second'].includes(id)) && !node.closest('[hidden]')) { try { attach(node); } catch (_) { /* Keep working fallback. */ } } });
   // Advanced inputs are recreated on reorder/fix; do not retain removed JSON views.
   const list = document.getElementById('files');
   if (list) new MutationObserver(() => {
