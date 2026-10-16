@@ -25,7 +25,7 @@ test('CodeMirror input sync, read-only code without JSON lint, clear and lazy sw
   input.view.dispatch({ changes: { from: 0, to: input.view.state.doc.length, insert: '[true,null]' } });
   assert.equal(win.document.getElementById('zod-input').value, '[true,null]');
   await new Promise(resolve => setTimeout(resolve, 350));
-  assert.match(output.text(), /z.union/);
+  assert.match(output.text(), /z.array\(z.boolean\(\).nullable\(\)\)/);
   assert.equal(output.view.dom.querySelector('.cm-lintRange-error'), null);
   win.document.getElementById('zod-clear').click();
   assert.equal(input.text(), ''); assert.equal(output.text(), '');

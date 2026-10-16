@@ -12,30 +12,50 @@
     if (!validName(name)) throw new Error('Root Type Name must be a valid, non-reserved TypeScript identifier.');
     const value = JSON.parse(text);
     let size = 0;
-    function infer(value, depth = 0) {
+    function infer(values, depth = 0) {
       if (depth > 100) throw new Error('Use no more than 100 nested levels.');
-      let code;
-      if (value === null) code = 'null';
-      else if (Array.isArray(value)) {
-        const members = [...new Set(value.map(item => infer(item, depth + 1)))];
-        // Array<T> keeps unions and nested arrays unambiguous.
-        code = 'Array<' + (members.length ? members.join(' | ') : 'unknown') + '>';
-      } else if (typeof value === 'object') {
-        const pad = '  '.repeat(depth), childPad = pad + '  ';
-        const fields = Object.keys(value).map(key => {
-          const field = /^[A-Za-z_$][\w$]*$/.test(key) ? key : JSON.stringify(key);
-          return childPad + field + (options.optional ? '?' : '') + ': ' + infer(value[key], depth + 1) + ';';
-        });
-        code = fields.length ? '{\n' + fields.join('\n') + '\n' + pad + '}' : '{}';
-      } else if (typeof value === 'number') {
-        if (!Number.isFinite(value)) throw new Error('Use finite JSON numbers; values such as 1e400 are outside the supported range.');
-        code = 'number';
-      } else code = typeof value;
+      const groups = new Map();
+      for (const value of values) {
+        const kind = value === null ? 'null' : Array.isArray(value) ? 'array' : typeof value;
+        if (kind === 'number' && !Number.isFinite(value)) throw new Error('Use finite JSON numbers; values such as 1e400 are outside the supported range.');
+        if (!groups.has(kind)) groups.set(kind, []);
+        groups.get(kind).push(value);
+      }
+      const members = [];
+      for (const [kind, samples] of groups) {
+        if (kind === 'array') {
+          const items = [];
+          for (const sample of samples) {
+            for (const item of sample) items.push(item);
+          }
+          // Infer all elements together, including arrays nested in merged objects.
+          members.push('Array<' + infer(items, depth + 1) + '>');
+        } else if (kind === 'object') {
+          const pad = '  '.repeat(depth), childPad = pad + '  ';
+          const properties = new Map();
+          for (const sample of samples) {
+            for (const key of Object.keys(sample)) {
+              if (!properties.has(key)) properties.set(key, []);
+              properties.get(key).push(sample[key]);
+            }
+          }
+          // Merge structural samples before rendering; absent fields are optional,
+          // while explicit nulls remain property-level unions.
+          const fields = [];
+          for (const [key, values] of properties) {
+            const field = /^[A-Za-z_$][\w$]*$/.test(key) ? key : JSON.stringify(key);
+            const optional = options.optional || values.length < samples.length;
+            fields.push(childPad + field + (optional ? '?' : '') + ': ' + infer(values, depth + 1) + ';');
+          }
+          members.push(fields.length ? '{\n' + fields.join('\n') + '\n' + pad + '}' : '{}');
+        } else members.push(kind);
+      }
+      const code = members.length ? members.join(' | ') : 'unknown';
       size += code.length;
       if (size > 8 * MAX_LENGTH) throw new Error('Generated types are too large. Try a smaller JSON sample.');
       return code;
     }
-    const body = infer(value);
+    const body = infer([value]);
     const prefix = options.export === false ? '' : 'export ';
     const object = value !== null && !Array.isArray(value) && typeof value === 'object';
     // Interfaces cannot represent primitive or array roots, so use a type alias.

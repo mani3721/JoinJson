@@ -23,7 +23,41 @@ test('options affect nested fields; aliases support all root values', async () =
     await transform(code, { loader: 'ts' });
     if (value !== '{}') assert.match(code, /^export type Root =/);
   }
-  assert.match(convert('[{"a":1},{"b":true}]'), /a: number;[\s\S]*\|[\s\S]*b: boolean;/);
+  assert.equal(convert('[{"a":1},{"b":true}]'), 'export type Root = Array<{\n    a?: number;\n    b?: boolean;\n  }>;\n');
+});
+const compact = code => code.replace(/\s+/g, ' ').trim();
+test('merges contacts into one object with independent nullable property unions', async () => {
+  const contacts = [
+    { type: 'work', name: 'Ana', phone: '123', email: null },
+    { type: 'home', name: 'Ben', phone: null, email: 'ben@example.com' },
+    { email: null, phone: null, name: 'Cara', type: 'work' }
+  ];
+  const code = convert(JSON.stringify({ company: { contacts } }));
+  assert.equal(compact(code), 'export interface Root { company: { contacts: Array<{ type: string; name: string; phone: string | null; email: null | string; }>; }; }');
+  await transform(code, { loader: 'ts' });
+});
+test('recursively merges nested objects, arrays and missing fields without losing primitive members', async () => {
+  const code = convert(JSON.stringify([
+    { id: 1, profile: { phone: '123' }, tags: [], rows: [[{ value: 1 }]] },
+    { id: 'two', profile: { phone: null, active: true }, tags: ['a'], rows: [[{ value: null, label: 'x' }]], note: null },
+    { id: 3, profile: null, tags: [null], rows: [] },
+    null, false, 42
+  ]));
+  assert.equal(compact(code), 'export type Root = Array<{ id: number | string; profile: { phone: string | null; active?: boolean; } | null; tags: Array<string | null>; rows: Array<Array<{ value: number | null; label?: string; }>>; note?: null; } | null | boolean | number>;');
+  await transform(code, { loader: 'ts' });
+});
+test('merges reordered and empty object samples safely and honors optional fields', async () => {
+  const samples = JSON.parse('[{"__proto__":1,"a-b":"x"},{"a-b":null,"__proto__":null}]');
+  samples.push(Object.create(null));
+  const code = convert(JSON.stringify(samples));
+  assert.equal(compact(code), 'export type Root = Array<{ __proto__?: number | null; "a-b"?: string | null; }>;');
+  assert.equal({}.polluted, undefined);
+  assert.equal(compact(convert('[{"id":1},{"id":null}]', { optional: true, export: false })),
+    'type Root = Array<{ id?: number | null; }>;');
+  assert.match(convert(JSON.stringify([Object.create(null), Object.create(null)])), /Array<\{\}>/);
+  assert.equal(convert('[[],[]]'), 'export type Root = Array<Array<unknown>>;\n');
+  await transform(code, { loader: 'ts' });
+  assert.throws(() => convert('[{"n":1},{"n":1e400}]'), /finite/);
 });
 test('rejects invalid JSON, unsafe names, non-finite numbers and oversized/deep samples', () => {
   assert.throws(() => convert('{bad'), SyntaxError);
@@ -39,6 +73,18 @@ function app(t, url = 'https://www.joinjson.com/?tool=json-to-typescript', merge
   return dom.window;
 }
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+test('UI renders merged array schemas and regenerates optional properties', async t => {
+  const w = app(t), d = w.document, get = id => d.getElementById('typescript-' + id);
+  get('input').value = JSON.stringify({ company: { contacts: [{ name: 'Ana', phone: '123' }, { name: 'Ben', phone: null }] } });
+  get('input').dispatchEvent(new w.Event('input'));
+  await wait(220);
+  assert.match(get('output').value, /phone: string \| null;/);
+  assert.equal((get('output').value.match(/name: string;/g) || []).length, 1);
+  assert.doesNotMatch(get('output').value, /\}\s*\|\s*\{/);
+  get('optional').checked = true;
+  get('optional').dispatchEvent(new w.Event('change'));
+  assert.match(get('output').value, /phone\?: string \| null;/);
+});
 test('query and path direct visits select TypeScript; SPA and history preserve workspaces', async t => {
   for (const path of ['/?tool=json-to-typescript', '/json-to-typescript', '/json-to-typescript/']) {
     const w = app(t, 'https://www.joinjson.com' + path), d = w.document;

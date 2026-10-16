@@ -5,17 +5,20 @@
   const MAX_DEPTH = 100;
   function schemaFor(value, depth = 0) {
     if (depth > MAX_DEPTH) throw new Error('Use no more than ' + MAX_DEPTH + ' nested levels.');
-    if (value === null) return 'z.null()';
+    // A null-only sample cannot tell us the eventual non-null type.
+    if (value === null) return 'z.unknown().nullable()';
     if (Array.isArray(value)) {
-      // Infer every element, not just the first. Deduplicate equivalent schemas.
-      const items = [...new Set(value.map(item => schemaFor(item, depth + 1)))];
-      const element = !items.length ? 'z.unknown()' : items.length === 1 ? items[0] : 'z.union([\n' + items.map(item => indent(item)).join(',\n') + '\n])';
+      // Infer concrete types first, then allow null without widening those types.
+      const items = [...new Set(value.filter(item => item !== null).map(item => schemaFor(item, depth + 1)))];
+      let element = !items.length ? 'z.unknown()' : items.length === 1 ? items[0] : 'z.union([\n' + items.map(item => indent(item)).join(',\n') + '\n])';
+      if (value.includes(null)) element += '.nullable()';
       return 'z.array(' + element + ')';
     }
     if (typeof value === 'object') {
       const fields = Object.keys(value).map(key => {
         // Computed __proto__ keeps this a real field, rather than a prototype setter.
-        const name = key === '__proto__' ? '[' + JSON.stringify(key) + ']' : JSON.stringify(key);
+        const name = key === '__proto__' ? '[' + JSON.stringify(key) + ']'
+          : /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(key) ? key : JSON.stringify(key);
         return indent(name + ': ' + schemaFor(value[key], depth + 1));
       });
       return fields.length ? 'z.object({\n' + fields.join(',\n') + '\n})' : 'z.object({})';

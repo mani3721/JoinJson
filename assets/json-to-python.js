@@ -48,7 +48,8 @@
           if (keywords.has(name) || reserved.has(name) || protectedFields.has(name) || name.startsWith('model_')) name = 'field_' + name;
           name = unique(name, used);
           let type = infer(sample[key], key, depth + 1);
-          if (options.optional) type = optional(type);
+          // A null-only field gives no evidence about its future non-null type.
+          if (options.optional || type === 'None') type = optional(type);
           return { key, name, type };
         });
         const signature = JSON.stringify(fields);
@@ -56,12 +57,14 @@
         const name = rootObject ? 'Root' : className(hint);
         if (!rootObject) cache.set(signature, name);
         const lines = fields.map(({ key, name, type }) => {
-          let suffix = options.optional ? ' = None' : '';
+          // Dataclasses cannot put a defaulted field before a required field.
+          const defaultNone = options.optional || (!dataclass && sample[key] === null);
+          let suffix = defaultNone ? ' = None' : '';
           if (name !== key) {
             usesField = true;
             suffix = dataclass
-              ? ' = field(' + (options.optional ? 'default=None, ' : '') + 'metadata={"json_key": ' + quote(key) + '})'
-              : ' = Field(' + (options.optional ? 'default=None, ' : '') + 'alias=' + quote(key) + ')';
+              ? ' = field(' + (defaultNone ? 'default=None, ' : '') + 'metadata={"json_key": ' + quote(key) + '})'
+              : ' = Field(' + (defaultNone ? 'default=None, ' : '') + 'alias=' + quote(key) + ')';
           }
           return '    ' + name + ': ' + type + suffix;
         });

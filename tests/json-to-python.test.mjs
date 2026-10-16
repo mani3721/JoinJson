@@ -8,15 +8,17 @@ const require = createRequire(import.meta.url);
 const { convert, jsonToPython, MAX_LENGTH } = require('../assets/json-to-python.js');
 const read = path => readFileSync(new URL('../' + path, import.meta.url), 'utf8');
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+const pythonCommand = process.env.PYTHON || 'python3';
+const hasPydanticV2 = spawnSync(pythonCommand, ['-c', 'import pydantic; assert pydantic.__version__.split(".")[0] == "2"']).status === 0;
 function python(code, execute = false) {
   const script = 'import ast, sys\ncode = sys.stdin.read()\nast.parse(code)\n' + (execute ? 'exec(compile(code, "generated.py", "exec"), globals())\nfrom typing import get_type_hints\nfor model in list(globals().values()):\n    if isinstance(model, type) and model.__module__ == "__main__":\n        get_type_hints(model)\n' : '');
-  const result = spawnSync('python3', ['-c', script], { input: code, encoding: 'utf8' });
+  const result = spawnSync(pythonCommand, ['-c', script], { input: code, encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);
 }
 test('Python inference covers nested models, primitives, arrays, nullable values and reuse', () => {
   const text = JSON.stringify({ name: 'Ana', age: 2, price: 1.5, active: true, none: null, profile: { city: 'A' }, other: { city: 'B' }, items: [1, 'a', null], empty: [], nested: [[true]] });
   const code = convert(text);
-  for (const fragment of ['from pydantic import BaseModel', 'class Profile(BaseModel):', 'class Root(BaseModel):', 'name: str', 'age: int', 'price: float', 'active: bool', 'none: None', 'other: Profile', 'items: list[Optional[Union[int, str]]]', 'empty: list[Any]', 'nested: list[list[bool]]']) assert.ok(code.includes(fragment), fragment);
+  for (const fragment of ['from pydantic import BaseModel', 'class Profile(BaseModel):', 'class Root(BaseModel):', 'name: str', 'age: int', 'price: float', 'active: bool', 'none: Optional[Any] = None', 'other: Profile', 'items: list[Optional[Union[int, str]]]', 'empty: list[Any]', 'nested: list[list[bool]]']) assert.ok(code.includes(fragment), fragment);
   python(code);
   for (const framework of ['dataclass', 'pydantic']) for (const value of ['{}', '[]', 'null', 'true', '3.14', '"text"', '[{"a":1},{"b":true}]']) {
     const result = convert(value, { framework });
@@ -36,6 +38,37 @@ test('safe field names, aliases, collisions, empty classes and Optional defaults
     else assert.match(code, /metadata=\{"json_key": "a-b"\}/);
     if (optional) assert.match(code, /Optional\[int\].*= None/);
   }
+});
+test('null-only fields are flexible without weakening known nullable types', () => {
+  const sample = { joined: null, 'joined-at': null, profile: { joined: null }, name: 'Ana', dates: [null, '2026-01-01'] };
+  for (const optional of [false, true]) for (const framework of ['pydantic', 'dataclass']) {
+    const code = jsonToPython(sample, { framework, optional });
+    assert.match(code, /from typing import Any, Optional/);
+    assert.match(code, /joined: Optional\[Any\]/);
+    assert.doesNotMatch(code, /: None\b/);
+    if (framework === 'pydantic') {
+      assert.match(code, /joined: Optional\[Any\] = None/);
+      assert.match(code, /joined_at: Optional\[Any\] = Field\(default=None, alias="joined-at"\)/);
+    }
+    assert.match(code, /dates: (?:Optional\[)?list\[Optional\[str\]\]/);
+    python(code, framework === 'dataclass');
+  }
+  assert.match(convert('null'), /value: Optional\[Any\] = None/);
+});
+test('Pydantic V2 accepts omitted, null and future non-null values for null-only fields', { skip: !hasPydanticV2 && 'Python with Pydantic V2 is required (set PYTHON)' }, () => {
+  for (const optional of [false, true]) {
+    const code = jsonToPython({ joined: null, 'joined-at': null, profile: { joined: null }, name: 'Ana' }, { optional });
+    python(code + '\n' + [
+      'for value in [None, "2026-01-01", 42, True, {"date": "2026-01-01"}, ["2026-01-01"]]:',
+      '    model = Root.model_validate({"joined": value, "joined-at": value, "profile": {"joined": value}, "name": "Ana"})',
+      '    assert model.joined == value',
+      '    assert model.joined_at == value',
+      '    assert model.profile.joined == value',
+      'model = Root.model_validate({"name": "Ana", "profile": {}})',
+      'assert model.joined is None and model.joined_at is None and model.profile.joined is None'
+    ].join('\n'), true);
+  }
+  python(convert('null') + '\nassert Root().value is None\nassert Root(value="2026-01-01").value == "2026-01-01"\n', true);
 });
 test('invalid, excessive and non-finite JSON fail safely', () => {
   assert.throws(() => convert('{bad'), SyntaxError);

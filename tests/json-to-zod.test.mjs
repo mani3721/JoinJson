@@ -3,18 +3,61 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
+import { z } from 'zod';
 const require = createRequire(import.meta.url);
 const { convert, MAX_LENGTH } = require('../assets/json-to-zod.js');
 const read = path => readFileSync(new URL('../' + path, import.meta.url), 'utf8');
 
 test('all JSON types, nested structures, arrays and type export', () => {
   const code = convert('{"name":"Ana","age":2,"active":true,"none":null,"nested":{},"items":[1,2],"mixed":[1,"a",null],"empty":[]}', true);
-  for (const pattern of ['z.string()', 'z.number()', 'z.boolean()', 'z.null()', 'z.object({})', 'z.array(z.number())', 'z.union([', 'z.array(z.unknown())', 'export type Output = z.infer<typeof schema>;']) assert.ok(code.includes(pattern), pattern);
+  for (const pattern of ['z.string()', 'z.number()', 'z.boolean()', 'z.unknown().nullable()', 'z.object({})', 'z.array(z.number())', 'z.union([', 'z.array(z.unknown())', 'export type Output = z.infer<typeof schema>;']) assert.ok(code.includes(pattern), pattern);
   assert.ok(!convert('{}').includes('export type'));
   assert.equal(convert('[1,2,3]').match(/z.number/g).length, 1);
 });
+// Only execute converter-generated code from trusted test fixtures, never user input.
+function validator(value) {
+  const code = convert(JSON.stringify(value));
+  return new Function('z', code.replace('import { z } from "zod";', '').replace('export const schema =', 'return'))(z);
+}
+test('normalizes identifier keys while preserving arbitrary keys and prototype safety', () => {
+  const sample = JSON.parse('{"username":"Ana","$id":1,"_active":true,"default":false,"a-b":2,"first name":"Ana","123":3,"quote\\\"key":4,"__proto__":null}');
+  const code = convert(JSON.stringify(sample));
+  for (const key of ['username', '$id', '_active', 'default']) {
+    assert.ok(code.includes('\n  ' + key + ': z.'));
+    assert.ok(!code.includes(JSON.stringify(key) + ':'));
+  }
+  for (const key of ['a-b', 'first name', '123', 'quote"key']) assert.ok(code.includes(JSON.stringify(key) + ':'));
+  assert.ok(code.includes('["__proto__"]: z.unknown().nullable()'));
+  const schema = validator(sample);
+  assert.ok(Object.hasOwn(schema.shape, '__proto__'));
+  assert.equal(schema.safeParse(sample).success, true);
+  assert.equal(schema.safeParse({ ...sample, username: 42 }).success, false);
+});
+test('null-only fields and roots accept future values with nullable unknown schemas', () => {
+  const code = convert('{"joined":null,"nested":{"value":null}}');
+  assert.match(code, /joined: z.unknown\(\).nullable\(\)/);
+  assert.match(code, /value: z.unknown\(\).nullable\(\)/);
+  assert.ok(!code.includes('z.null()'));
+  const schema = validator({ joined: null, nested: { value: null } });
+  for (const joined of [null, '2026-01-01', 42, false, { id: 1 }]) {
+    assert.equal(schema.safeParse({ joined, nested: { value: joined } }).success, true);
+    assert.equal(validator(null).safeParse(joined).success, true);
+  }
+});
+test('nullable arrays retain concrete element validation and deduplication', () => {
+  assert.match(convert('[true,null,true]'), /z.array\(z.boolean\(\).nullable\(\)\)/);
+  assert.match(convert('[null,null]'), /z.array\(z.unknown\(\).nullable\(\)\)/);
+  assert.equal(validator([null]).safeParse([null, 'later', 42]).success, true);
+  const booleans = validator([true, null]);
+  assert.equal(booleans.safeParse([null, false, true]).success, true);
+  assert.equal(booleans.safeParse(['invalid']).success, false);
+  const mixed = validator([1, 'a', null, 2]);
+  assert.equal(mixed.safeParse([null, 'later', 42]).success, true);
+  assert.equal(mixed.safeParse([false]).success, false);
+  assert.equal(convert('[1,null,2]').match(/z.number/g).length, 1);
+});
 test('arbitrary keys, root primitives, and bounded failures', () => {
-  assert.match(convert('{"__proto__":null,"a-b":true,"quote\\\"key":1}'), /\["__proto__"\]: z.null\(\)/);
+  assert.match(convert('{"__proto__":null,"a-b":true,"quote\\\"key":1}'), /\["__proto__"\]: z.unknown\(\).nullable\(\)/);
   for (const value of ['null', '1', 'true', '"text"', '[]']) assert.match(convert(value), /export const schema = z\./);
   assert.throws(() => convert('{bad'), SyntaxError);
   assert.throws(() => convert(' '.repeat(MAX_LENGTH + 1)), /1 MB/);
