@@ -1,6 +1,13 @@
-/* Hide the AI entry point without changing the assistant or other controls. */
- .ai-launcher {
-     display: none !important;
+/* Keep the AI entry point visible when the assistant is initialized. */
+ .ai-launcher, .panel.ai-assistant {
+     --control-border: var(--line);
+     --border: var(--line);
+     --panel: var(--surface);
+     --code: var(--soft);
+     --on-accent: #fff;
+     --shadow-float: 0 8px 30px #0003;
+}
+ .ai-launcher, .ai-launcher:hover:not(:disabled) {
      position: fixed;
      right: max(1.25rem, env(safe-area-inset-right));
      bottom: max(1.25rem, env(safe-area-inset-bottom));

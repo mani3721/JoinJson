@@ -70,11 +70,11 @@ test('missing configuration, production guard and upstream errors do not leak de
   }
 });
 async function ui() {
-  // Test the retained optional assistant independently of the standalone homepage.
-  const html = await readFile(new URL('./fixtures/legacy-assistant.html', import.meta.url), 'utf8');
+  // Exercise the actual homepage so missing assistant markup cannot regress.
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
   const dom = new JSDOM(html, { runScripts: 'outside-only', url: 'http://localhost' });
   const w = dom.window, $ = id => w.document.getElementById(id);
-  w.prompt = () => 'session-test-key';
+  w.prompt = () => { assert.fail('AI Help must never prompt for an API key'); };
   w.TextEncoder = TextEncoder; w.AbortController = AbortController;
   w.JMAIStream = { read }; w.JMFlow = { snapshot: () => ({ files: [{ name: 'secret-name', text: '{"private":1}' }], options: { method: 'join' } }), resultText: () => '[1]' };
   w.eval(await readFile(new URL('../assets/ai-assistant.js', import.meta.url), 'utf8'));
@@ -130,9 +130,9 @@ test('closing popup preserves an in-flight response and reopening focuses an ena
 test('clean chat has no checkboxes, keeps conversation and never attaches workspace JSON', async () => {
   const f = await ui(); const bodies = [];
   f.w.fetch = async (url, options) => {
-    assert.equal(url, COHERE_API_URL);
-    assert.equal(options.headers.Authorization, 'Bearer session-test-key');
-    assert.equal(options.credentials, 'omit');
+    assert.equal(url, '/api/ai/chat');
+    assert.equal(options.headers.Authorization, undefined);
+    assert.equal(options.credentials, 'same-origin');
     bodies.push(JSON.parse(options.body));
     return new Response(stream('data: {"choices":[{"delta":{"content":"<img src=x onerror=alert(1)>"}}]}\n\ndata: [DONE]\n\n'), { headers: { 'Content-Type': 'text/event-stream' } });
   };
@@ -149,7 +149,7 @@ test('clean chat has no checkboxes, keeps conversation and never attaches worksp
     assert.equal(bodies[1].messages[2].content, 'Explain that');
     assert(!JSON.stringify(bodies).includes('private'));
     assert.equal(f.$('ai-messages').querySelectorAll('.ai-message').length, 4);
-    f.$('clear-data').click();
+    f.$('clear').click();
     assert.equal(f.$('ai-response'), null); assert.equal(f.$('ai-empty').hidden, false);
     assert.equal(f.$('ai-prompt').value, ''); assert.equal(f.w.localStorage.length, 0);
     f.$('ai-prompt').value = 'New chat'; f.submit(); await f.settle();
@@ -167,23 +167,19 @@ test('UI handles unavailable backend, stop and stale response after clear', asyn
   } finally { f.dom.window.close(); }
 });
 
-test('browser requests use session authorization and explain Cohere CORS failures', async () => {
+test('browser sends only conversation to the backend and explains connection failures', async () => {
   const f = await ui(); let calls = 0;
   try {
     f.$('ai-prompt').value = 'Help';
     f.w.fetch = async (url, options) => {
       calls++;
-      assert.equal(url, COHERE_API_URL);
-      assert.equal(options.headers.Authorization, 'Bearer session-test-key');
-      const payload = JSON.parse(options.body);
-      assert.equal(payload.model, 'north-mini-code-1-0');
-      assert.equal(payload.temperature, 0.3);
-      assert.equal(payload.stream, true);
-      assert.equal(payload.max_tokens, 2048);
+      assert.equal(url, '/api/ai/chat');
+      assert.equal(options.headers.Authorization, undefined);
+      assert.deepEqual(JSON.parse(options.body), { messages: [{ role: 'user', content: 'Help' }] });
       throw new TypeError('Failed to fetch');
     };
     f.submit(); await f.settle();
-    assert.equal(calls, 1); assert(f.$('ai-status').textContent.includes('CORS'));
+    assert.equal(calls, 1); assert(f.$('ai-status').textContent.includes('backend is running'));
     assert.equal(f.w.localStorage.length, 0);
   } finally { f.dom.window.close(); }
 });
@@ -289,27 +285,25 @@ test('composer shows only Send when idle and only Stop while a response is pendi
   } finally { f.dom.window.close(); }
 });
 
-test('cancelled key prompt makes no request; unauthorized keys are cleared', async () => {
-  const f = await ui(); let prompts = 0, calls = 0;
+test('missing backend and authentication errors never prompt for a key', async () => {
+  const f = await ui(); let calls = 0;
   try {
-    f.w.prompt = () => { prompts++; return null; };
-    f.w.fetch = async () => { calls++; return new Response('{}', { status: 401 }); };
-    f.$('ai-prompt').value = 'Help'; f.submit(); await f.settle();
-    assert.equal(calls, 0); assert.equal(prompts, 1);
-    assert(f.$('ai-status').textContent.includes('key is required'));
-    f.w.prompt = () => { prompts++; return 'replacement-test-key'; };
-    f.submit(); await f.settle();
-    f.$('ai-prompt').value = 'Retry'; f.submit(); await f.settle();
-    assert.equal(calls, 2); assert.equal(prompts, 3);
+    for (const [status, message] of [[404, 'npm start'], [401, 'Sign in'], [503, 'not configured']]) {
+      f.w.fetch = async () => { calls++; return new Response('{}', { status }); };
+      f.$('ai-prompt').value = 'Help'; f.submit(); await f.settle();
+      assert(f.$('ai-status').textContent.includes(message));
+    }
+    assert.equal(calls, 3);
   } finally { f.dom.window.close(); }
 });
 
-test('public assistant uses direct Cohere endpoint without embedded credentials', async () => {
+test('public assistant uses the backend without credentials or key prompts', async () => {
   const source = await readFile(new URL('../assets/ai-assistant.js', import.meta.url), 'utf8');
   assert(!source.includes('COHERE_API_KEY'));
-  assert(source.includes('Bearer '));
-  assert(source.includes(COHERE_API_URL));
-  assert(!source.includes('/api/ai/chat'));
+  assert(!source.includes('Bearer '));
+  assert(!source.includes(COHERE_API_URL));
+  assert(source.includes('/api/ai/chat'));
+  assert(!source.includes('window.prompt'));
   assert(!source.includes('localStorage'));
   assert(!source.includes('sessionStorage'));
 });

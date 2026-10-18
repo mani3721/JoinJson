@@ -2,9 +2,8 @@
   'use strict';
   const $ = id => document.getElementById(id);
   if (!$('ai-form')) return;
-  // Direct browser requests require a user key; never persist or embed it.
-  const AI_CHAT_URL = 'https://api.cohere.ai/compatibility/v1/chat/completions';
-  let apiKey = '';
+  // The same-origin backend reads credentials and model settings from .env.
+  const AI_CHAT_URL = '/api/ai/chat';
   let controller = null, generation = 0, history = [];
   const messages = $('ai-messages');
   function scrollChat() { messages.scrollTop = messages.scrollHeight; }
@@ -134,7 +133,7 @@
   function clear() {
     generation++; if (controller) controller.abort(); controller = null;
     messages.querySelectorAll('.ai-message').forEach(message => message.remove());
-    history = []; apiKey = ''; $('ai-prompt').value = ''; $('ai-empty').hidden = false;
+    history = []; $('ai-prompt').value = ''; $('ai-empty').hidden = false;
     busy(false); $('ai-status').textContent = '';
     if (!panel.hidden) $('ai-prompt').focus({ preventScroll: true });
   }
@@ -145,12 +144,8 @@
     if (!prompt || prompt.length > 8000) { $('ai-status').textContent = 'Enter a message of up to 8,000 characters.'; return; }
     // Only typed chat messages are sent; workspace JSON is never attached.
     const turns = [...history, { role: 'user', content: prompt }];
-    const body = JSON.stringify({ model: 'north-mini-code-1-0', temperature: 0.3, stream: true, max_tokens: 2048, messages: turns });
+    const body = JSON.stringify({ messages: turns });
     if (new TextEncoder().encode(body).length > 65536) { $('ai-status').textContent = 'Chat too long. Start a new chat or shorten your message.'; return; }
-    if (!apiKey) {
-      apiKey = (window.prompt('Enter a new Cohere API key for this chat. It is sent directly to Cohere, kept only in page memory, and cleared by New chat or reload. Browser scripts can access it.') || '').trim();
-      if (!apiKey) { $('ai-status').textContent = 'A Cohere API key is required for direct requests.'; return; }
-    }
     const token = ++generation, request = new AbortController(); controller = request;
     const previous = $('ai-response'); if (previous) previous.removeAttribute('id');
     addMessage('user', prompt);
@@ -158,10 +153,9 @@
     $('ai-prompt').value = ''; $('ai-status').textContent = 'Thinking…'; busy(true);
     const timer = setTimeout(() => request.abort(), 90000);
     try {
-      const response = await fetch(AI_CHAT_URL, { method: 'POST', headers: { Authorization: 'Bearer ' + apiKey, 'Content-Type': 'application/json', Accept: 'text/event-stream' }, body, signal: request.signal, credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer' });
-      if (response.status === 401) apiKey = '';
+      const response = await fetch(AI_CHAT_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream' }, body, signal: request.signal, credentials: 'same-origin', cache: 'no-store', referrerPolicy: 'no-referrer' });
       if (!response.ok) {
-        const errors = { 401: 'Invalid Cohere API key.', 403: 'This key does not have access to the Cohere model.', 413: 'Chat too long. Start a new chat.', 429: 'Too many AI requests. Wait a minute and retry.', 503: 'AI is not configured or temporarily unavailable.' };
+        const errors = { 401: 'Sign in to use AI Help.', 403: 'AI access denied. Check the server origin and access settings.', 404: 'AI backend not found. Run npm start and open the server URL.', 413: 'Chat too long. Start a new chat.', 429: 'Too many AI requests. Wait a minute and retry.', 503: 'AI is not configured or temporarily unavailable.' };
         throw new Error(errors[response.status] || 'AI request failed. Please retry later.');
       }
       if (!(response.headers.get('content-type') || '').includes('text/event-stream')) throw new Error('AI server did not return a streaming response.');
@@ -171,7 +165,7 @@
       });
       if (token === generation) { history = [...turns, { role: 'assistant', content: reply.markdownSource }]; $('ai-status').textContent = ''; }
     } catch (error) {
-      if (token === generation) $('ai-status').textContent = error.name === 'AbortError' ? 'Stopped. Reply may be incomplete.' : error.name === 'TypeError' ? 'Cannot reach Cohere. Check your connection and whether Cohere permits browser requests (CORS). A proxy is required if CORS is blocked.' : error.message;
+      if (token === generation) $('ai-status').textContent = error.name === 'AbortError' ? 'Stopped. Reply may be incomplete.' : error.name === 'TypeError' ? 'Cannot reach the AI server. Check your connection and make sure the backend is running.' : error.message;
     } finally {
       clearTimeout(timer);
       if (token === generation) { controller = null; busy(false); if (!panel.hidden) $('ai-prompt').focus({ preventScroll: true }); }
@@ -179,7 +173,7 @@
   });
   $('ai-stop').addEventListener('click', () => { if (controller) controller.abort(); });
   $('ai-clear').addEventListener('click', clear);
-  $('clear-data').addEventListener('click', clear);
+  ($('clear-data') || $('clear'))?.addEventListener('click', clear);
   $('ai-copy').addEventListener('click', async () => {
     try { await navigator.clipboard.writeText($('ai-response').markdownSource); $('ai-status').textContent = 'Response copied.'; }
     catch (_) { $('ai-status').textContent = 'Clipboard blocked. Select the response and copy manually.'; }
