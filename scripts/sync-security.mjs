@@ -15,7 +15,7 @@ for (const page of pages) {
   }
 }
 let headers = await readFile(new URL('_headers', root), 'utf8');
-headers = headers.replace(/script-src(?:-elem)?[^;]*;/g, directive => directive.split(' ')[0] + " 'self' https://www.googletagmanager.com https://cdn.jsdelivr.net/npm/js-yaml@4.3.2/dist/js-yaml.min.js https://cdn.jsdelivr.net/npm/jsondiffpatch@0.7.6/+esm " + [...hashes].join(' ') + ';');
+headers = headers.replace(/script-src(?:-elem)?[^;]*;/g, directive => directive.split(' ')[0] + " 'self' https://www.googletagmanager.com https://cdn.jsdelivr.net/npm/js-yaml@4.3.2/dist/js-yaml.min.js https://cdn.jsdelivr.net/npm/jsondiffpatch@0.7.6/+esm https://cdnjs.cloudflare.com/ajax/libs/json5/2.2.3/index.min.js https://cdn.jsdelivr.net/npm/smol-toml@1.9.1/+esm " + [...hashes].join(' ') + ';');
 await writeFile(new URL('_headers', root), headers);
 const config = JSON.parse(await readFile(new URL('vercel.json', root), 'utf8'));
 const security = headers.split('\n').filter(line => /^  [A-Z][^:]+:/.test(line)).map(line => {

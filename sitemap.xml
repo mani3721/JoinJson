@@ -60,4 +60,16 @@
     <loc>https://www.joinjson.com/curl-to-js</loc>
     <lastmod>2026-10-16T06:11:38Z</lastmod>
   </url>
+  <url>
+    <loc>https://www.joinjson.com/jsonc-formatter</loc>
+  </url>
+  <url>
+    <loc>https://www.joinjson.com/json-to-toml</loc>
+  </url>
+  <url>
+    <loc>https://www.joinjson.com/json-to-go</loc>
+  </url>
+  <url>
+    <loc>https://www.joinjson.com/json-to-pydantic</loc>
+  </url>
 </urlset>

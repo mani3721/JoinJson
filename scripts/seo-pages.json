@@ -1,5 +1,5 @@
 {
-  "/": ["Merge JSON Files Online: See Every Change | JoinJson", "Merge JSON files online. Deep merge objects, join arrays by ID and see every change highlighted. Paste, upload or load a URL. Private in your browser."],
+  "/": ["Merge JSON Files Online – Free & Fast JSON Merger Tool", "Merge multiple JSON files into one instantly in your browser. Join, combine, and deep merge JSON objects and arrays safely with no file size limits or data uploads."],
   "/json-diff": ["JSON Diff and Compare Online | JoinJson", "Compare two JSON documents in your browser. Paste original and modified JSON, inspect the comparison results and review changes side by side."],
   "/json-to-typescript": ["JSON to TypeScript Converter | JoinJson", "Convert JSON to TypeScript in your browser. Paste JSON, review the generated types, then copy the code or download a TypeScript file."],
   "/json-to-python": ["JSON to Pydantic Converter | JoinJson", "Convert JSON to Python Pydantic models in your browser. Paste JSON, review the generated models, then copy or download the Python code."],

@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JSON to Pydantic Model &amp; Python Dataclass Generator | JoinJSON</title>
+<meta name="description" content="Instantly convert raw JSON responses into strongly-typed Pydantic v2 models or standard Python dataclasses. 100% client-side, fast, and secure.">
+<link rel="canonical" href="https://www.joinjson.com/json-to-pydantic">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="JoinJSON">
+<meta property="og:title" content="JSON to Pydantic Model &amp; Python Dataclass Generator | JoinJSON">
+<meta property="og:description" content="Instantly convert raw JSON responses into strongly-typed Pydantic v2 models or standard Python dataclasses. 100% client-side, fast, and secure.">
+<meta property="og:url" content="https://www.joinjson.com/json-to-pydantic">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JSON to Pydantic Model &amp; Python Dataclass Generator | JoinJSON">
+<meta name="twitter:description" content="Instantly convert raw JSON responses into strongly-typed Pydantic v2 models or standard Python dataclasses. 100% client-side, fast, and secure.">
+<meta name="theme-color" content="#faf8f5">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/converter-page.css">
+<link rel="stylesheet" href="/assets/site-layout.css">
+<link rel="stylesheet" href="/assets/home-theme.css">
+<link rel="stylesheet" href="/assets/header.css">
+<link rel="stylesheet" href="/assets/json-to-pydantic.css">
+<script src="/assets/theme.js" defer></script>
+<script src="/assets/header.js" defer></script>
+<script src="/assets/json-to-pydantic.js" type="module"></script>
+<link rel="stylesheet" href="/assets/json-to-zod.css">
+<script src="/assets/json-to-zod-ui.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header shared-header join-header" data-flat-tools="false">
+  <div class="header-inner">
+    <a class="brand" href="/" aria-label="JoinJson home"><img src="/favicon.svg" width="32" height="32" alt=""><span>JoinJson</span></a>
+    <button class="nav-control mobile-menu" id="site-menu-toggle" type="button" aria-expanded="false" aria-controls="site-navigation">Menu <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    <div class="nav-shell" id="site-navigation">
+      <div class="sheet-heading"><span id="sheet-title">Navigation</span><button class="nav-control" id="site-menu-close" type="button">Close <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+      <nav class="primary-nav" aria-label="Primary">
+        <div class="nav-disclosure" id="tool-menu">
+          <button class="nav-control disclosure-trigger" id="tools-trigger" type="button" aria-expanded="false" aria-controls="tool-panel">Tools <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m7 10 5 5 5-5"/></svg></button>
+          <span id="tool-current" class="layout-status">JSON Merger</span>
+          <div class="nav-panel tools-panel" id="tool-panel" hidden>
+<section class="nav-group"><h2>Merge and compare</h2><ul><li><a class="nav-tool" href="/" data-tool="merge"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 5h6v6H4zM14 13h6v6h-6zM14 5h6M17 2v6M4 16h6"/></svg><span class="nav-copy"><span class="nav-title">JSON Merger</span><span class="nav-description">Combine files, keep every record</span></span></a></li><li><a class="nav-tool" href="/json-diff" data-tool="json-diff"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4h6v16H4zM14 4h6v16h-6zM6 8h2M16 8h2M16 12h2"/></svg><span class="nav-copy"><span class="nav-title">JSON Diff and Compare</span><span class="nav-description">See every change side by side</span></span></a></li></ul></section>
+<section class="nav-group"><h2>Format and validate</h2><ul><li><a class="nav-tool" href="/jsonc-formatter" data-tool="jsonc-formatter"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 4H5v16h3M16 4h3v16h-3M10 9h4M10 15h4"/></svg><span class="nav-copy"><span class="nav-title">JSONC / JSON5 Formatter</span><span class="nav-description">Format comments or export clean JSON</span></span></a></li></ul></section>
+<section class="nav-group"><h2>Convert</h2><ul><li><a class="nav-tool" href="/json-to-toml" data-tool="json-to-toml"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 8h16M16 4l4 4-4 4M20 16H4M8 12l-4 4 4 4"/></svg><span class="nav-copy"><span class="nav-title">JSON to TOML</span><span class="nav-description">Convert, format, and validate TOML</span></span></a></li><li><a class="nav-tool" href="/json-to-yaml" data-tool="json-to-yaml"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 8h16M16 4l4 4-4 4M20 16H4M8 12l-4 4 4 4"/></svg><span class="nav-copy"><span class="nav-title">JSON to YAML</span><span class="nav-description">Convert YAML and JSON both ways</span></span></a></li></ul></section>
+<section class="nav-group"><h2>Generate code</h2><ul><li><a class="nav-tool" href="/json-to-pydantic" data-tool="json-to-pydantic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 4H5v16h3M16 4h3v16h-3M10 8h4v8h-4z"/></svg><span class="nav-copy"><span class="nav-title">Pydantic / Dataclasses</span><span class="nav-description">Generate Pydantic v2 models or Python dataclasses</span></span></a></li><li><a class="nav-tool" href="/json-to-go" data-tool="json-to-go"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m8 5-6 7 6 7M16 5l6 7-6 7M14 3l-4 18"/></svg><span class="nav-copy"><span class="nav-title">JSON to Go Struct</span><span class="nav-description">Generate typed Go structs with JSON tags</span></span></a></li><li><a class="nav-tool" href="/json-to-typescript" data-tool="json-to-typescript"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m8 5-6 7 6 7M16 5l6 7-6 7M14 3l-4 18"/></svg><span class="nav-copy"><span class="nav-title">JSON to TypeScript</span><span class="nav-description">Create typed interfaces from JSON</span></span></a></li><li><a class="nav-tool" href="/json-to-python" data-tool="json-to-python"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 4H5v16h3M16 4h3v16h-3M10 8h4v8h-4z"/></svg><span class="nav-copy"><span class="nav-title">JSON to Pydantic</span><span class="nav-description">Build validated Python models</span></span></a></li><li><a class="nav-tool" href="/json-to-zod" data-tool="json-to-zod"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 3 8 4v5c0 5-8 9-8 9s-8-4-8-9V7zM8 12l3 3 5-6"/></svg><span class="nav-copy"><span class="nav-title">JSON to Zod</span><span class="nav-description">Generate runtime validation schemas</span></span></a></li></ul></section>
+          </div>
+        </div>
+        <div class="nav-disclosure" id="guides-disclosure">
+          <button class="nav-control disclosure-trigger" id="guides-trigger" type="button" aria-expanded="false" aria-controls="guides-panel">Guides <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m7 10 5 5 5-5"/></svg></button>
+          <div class="nav-panel guides-panel" id="guides-panel" hidden><ul>
+            <li><a href="/merge-json-files-python/">Merge JSON files in Python</a></li>
+            <li><a href="/merge-json-arrays-by-id/">Merge JSON arrays by ID</a></li>
+            <li><a href="/deep-merge-vs-shallow-merge-json/">Deep vs shallow merge</a></li>
+          </ul></div>
+        </div>
+      </nav>
+      <div class="theme-control">
+        <button type="button" id="theme-toggle" class="nav-control theme-toggle" aria-label="System theme; switch to light mode" title="System theme; switch to light mode"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 3h8M12 3v2M5 6l2 2M19 6l-2 2M3 12h2M19 12h2M5 18l2-2M19 18l-2-2M12 19v2M8 21h8M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0"/></svg><span class="theme-toggle-label layout-status">System</span></button>
+        <span class="theme-tooltip" role="tooltip" id="theme-tooltip">System theme; switch to light mode</span>
+      </div>
+    </div>
+  </div>
+</header>
+<main id="main">
+<section id="pydantic-tool" class="tool-section" aria-labelledby="pydantic-title">
+  <div class="hero">
+    <div class="eyebrow">Typed Python models. Generated in your browser.</div>
+    <h1 id="pydantic-title">JSON to Pydantic <span>&amp; Python Dataclasses</span></h1>
+    <p>Generate Pydantic v2 models or standard Python dataclasses from JSON objects and arrays. No uploads, accounts, or external parser services.</p>
+  </div>
+  <fieldset class="pydantic-options">
+    <legend>Target framework</legend>
+    <label><input type="radio" name="pydantic-framework" value="pydantic" checked> Pydantic v2 (BaseModel)</label>
+    <label><input type="radio" name="pydantic-framework" value="dataclass"> Standard Dataclasses (@dataclass)</label>
+  </fieldset>
+  <fieldset class="pydantic-options" aria-describedby="pydantic-options-help">
+    <legend>Python model options</legend>
+    <label><input id="pydantic-optional" type="checkbox" checked> Use Optional types</label>
+    <label><input id="pydantic-defaults" type="checkbox"> Generate Field(default=...) annotations</label>
+    <label><input id="pydantic-snake" type="checkbox"> Snake_case field names</label>
+  </fieldset>
+  <p id="pydantic-options-help">Optional types apply to null or missing values. Field annotations apply to Pydantic models; required fields use Field(default=...). Renamed Pydantic fields retain their JSON keys as aliases.</p>
+  <div class="input-grid">
+    <article class="input-card" aria-labelledby="pydantic-input-heading">
+      <div class="card-heading"><h2 id="pydantic-input-heading"><label for="pydantic-json-input">JSON input</label></h2></div>
+      <textarea id="pydantic-json-input" placeholder="Paste JSON payload here..." spellcheck="false" autocomplete="off" autocapitalize="off" aria-describedby="pydantic-error pydantic-status"></textarea>
+      <p id="pydantic-error" role="status" aria-live="polite" aria-atomic="true" hidden></p>
+    </article>
+    <article class="input-card" aria-labelledby="pydantic-output-heading">
+      <div class="card-heading"><h2 id="pydantic-output-heading"><label for="pydantic-output">Python code output</label></h2></div>
+      <textarea id="pydantic-output" readonly placeholder="Generated Python code will appear here..." spellcheck="false"></textarea>
+      <div class="pydantic-actions">
+        <button id="pydantic-copy" type="button" disabled>Copy Python Code</button>
+        <button id="pydantic-download" type="button" disabled>Download .py File</button>
+        <button id="pydantic-clear" type="button">Clear All</button>
+      </div>
+    </article>
+  </div>
+  <p id="pydantic-status" role="status" aria-live="polite" aria-atomic="true">Ready. Your JSON stays in this browser.</p>
+  <p class="privacy-note">All conversion happens in this tab. No JSON is uploaded. Merger transfers use temporary tab storage and are removed as soon as they load.</p>
+  <noscript><p>Enable JavaScript to generate Python models locally in your browser.</p></noscript>
+</section>
+<section class="editorial" aria-labelledby="pydantic-help">
+  <h2 id="pydantic-help">Generate Pydantic v2 models from JSON</h2>
+  <p>Paste a JSON response to infer str, int, float, bool, List, and nested Python classes. Child models appear before their parents. Object arrays are inferred across every item, not just the first. Mixed types use Union; null-only fields and empty arrays use Any because a sample cannot establish a stronger type.</p>
+  <h3>Optional fields, aliases, and defaults</h3>
+  <p>With Optional types enabled, fields that are null or absent in some array items accept None and default to None. Disabling it makes inferred fields required; null-only fields still use Any. Snake_case converts camelCase keys to Python naming conventions. Pydantic aliases preserve original keys; use model_dump(by_alias=True) when exporting them. Invalid identifiers and Python keywords are normalized automatically, with collision-safe names.</p>
+  <h3>Standard Python dataclasses</h3>
+  <p>Dataclasses use @dataclass(kw_only=True), requiring Python 3.10 or newer. They provide type hints but do not validate data or automatically construct nested classes from dictionaries. Renamed keys are recorded in field metadata as json_key for your own mapping code. Root arrays become a typed list alias in dataclass mode and a Pydantic v2 RootModel in Pydantic mode.</p>
+  <p>These are sample-inferred models, not a complete API schema. Review required fields, nullability, aliases, and numeric ranges before using generated code in production. Exact integers outside JavaScript’s safe range must be supplied as strings.</p>
+  <p><a href="/">JSON Merger</a> · <a href="/json-to-typescript">JSON to TypeScript</a> · <a href="/json-to-zod">JSON to Zod</a> · <a href="/json-to-go">JSON to Go Struct</a> · <a href="/json-to-toml">JSON to TOML</a></p>
+</section>
+</main>
+<footer class="site-footer shared-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a class="footer-brand-name" href="/" aria-label="JoinJson home">JoinJson</a>
+      <p>Built for your browser. Simple, fast, and privacy-conscious JSON tools.</p>
+    </div>
+    <div class="footer-navigation">
+      <nav aria-labelledby="footer-convert-heading">
+        <h2 id="footer-convert-heading">Convert Tools</h2>
+        <ul>
+          <li><a href="/json-to-pydantic">JSON to Pydantic / Python Dataclasses</a></li>
+          <li><a href="/json-to-go">JSON to Go Struct</a></li>
+          <li><a href="/json-to-toml">JSON to TOML / TOML Formatter</a></li>
+          <li><a href="/json-to-yaml">JSON to YAML / YAML to JSON</a></li>
+          <li><a href="/json-to-typescript">JSON to TypeScript</a></li>
+          <li><a href="/json-to-python">JSON to Python (Pydantic)</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="footer-format-heading">
+        <h2 id="footer-format-heading">Formatters &amp; Validators</h2>
+        <ul>
+          <li><a href="/jsonc-formatter">JSONC / JSON5 Formatter</a></li>
+          <li><a href="/json-diff">JSON Diff Checker</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="footer-developer-heading">
+        <h2 id="footer-developer-heading">Developer Tools</h2>
+        <ul>
+          <li><a href="/json-to-zod">JSON to Zod Schema</a></li>
+          <li><a href="/curl-to-js">cURL to JavaScript</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="footer-information-heading">
+        <h2 id="footer-information-heading">Legal &amp; Information</h2>
+        <ul>
+          <li><a href="/about/">About Us</a></li>
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/privacy/">Privacy Policy</a></li>
+          <li><a href="/terms/">Terms of Use</a></li>
+          <li><a href="/disclaimer/">Disclaimer</a></li>
+        </ul>
+      </nav>
+    </div>
+    <p class="footer-copyright">© <span data-copyright-year></span> JoinJson. All rights reserved.</p>
+  </div>
+</footer>
+</body>
+</html>

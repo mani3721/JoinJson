@@ -65,9 +65,15 @@ class SharedLayoutTests(unittest.TestCase):
                 self.assertEqual(text.count('src="/assets/theme.js"'), 1)
 
     def test_footer_menu_labels_order_and_destinations(self):
-        expected = [('/', 'Home'), ('/about/', 'About US'),
-                    ('/contact/', 'Contact US'), ('/privacy/', 'Privacy Policy'),
-                    ('/terms/', 'Terms of use'), ('/disclaimer/', 'Disclaimer')]
+        expected = [('/json-to-yaml', 'JSON to YAML / YAML to JSON'),
+                    ('/json-to-typescript', 'JSON to TypeScript'),
+                    ('/json-to-python', 'JSON to Python (Pydantic)'),
+                    ('/json-diff', 'JSON Diff Checker'),
+                    ('/json-to-zod', 'JSON to Zod Schema'),
+                    ('/curl-to-js.html', 'cURL to JavaScript'),
+                    ('/about/', 'About Us'), ('/contact/', 'Contact Us'),
+                    ('/privacy/', 'Privacy Policy'), ('/terms/', 'Terms of Use'),
+                    ('/disclaimer/', 'Disclaimer')]
         for name in PAGES:
             with self.subTest(page=name):
                 text = (ROOT / name).read_text()
@@ -75,7 +81,12 @@ class SharedLayoutTests(unittest.TestCase):
                 links = re.findall(r'<a href="([^"]+)">([^<]+)</a>', footer)
                 self.assertEqual(links, expected)
                 for href, _ in links:
-                    self.assertTrue((ROOT / href.strip('/') / 'index.html').is_file())
+                    if href.startswith('/json-'):
+                        self.assertIn(href, (ROOT / 'scripts/seo-pages.json').read_text())
+                    elif href.endswith('.html'):
+                        self.assertTrue((ROOT / href.lstrip('/')).is_file())
+                    else:
+                        self.assertTrue((ROOT / href.strip('/') / 'index.html').is_file())
 
     def test_disclaimer_is_published(self):
         self.assertIn("'disclaimer'", (ROOT / 'scripts/build-site.mjs').read_text())

@@ -18,6 +18,22 @@
   ],
   "rewrites": [
     {
+      "source": "/json-to-pydantic",
+      "destination": "/json-to-pydantic.html"
+    },
+    {
+      "source": "/json-to-go",
+      "destination": "/json-to-go.html"
+    },
+    {
+      "source": "/json-to-toml",
+      "destination": "/json-to-toml.html"
+    },
+    {
+      "source": "/jsonc-formatter",
+      "destination": "/jsonc-formatter.html"
+    },
+    {
       "source": "/curl-to-js",
       "destination": "/curl-to-js.html"
     },
@@ -48,7 +64,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'none'; script-src 'self' https://www.googletagmanager.com https://cdn.jsdelivr.net/npm/js-yaml@4.3.2/dist/js-yaml.min.js https://cdn.jsdelivr.net/npm/jsondiffpatch@0.7.6/+esm 'sha256-VbbzuBbmTUm2uN0yl8/XkeyNdFcMpKpW9LljsQgXCo4=' 'sha256-kLCZLLea4koVtgnYqu/UICGkpkr9E6cRdguiVFbRlAU=' 'sha256-kyetiqgvW81gqdtTwo1Ktxo5R+Vpjpl2jWu7+XRRgwM=' 'sha256-1MK48/cd5wiJ/pzR6WOSdH4RtlwPI4VDqfcOGB2GdcU=' 'sha256-3SGtbifLhSrBG9amGKy1d0zeI/o4CBIo3af3QqQT2CE=' 'sha256-QrqjlSKMyhrB+tjom3XXFWxc44FYDDdcR4Bml/gY/kg=' 'sha256-RTY1KtA0doacDv4HE0kmGtdz9LshIjTCtXXBPcgV9ks=' 'sha256-qLmAbw58bwcpCzrqy2Wmq0eEmEtTB0kbC9+7SCTGTQ0=' 'sha256-oBzyWql+HqLKMe+jPMihVTUDCHi3LCK12275TX6KDzY=' 'sha256-CI4P3cK6IkIAFCAJMOm+ky5fiVU+5IvDFHNXAyW6HHs=' 'sha256-YcVBfgt0p8wjCHw6xA0QDr6ngshCE+32PL1vVEIQdnU='; script-src-elem 'self' https://www.googletagmanager.com https://cdn.jsdelivr.net/npm/js-yaml@4.3.2/dist/js-yaml.min.js https://cdn.jsdelivr.net/npm/jsondiffpatch@0.7.6/+esm 'sha256-VbbzuBbmTUm2uN0yl8/XkeyNdFcMpKpW9LljsQgXCo4=' 'sha256-kLCZLLea4koVtgnYqu/UICGkpkr9E6cRdguiVFbRlAU=' 'sha256-kyetiqgvW81gqdtTwo1Ktxo5R+Vpjpl2jWu7+XRRgwM=' 'sha256-1MK48/cd5wiJ/pzR6WOSdH4RtlwPI4VDqfcOGB2GdcU=' 'sha256-3SGtbifLhSrBG9amGKy1d0zeI/o4CBIo3af3QqQT2CE=' 'sha256-QrqjlSKMyhrB+tjom3XXFWxc44FYDDdcR4Bml/gY/kg=' 'sha256-RTY1KtA0doacDv4HE0kmGtdz9LshIjTCtXXBPcgV9ks=' 'sha256-qLmAbw58bwcpCzrqy2Wmq0eEmEtTB0kbC9+7SCTGTQ0=' 'sha256-oBzyWql+HqLKMe+jPMihVTUDCHi3LCK12275TX6KDzY=' 'sha256-CI4P3cK6IkIAFCAJMOm+ky5fiVU+5IvDFHNXAyW6HHs=' 'sha256-YcVBfgt0p8wjCHw6xA0QDr6ngshCE+32PL1vVEIQdnU='; worker-src blob:; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'self' https:; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
+          "value": "default-src 'none'; script-src 'self' https://www.googletagmanager.com https://cdn.jsdelivr.net/npm/js-yaml@4.3.2/dist/js-yaml.min.js https://cdn.jsdelivr.net/npm/jsondiffpatch@0.7.6/+esm https://cdnjs.cloudflare.com/ajax/libs/json5/2.2.3/index.min.js https://cdn.jsdelivr.net/npm/smol-toml@1.9.1/+esm 'sha256-VbbzuBbmTUm2uN0yl8/XkeyNdFcMpKpW9LljsQgXCo4=' 'sha256-DMH0C6nA+b45WDAkmcQMnRHiQZzXd0lv5Zpz7opWzWE=' 'sha256-kyetiqgvW81gqdtTwo1Ktxo5R+Vpjpl2jWu7+XRRgwM=' 'sha256-1MK48/cd5wiJ/pzR6WOSdH4RtlwPI4VDqfcOGB2GdcU=' 'sha256-fxxFr3CfVTJQFR8HddiJpwg26MZdrlGx5RKf2p1b0x8=' 'sha256-91Urjewhr1/S61S32bi3qhI5eJ2GS584SziUO0CAswM=' 'sha256-RTY1KtA0doacDv4HE0kmGtdz9LshIjTCtXXBPcgV9ks=' 'sha256-qLmAbw58bwcpCzrqy2Wmq0eEmEtTB0kbC9+7SCTGTQ0=' 'sha256-oBzyWql+HqLKMe+jPMihVTUDCHi3LCK12275TX6KDzY=' 'sha256-CI4P3cK6IkIAFCAJMOm+ky5fiVU+5IvDFHNXAyW6HHs=' 'sha256-YcVBfgt0p8wjCHw6xA0QDr6ngshCE+32PL1vVEIQdnU='; script-src-elem 'self' https://www.googletagmanager.com https://cdn.jsdelivr.net/npm/js-yaml@4.3.2/dist/js-yaml.min.js https://cdn.jsdelivr.net/npm/jsondiffpatch@0.7.6/+esm https://cdnjs.cloudflare.com/ajax/libs/json5/2.2.3/index.min.js https://cdn.jsdelivr.net/npm/smol-toml@1.9.1/+esm 'sha256-VbbzuBbmTUm2uN0yl8/XkeyNdFcMpKpW9LljsQgXCo4=' 'sha256-DMH0C6nA+b45WDAkmcQMnRHiQZzXd0lv5Zpz7opWzWE=' 'sha256-kyetiqgvW81gqdtTwo1Ktxo5R+Vpjpl2jWu7+XRRgwM=' 'sha256-1MK48/cd5wiJ/pzR6WOSdH4RtlwPI4VDqfcOGB2GdcU=' 'sha256-fxxFr3CfVTJQFR8HddiJpwg26MZdrlGx5RKf2p1b0x8=' 'sha256-91Urjewhr1/S61S32bi3qhI5eJ2GS584SziUO0CAswM=' 'sha256-RTY1KtA0doacDv4HE0kmGtdz9LshIjTCtXXBPcgV9ks=' 'sha256-qLmAbw58bwcpCzrqy2Wmq0eEmEtTB0kbC9+7SCTGTQ0=' 'sha256-oBzyWql+HqLKMe+jPMihVTUDCHi3LCK12275TX6KDzY=' 'sha256-CI4P3cK6IkIAFCAJMOm+ky5fiVU+5IvDFHNXAyW6HHs=' 'sha256-YcVBfgt0p8wjCHw6xA0QDr6ngshCE+32PL1vVEIQdnU='; worker-src blob:; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'self' https:; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
         },
         {
           "key": "X-Content-Type-Options",

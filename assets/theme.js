@@ -31,6 +31,9 @@
   const api = {createStore,valid,defaults};
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document === 'undefined') return;
+  document.querySelectorAll('[data-copyright-year]').forEach(element => {
+    element.textContent = String(new Date().getFullYear());
+  });
   const store = createStore(() => root.localStorage);
   root.JMPreferences = store;
   const theme = document.getElementById('theme');

@@ -1,6 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+import { syncStandaloneRoutes } from '../scripts/sync-standalone-routes.mjs';
 import { JSDOM } from 'jsdom';
 const read = path => readFileSync(new URL('../' + path, import.meta.url), 'utf8');
 const routes = { merge: '/', 'json-to-zod': '/json-to-zod', 'json-to-typescript': '/json-to-typescript', 'json-to-python': '/json-to-python', 'json-to-yaml': '/json-to-yaml', 'json-diff': '/json-diff' };
@@ -67,6 +71,31 @@ test('back and forward restore clean tool routes', async t => {
   await travel('back', 'merge');
   await travel('forward', 'json-to-zod');
   await travel('forward', 'json-to-typescript');
+});
+test('static previews include a JSON Diff page with working tool routing and metadata', t => {
+  const dom = new JSDOM(read('json-diff/index.html'), { url: 'https://www.joinjson.com/json-diff/', runScripts: 'outside-only' });
+  t.after(() => dom.window.close());
+  const w = dom.window;
+  assert.match(w.document.title, /JSON Diff/);
+  assert.equal(w.document.querySelector('link[rel="canonical"]').href, 'https://www.joinjson.com/json-diff');
+  assert.equal(w.document.querySelector('script[type="application/ld+json"]'), null);
+  w.eval(read('assets/json-to-zod-ui.js'));
+  assert.equal(w.document.body.dataset.tool, 'json-diff');
+  assert.equal(w.document.getElementById('json-diff-tool').hidden, false);
+});
+test('build refreshes the JSON Diff static preview from the shared homepage', async () => {
+  const root = await mkdtemp(path.join(tmpdir(), 'joinjson-diff-route-'));
+  try {
+    for (const marker of ['first version', 'updated version']) {
+      await writeFile(path.join(root, 'index.html'), read('index.html').replace('</body>', `<p>${marker}</p></body>`));
+      await syncStandaloneRoutes(root);
+      const html = await readFile(path.join(root, 'json-diff/index.html'), 'utf8');
+      assert.ok(html.includes(`<p>${marker}</p>`));
+      assert.ok(html.includes('https://www.joinjson.com/json-diff'));
+    }
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
 });
 test('deployment rewrites every available converter route to the SPA', () => {
   const config = JSON.parse(read('vercel.json'));

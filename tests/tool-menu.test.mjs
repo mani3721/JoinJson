@@ -111,9 +111,9 @@ test('every shared page has identical HTML navigation and existing destination l
     assert.equal(logo.getAttribute('height'), '32');
     assert.equal(logo.getAttribute('alt'), '');
     assert.match(read('favicon.svg'), /<svg\b/);
-    assert.equal(header.querySelectorAll('a').length, 10);
+    assert.equal(header.querySelectorAll('a').length, 4 + toolGroups.flatMap(([, tools]) => tools).length);
     assert.equal(header.querySelectorAll('[role="menu"]').length, 0);
-    assert.equal(header.querySelectorAll('.nav-tool').length, 6);
+    assert.equal(header.querySelectorAll('.nav-tool').length, toolGroups.flatMap(([, tools]) => tools).length);
     assert.doesNotMatch(header.textContent, /Coming soon|Converters \/ Generators|Tool:/);
     for (const a of header.querySelectorAll('a')) assert.ok(paths.has(a.getAttribute('href')), a.href);
     for (const a of header.querySelectorAll('.nav-tool')) {

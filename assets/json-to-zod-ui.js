@@ -9,10 +9,7 @@
   function closeMenu() {
     document.dispatchEvent(new CustomEvent('jm:tool-change'));
   }
-  if (!section) {
-    links.forEach(link => link.removeAttribute('aria-current'));
-    return;
-  }
+  if (!section) return;
   const input = $('zod-input'), output = $('zod-output'), badge = $('zod-input-status');
   const originalTitle = document.title;
   let timer, exportType = false;
@@ -74,6 +71,8 @@
   menu.addEventListener('click', event => {
     const link = event.target.closest('a[data-tool]');
     if (!link || !menu.contains(link) || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    // Standalone tools must load their own document, not the SPA merger view.
+    if (!['merge', 'json-to-zod', 'json-to-typescript', 'json-to-python', 'json-to-yaml', 'json-diff'].includes(link.dataset.tool)) return;
     event.preventDefault();
     closeMenu(true);
     if (link.dataset.tool === document.body.dataset.tool) return;

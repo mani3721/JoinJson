@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { renderHeader } from './header.mjs';
 
 export const sitePages = [
-  'index.html', 'curl-to-js.html', '404.html', 'about/index.html', 'contact/index.html',
+  'index.html', 'curl-to-js.html', 'jsonc-formatter.html', 'json-to-toml.html', 'json-to-go.html', 'json-to-pydantic.html', '404.html', 'about/index.html', 'contact/index.html',
   'privacy/index.html', 'terms/index.html', 'disclaimer/index.html', 'merge-json-files-python/index.html',
   'merge-json-arrays-by-id/index.html', 'deep-merge-vs-shallow-merge-json/index.html'
 ];

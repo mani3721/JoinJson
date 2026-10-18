@@ -80,9 +80,14 @@ export function createServer({ env = process.env, fetchImpl = fetch } = {}) {
     }
     if (!['GET', 'HEAD'].includes(req.method)) { reply(res, 405, 'GET required'); return; }
     try {
-      const pathname = decodeURIComponent(url.pathname);
+      const requestedPath = decodeURIComponent(url.pathname);
+      // Match deployment routes while keeping the static-file allowlist explicit.
+      const cleanPath = requestedPath.replace(/\/$/, '') || '/';
+      const standalone = { '/json-to-pydantic': '/json-to-pydantic.html', '/json-to-go': '/json-to-go.html', '/json-to-toml': '/json-to-toml.html', '/jsonc-formatter': '/jsonc-formatter.html', '/curl-to-js': '/curl-to-js.html' };
+      const spaRoutes = ['/json-diff', '/json-to-typescript', '/json-to-yaml', '/json-to-python', '/json-to-zod'];
+      const pathname = Object.hasOwn(standalone, cleanPath) ? standalone[cleanPath] : spaRoutes.includes(cleanPath) ? '/index.html' : requestedPath;
       // Never expose server code, configuration, dependencies, or tests through the static host.
-      if (!(pathname === '/' || pathname === '/index.html' || pathname === '/favicon.svg' || pathname === '/robots.txt' || pathname === '/sitemap.xml' || /^\/assets\/[a-zA-Z0-9._-]+\.(js|css|svg|txt)$/.test(pathname) || /^\/(about|contact|privacy|terms|deep-merge-vs-shallow-merge-json|merge-json-arrays-by-id|merge-json-files-python)\/(index\.html)?$/.test(pathname))) { reply(res, 404, 'Not found'); return; }
+      if (!(pathname === '/' || pathname === '/index.html' || pathname === '/jsonc-formatter.html' || pathname === '/json-to-toml.html' || pathname === '/json-to-pydantic.html' || pathname === '/json-to-go.html' || pathname === '/curl-to-js.html' || pathname === '/favicon.svg' || pathname === '/robots.txt' || pathname === '/sitemap.xml' || /^\/assets\/[a-zA-Z0-9._-]+\.(js|css|svg|txt)$/.test(pathname) || /^\/(about|contact|privacy|terms|disclaimer|deep-merge-vs-shallow-merge-json|merge-json-arrays-by-id|merge-json-files-python)\/(index\.html)?$/.test(pathname))) { reply(res, 404, 'Not found'); return; }
       const filename = await realpath(path.join(root, pathname.endsWith('/') ? pathname + 'index.html' : pathname));
       if (!filename.startsWith(root)) { reply(res, 404, 'Not found'); return; }
       const content = await readFile(filename), headers = await readFile(path.join(root, '_headers'), 'utf8');

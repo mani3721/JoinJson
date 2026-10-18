@@ -5,10 +5,16 @@ export const toolGroups = [
     ['/', 'merge', 'JSON Merger', 'Combine files, keep every record', 'M4 5h6v6H4zM14 13h6v6h-6zM14 5h6M17 2v6M4 16h6'],
     ['/json-diff', 'json-diff', 'JSON Diff and Compare', 'See every change side by side', 'M4 4h6v16H4zM14 4h6v16h-6zM6 8h2M16 8h2M16 12h2']
   ]],
+  ['Format and validate', [
+    ['/jsonc-formatter', 'jsonc-formatter', 'JSONC / JSON5 Formatter', 'Format comments or export clean JSON', 'M8 4H5v16h3M16 4h3v16h-3M10 9h4M10 15h4']
+  ]],
   ['Convert', [
+    ['/json-to-toml', 'json-to-toml', 'JSON to TOML', 'Convert, format, and validate TOML', 'M4 8h16M16 4l4 4-4 4M20 16H4M8 12l-4 4 4 4'],
     ['/json-to-yaml', 'json-to-yaml', 'JSON to YAML', 'Convert YAML and JSON both ways', 'M4 8h16M16 4l4 4-4 4M20 16H4M8 12l-4 4 4 4']
   ]],
   ['Generate code', [
+    ['/json-to-pydantic', 'json-to-pydantic', 'Pydantic / Dataclasses', 'Generate Pydantic v2 models or Python dataclasses', 'M8 4H5v16h3M16 4h3v16h-3M10 8h4v8h-4z'],
+    ['/json-to-go', 'json-to-go', 'JSON to Go Struct', 'Generate typed Go structs with JSON tags', 'm8 5-6 7 6 7M16 5l6 7-6 7M14 3l-4 18'],
     ['/json-to-typescript', 'json-to-typescript', 'JSON to TypeScript', 'Create typed interfaces from JSON', 'm8 5-6 7 6 7M16 5l6 7-6 7M14 3l-4 18'],
     ['/json-to-python', 'json-to-python', 'JSON to Pydantic', 'Build validated Python models', 'M8 4H5v16h3M16 4h3v16h-3M10 8h4v8h-4z'],
     ['/json-to-zod', 'json-to-zod', 'JSON to Zod', 'Generate runtime validation schemas', 'm12 3 8 4v5c0 5-8 9-8 9s-8-4-8-9V7zM8 12l3 3 5-6']
