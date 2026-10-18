@@ -5,7 +5,7 @@
   "scripts": {
     "build": "node scripts/sync-security.mjs && node scripts/build-editors.mjs && node scripts/build-site.mjs",
     "test:editors": "node --test tests/codemirror.test.mjs",
-    "test:ai": "node --test tests/ai-assistant.test.mjs",
+    "test:ai": "node --test tests/ai-assistant.test.mjs tests/ai-vercel.test.mjs",
     "start": "node --env-file=.env server/ai-server.mjs",
     "test:python": "node --test tests/json-to-python.test.mjs tests/json-to-python-editors.test.mjs tests/tool-routes.test.mjs",
     "test:typescript": "node --test tests/json-to-typescript.test.mjs tests/json-to-typescript-editors.test.mjs tests/tool-menu.test.mjs tests/tool-routes.test.mjs",

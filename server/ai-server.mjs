@@ -12,9 +12,9 @@ function reply(res, status, message) {
   res.writeHead(status, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' });
   res.end(JSON.stringify({ error: message }));
 }
-export function createServer({ env = process.env, fetchImpl = fetch } = {}) {
+export function createRequestHandler({ env = process.env, fetchImpl = fetch, requireAccessControl = true } = {}) {
   const rates = new Map(); let active = 0;
-  return http.createServer(async (req, res) => {
+  return async (req, res) => {
     let url;
     try { url = new URL(req.url, 'http://localhost'); } catch (_) { reply(res, 400, 'Invalid URL'); return; }
     if (url.pathname === '/api/ai/chat') {
@@ -22,7 +22,7 @@ export function createServer({ env = process.env, fetchImpl = fetch } = {}) {
       const origin = env.AI_ALLOWED_ORIGIN || `http://${req.headers.host}`;
       if (req.headers.origin !== origin || req.headers['sec-fetch-site'] === 'cross-site') { reply(res, 403, 'Origin denied'); return; }
       // Production must supply authenticated access at the reverse proxy.
-      if (env.NODE_ENV === 'production' && (!env.AI_ALLOWED_ORIGIN || env.AI_ACCESS_CONTROLLED !== 'true')) { reply(res, 503, 'Production access control is not configured'); return; }
+      if (requireAccessControl && env.NODE_ENV === 'production' && (!env.AI_ALLOWED_ORIGIN || env.AI_ACCESS_CONTROLLED !== 'true')) { reply(res, 503, 'Production access control is not configured'); return; }
       if (!env.COHERE_API_KEY) { reply(res, 503, 'AI not configured'); return; }
       if (!(req.headers['content-type'] || '').startsWith('application/json')) { reply(res, 415, 'JSON required'); return; }
       const now = Date.now(), ip = req.socket.remoteAddress;
@@ -96,7 +96,10 @@ export function createServer({ env = process.env, fetchImpl = fetch } = {}) {
       res.writeHead(200, { 'Content-Type': types[path.extname(filename)] || 'application/octet-stream', 'Content-Security-Policy': csp, 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'no-referrer', 'Cache-Control': 'no-store' });
       res.end(req.method === 'HEAD' ? undefined : content);
     } catch (_) { reply(res, 404, 'Not found'); }
-  });
+  };
+}
+export function createServer(options) {
+  return http.createServer(createRequestHandler(options));
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const server = createServer();

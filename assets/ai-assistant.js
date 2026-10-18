@@ -155,7 +155,7 @@
     try {
       const response = await fetch(AI_CHAT_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream' }, body, signal: request.signal, credentials: 'same-origin', mode: 'same-origin', redirect: 'error', cache: 'no-store', referrerPolicy: 'no-referrer' });
       if (!response.ok) {
-        const errors = { 401: 'AI access requires signing in.', 403: 'AI access denied. Check the server origin and access settings.', 404: 'AI backend not found. Open the site served by npm start.', 413: 'Chat too long. Start a new chat.', 429: 'Too many AI requests. Wait a minute and retry.', 502: 'Cohere is unavailable. Check the server API key and model permissions.', 503: 'AI is temporarily unavailable. Check the server environment configuration.' };
+        const errors = { 401: 'AI access requires signing in.', 403: 'AI access denied. Check the server origin and access settings.', 404: 'AI endpoint not found. Redeploy the Vercel project with its API function.', 413: 'Chat too long. Start a new chat.', 429: 'Too many AI requests. Wait a minute and retry.', 502: 'Cohere is unavailable. Check the server API key and model permissions.', 503: 'AI is temporarily unavailable. Check the server environment configuration.' };
         throw new Error(errors[response.status] || 'AI request failed. Please retry later.');
       }
       if (!(response.headers.get('content-type') || '').includes('text/event-stream')) throw new Error('AI server did not return a streaming response.');
