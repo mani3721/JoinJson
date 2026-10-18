@@ -42,9 +42,16 @@ try {
   };
   const click = async selector => {
     const point = await evaluate(`(() => { const el = document.querySelector(${JSON.stringify(selector)}); el.scrollIntoView({block:'nearest'}); const r = el.getBoundingClientRect(); return {x:r.x+r.width/2,y:r.y+r.height/2}; })()`);
-    await send('Input.dispatchMouseEvent', { type: 'mouseMoved', ...point });
-    await send('Input.dispatchMouseEvent', { type: 'mousePressed', button: 'left', clickCount: 1, ...point });
-    await send('Input.dispatchMouseEvent', { type: 'mouseReleased', button: 'left', clickCount: 1, ...point });
+    if (await evaluate('innerWidth < 860')) {
+      await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ ...point, radiusX: 1, radiusY: 1 }] });
+      // Include a sustained press so focus/close timers run before release.
+      await wait(80);
+      await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+    } else {
+      await send('Input.dispatchMouseEvent', { type: 'mouseMoved', ...point });
+      await send('Input.dispatchMouseEvent', { type: 'mousePressed', button: 'left', clickCount: 1, ...point });
+      await send('Input.dispatchMouseEvent', { type: 'mouseReleased', button: 'left', clickCount: 1, ...point });
+    }
   };
   const workspaces = { merge: 'first', 'json-diff': 'json-diff-tool', 'json-to-zod': 'zod-tool', 'json-to-typescript': 'typescript-tool', 'json-to-python': 'python-converter-tool', 'json-to-yaml': 'yaml-converter-tool', 'json-to-go': 'go-tool', 'json-to-pydantic': 'pydantic-tool', 'json-to-toml': 'toml-tool', 'jsonc-formatter': 'jsonc-tool' };
   for (const width of [375, 768, 1440]) {

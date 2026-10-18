@@ -10,6 +10,21 @@
   const hover = matchMedia('(hover: hover) and (pointer: fine)');
   const triggers = [...header.querySelectorAll('.disclosure-trigger')].filter(button => !button.hidden);
   let active, openedByHover = false, sheet = false, previousOverflow, scrollY, background = [];
+  let pointerDisclosure = null, pointerRelease;
+  // A touch/pen press can blur the trigger without focusing the link. Keep
+  // that link rendered until pointerup's native click has finished.
+  header.addEventListener('pointerdown', event => {
+    clearTimeout(pointerRelease);
+    pointerDisclosure = event.target.closest('.nav-disclosure');
+    if (pointerDisclosure) cancel(pointerDisclosure.querySelector('.disclosure-trigger'));
+  });
+  function releasePointer() {
+    clearTimeout(pointerRelease);
+    pointerRelease = setTimeout(() => { pointerDisclosure = null; }, 0);
+  }
+  document.addEventListener('pointerup', releasePointer);
+  document.addEventListener('pointercancel', releasePointer);
+  window.addEventListener('blur', releasePointer);
   const timers = new Map();
   const panelFor = button => document.getElementById(button.getAttribute('aria-controls'));
   function cancel(button) { clearTimeout(timers.get(button)); timers.delete(button); }
@@ -55,17 +70,17 @@
     disclosure.addEventListener('pointerleave', () => {
       cancel(button);
       if (hover.matches && !mobile.matches) timers.set(button, setTimeout(() => {
-        if (active === button && !disclosure.contains(document.activeElement)) close();
+        if (active === button && pointerDisclosure !== disclosure && !disclosure.contains(document.activeElement)) close();
       }, 200));
     });
     disclosure.addEventListener('focusout', event => {
-      // During native focus transfer activeElement can briefly be body. Hiding
-      // the panel at that point removes the clicked link before click fires.
+      // Touch/pen focus may leave the button before a link click is dispatched.
+      if (pointerDisclosure === disclosure) return;
       if (event.relatedTarget) {
         if (active === button && !disclosure.contains(event.relatedTarget)) close();
       } else {
         setTimeout(() => {
-          if (active === button && !disclosure.contains(document.activeElement)) close();
+          if (active === button && pointerDisclosure !== disclosure && !disclosure.contains(document.activeElement)) close();
         }, 0);
       }
     });

@@ -57,6 +57,23 @@ test('native focus transfer to a tool link does not hide it before click', async
   link.focus();
   assert.equal(d.activeElement, link);
 });
+test('pointer selection survives a delayed focus transfer until the link click', async t => {
+  const { w, d, tools, panel } = app(t);
+  w.eval(read('assets/json-to-zod-ui.js'));
+  tools.click();
+  tools.focus();
+  const link = d.querySelector('[data-tool="json-to-typescript"]');
+  link.dispatchEvent(new w.Event('pointerdown', { bubbles: true }));
+  tools.blur();
+  await new Promise(resolve => setTimeout(resolve, 20));
+  assert.equal(panel.hidden, false, 'do not remove the pending pointer target');
+  link.dispatchEvent(new w.Event('pointerup', { bubbles: true }));
+  link.click();
+  assert.equal(w.location.pathname, '/json-to-typescript');
+  assert.equal(d.getElementById('typescript-tool').hidden, false);
+  assert.equal(panel.hidden, true);
+});
+
 test('route and link selection close navigation while tool routing remains intact', t => {
   const { w, d, tools, panel } = app(t);
   w.eval(read('assets/json-to-zod-ui.js'));
