@@ -2,8 +2,9 @@
   'use strict';
   const $ = id => document.getElementById(id);
   if (!$('ai-form')) return;
-  // The same-origin backend reads credentials and model settings from .env.
-  const AI_CHAT_URL = '/api/ai/chat';
+  // Direct requests use a personal key kept only in this page's memory.
+  const AI_CHAT_URL = 'https://api.cohere.ai/compatibility/v1/chat/completions';
+  let apiKey = '';
   let controller = null, generation = 0, history = [];
   const messages = $('ai-messages');
   function scrollChat() { messages.scrollTop = messages.scrollHeight; }
@@ -133,7 +134,7 @@
   function clear() {
     generation++; if (controller) controller.abort(); controller = null;
     messages.querySelectorAll('.ai-message').forEach(message => message.remove());
-    history = []; $('ai-prompt').value = ''; $('ai-empty').hidden = false;
+    history = []; apiKey = ''; $('ai-prompt').value = ''; $('ai-empty').hidden = false;
     busy(false); $('ai-status').textContent = '';
     if (!panel.hidden) $('ai-prompt').focus({ preventScroll: true });
   }
@@ -144,8 +145,14 @@
     if (!prompt || prompt.length > 8000) { $('ai-status').textContent = 'Enter a message of up to 8,000 characters.'; return; }
     // Only typed chat messages are sent; workspace JSON is never attached.
     const turns = [...history, { role: 'user', content: prompt }];
-    const body = JSON.stringify({ messages: turns });
+    const body = JSON.stringify({ model: 'north-mini-code-1-0', temperature: 0.3, stream: true, max_tokens: 2048, messages: turns });
     if (new TextEncoder().encode(body).length > 65536) { $('ai-status').textContent = 'Chat too long. Start a new chat or shorten your message.'; return; }
+    if (!apiKey) {
+      const key = window.prompt('Enter your personal Cohere API key. It is sent only to Cohere and kept in page memory until New chat, Clear data, or reload.');
+      if (!key || !key.trim()) { $('ai-status').textContent = 'A Cohere API key is required. No request was sent.'; return; }
+      if (/\s/.test(key.trim())) { $('ai-status').textContent = 'Enter a valid Cohere API key without whitespace.'; return; }
+      apiKey = key.trim();
+    }
     const token = ++generation, request = new AbortController(); controller = request;
     const previous = $('ai-response'); if (previous) previous.removeAttribute('id');
     addMessage('user', prompt);
@@ -153,9 +160,10 @@
     $('ai-prompt').value = ''; $('ai-status').textContent = 'Thinking…'; busy(true);
     const timer = setTimeout(() => request.abort(), 90000);
     try {
-      const response = await fetch(AI_CHAT_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream' }, body, signal: request.signal, credentials: 'same-origin', cache: 'no-store', referrerPolicy: 'no-referrer' });
+      const response = await fetch(AI_CHAT_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream', Authorization: 'Bearer ' + apiKey }, body, signal: request.signal, credentials: 'omit', mode: 'cors', redirect: 'error', cache: 'no-store', referrerPolicy: 'no-referrer' });
       if (!response.ok) {
-        const errors = { 401: 'Sign in to use AI Help.', 403: 'AI access denied. Check the server origin and access settings.', 404: 'AI backend not found. Run npm start and open the server URL.', 413: 'Chat too long. Start a new chat.', 429: 'Too many AI requests. Wait a minute and retry.', 503: 'AI is not configured or temporarily unavailable.' };
+        if (response.status === 401) apiKey = '';
+        const errors = { 401: 'Cohere rejected the API key. Send again to enter a replacement.', 403: 'Cohere access denied. Check your key and model permissions.', 404: 'Cohere endpoint or model not found.', 413: 'Chat too long. Start a new chat.', 429: 'Too many AI requests. Wait a minute and retry.', 503: 'Cohere is temporarily unavailable.' };
         throw new Error(errors[response.status] || 'AI request failed. Please retry later.');
       }
       if (!(response.headers.get('content-type') || '').includes('text/event-stream')) throw new Error('AI server did not return a streaming response.');
@@ -165,7 +173,7 @@
       });
       if (token === generation) { history = [...turns, { role: 'assistant', content: reply.markdownSource }]; $('ai-status').textContent = ''; }
     } catch (error) {
-      if (token === generation) $('ai-status').textContent = error.name === 'AbortError' ? 'Stopped. Reply may be incomplete.' : error.name === 'TypeError' ? 'Cannot reach the AI server. Check your connection and make sure the backend is running.' : error.message;
+      if (token === generation) $('ai-status').textContent = error.name === 'AbortError' ? 'Stopped. Reply may be incomplete.' : error.name === 'TypeError' ? 'Cannot reach Cohere. Check your connection; Cohere must allow this site through CORS for direct browser requests.' : error.message;
     } finally {
       clearTimeout(timer);
       if (token === generation) { controller = null; busy(false); if (!panel.hidden) $('ai-prompt').focus({ preventScroll: true }); }

@@ -74,11 +74,11 @@ async function ui() {
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
   const dom = new JSDOM(html, { runScripts: 'outside-only', url: 'http://localhost' });
   const w = dom.window, $ = id => w.document.getElementById(id);
-  w.prompt = () => { assert.fail('AI Help must never prompt for an API key'); };
+  w.prompt = () => 'test-personal-key';
   w.TextEncoder = TextEncoder; w.AbortController = AbortController;
   w.JMAIStream = { read }; w.JMFlow = { snapshot: () => ({ files: [{ name: 'secret-name', text: '{"private":1}' }], options: { method: 'join' } }), resultText: () => '[1]' };
   w.eval(await readFile(new URL('../assets/ai-assistant.js', import.meta.url), 'utf8'));
-  assert.equal($('ai-api-key'), null, 'The assistant must not ask visitors for an API key');
+  assert.equal($('ai-api-key'), null, 'No API key is embedded in the markup');
   const submit = () => $('ai-form').dispatchEvent(new w.Event('submit', { cancelable: true }));
   const settle = async () => { for (let i = 0; i < 30 && $('ai-send').disabled; i++) await new Promise(resolve => setTimeout(resolve, 5)); assert.equal($('ai-send').disabled, false); };
   return { dom, w, $, submit, settle };
@@ -130,9 +130,11 @@ test('closing popup preserves an in-flight response and reopening focuses an ena
 test('clean chat has no checkboxes, keeps conversation and never attaches workspace JSON', async () => {
   const f = await ui(); const bodies = [];
   f.w.fetch = async (url, options) => {
-    assert.equal(url, '/api/ai/chat');
-    assert.equal(options.headers.Authorization, undefined);
-    assert.equal(options.credentials, 'same-origin');
+    assert.equal(url, COHERE_API_URL);
+    assert.equal(options.headers.Authorization, 'Bearer test-personal-key');
+    assert.equal(options.credentials, 'omit');
+    assert.equal(options.mode, 'cors');
+    assert.equal(options.redirect, 'error');
     bodies.push(JSON.parse(options.body));
     return new Response(stream('data: {"choices":[{"delta":{"content":"<img src=x onerror=alert(1)>"}}]}\n\ndata: [DONE]\n\n'), { headers: { 'Content-Type': 'text/event-stream' } });
   };
@@ -167,19 +169,19 @@ test('UI handles unavailable backend, stop and stale response after clear', asyn
   } finally { f.dom.window.close(); }
 });
 
-test('browser sends only conversation to the backend and explains connection failures', async () => {
+test('browser calls Cohere directly and explains connection and CORS failures', async () => {
   const f = await ui(); let calls = 0;
   try {
     f.$('ai-prompt').value = 'Help';
     f.w.fetch = async (url, options) => {
       calls++;
-      assert.equal(url, '/api/ai/chat');
-      assert.equal(options.headers.Authorization, undefined);
-      assert.deepEqual(JSON.parse(options.body), { messages: [{ role: 'user', content: 'Help' }] });
+      assert.equal(url, COHERE_API_URL);
+      assert.equal(options.headers.Authorization, 'Bearer test-personal-key');
+      assert.deepEqual(JSON.parse(options.body), { model: 'north-mini-code-1-0', temperature: 0.3, stream: true, max_tokens: 2048, messages: [{ role: 'user', content: 'Help' }] });
       throw new TypeError('Failed to fetch');
     };
     f.submit(); await f.settle();
-    assert.equal(calls, 1); assert(f.$('ai-status').textContent.includes('backend is running'));
+    assert.equal(calls, 1); assert(f.$('ai-status').textContent.includes('CORS'));
     assert.equal(f.w.localStorage.length, 0);
   } finally { f.dom.window.close(); }
 });
@@ -285,10 +287,10 @@ test('composer shows only Send when idle and only Stop while a response is pendi
   } finally { f.dom.window.close(); }
 });
 
-test('missing backend and authentication errors never prompt for a key', async () => {
+test('Cohere errors explain endpoint, authentication and availability failures', async () => {
   const f = await ui(); let calls = 0;
   try {
-    for (const [status, message] of [[404, 'npm start'], [401, 'Sign in'], [503, 'not configured']]) {
+    for (const [status, message] of [[404, 'not found'], [401, 'replacement'], [503, 'temporarily unavailable']]) {
       f.w.fetch = async () => { calls++; return new Response('{}', { status }); };
       f.$('ai-prompt').value = 'Help'; f.submit(); await f.settle();
       assert(f.$('ai-status').textContent.includes(message));
@@ -297,13 +299,46 @@ test('missing backend and authentication errors never prompt for a key', async (
   } finally { f.dom.window.close(); }
 });
 
-test('public assistant uses the backend without credentials or key prompts', async () => {
+test('direct assistant never embeds server credentials or persists a personal key', async () => {
   const source = await readFile(new URL('../assets/ai-assistant.js', import.meta.url), 'utf8');
   assert(!source.includes('COHERE_API_KEY'));
-  assert(!source.includes('Bearer '));
-  assert(!source.includes(COHERE_API_URL));
-  assert(source.includes('/api/ai/chat'));
-  assert(!source.includes('window.prompt'));
+  assert(source.includes('Bearer '));
+  assert(source.includes(COHERE_API_URL));
+  assert(!source.includes('/api/ai/chat'));
+  assert(source.includes('window.prompt'));
   assert(!source.includes('localStorage'));
   assert(!source.includes('sessionStorage'));
+});
+
+
+test('cancelled or invalid keys send nothing and preserve the draft', async () => {
+  const f = await ui(); let calls = 0;
+  f.w.fetch = async () => { calls++; throw new Error('Unexpected request'); };
+  try {
+    for (const key of [null, '', '   ', 'invalid key']) {
+      f.w.prompt = () => key;
+      f.$('ai-prompt').value = 'Keep draft'; f.submit(); await f.settle();
+      assert.equal(f.$('ai-prompt').value, 'Keep draft');
+      assert.equal(f.$('ai-response'), null);
+    }
+    assert.equal(calls, 0);
+  } finally { f.dom.window.close(); }
+});
+
+test('personal key is reused, then forgotten on 401, New chat and Clear data', async () => {
+  const f = await ui(); let prompts = 0, status = 200;
+  f.w.prompt = () => 'personal-key-' + (++prompts);
+  f.w.fetch = async (url, options) => {
+    assert.equal(options.headers.Authorization, 'Bearer personal-key-' + prompts);
+    return status === 200 ? new Response(stream(wire), { headers: { 'Content-Type': 'text/event-stream' } }) : new Response('{}', { status });
+  };
+  const send = async () => { f.$('ai-prompt').value = 'Help'; f.submit(); await f.settle(); };
+  try {
+    await send(); await send(); assert.equal(prompts, 1);
+    status = 401; await send(); assert.equal(prompts, 1);
+    status = 200; await send(); assert.equal(prompts, 2);
+    f.$('ai-clear').click(); await send(); assert.equal(prompts, 3);
+    f.$('clear').click(); await send(); assert.equal(prompts, 4);
+    assert.equal(f.w.localStorage.length, 0); assert.equal(f.w.sessionStorage.length, 0);
+  } finally { f.dom.window.close(); }
 });

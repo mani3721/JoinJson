@@ -74,7 +74,8 @@ try {
     assert.fail('Composer did not return to idle');
   };
   await controls(false);
-  await evaluate(`window.fetch = (url, options) => new Promise((resolve, reject) => {
+  await evaluate(`window.prompt = () => 'test-personal-key';
+  window.fetch = (url, options) => new Promise((resolve, reject) => {
     window.finishAI = resolve;
     options.signal.addEventListener('abort', () => reject(new DOMException('Stopped', 'AbortError')));
   });
