@@ -60,7 +60,13 @@ try {
         return {left:rect.left,right:rect.right,panelScroll:panel.scrollWidth,panelWidth:panel.clientWidth,titleRatio:ratio(title,background),mutedRatio:ratio(muted,background),focusRatio:ratio(focusColor,background),titlesFit:[...document.querySelectorAll('.nav-title')].every(el => el.scrollWidth <= el.clientWidth),sheet:document.querySelector('.nav-shell').getAttribute('aria-modal')};
       })()`);
       assert.ok(state.left >= 0 && state.right <= width + 1, JSON.stringify({page,theme,width,state}));
-      assert.ok(state.panelScroll <= state.panelWidth, 'panel has no horizontal scroll');
+      const groupGaps = await evaluate(`(() => {
+        const groups = [...document.querySelectorAll('#tool-panel .nav-group')].map(group => group.getBoundingClientRect());
+        return groups.slice(1, 3).map((group, index) => group.top - groups[index].bottom);
+      })()`);
+      assert.ok(groupGaps.every(gap => gap >= -1 && gap <= 5), 'navigation groups stay compact: ' + JSON.stringify({page, width, groupGaps}));
+      console.log('PASS navigation group spacing', JSON.stringify({page, theme, width, groupGaps}));
+      assert.ok(state.panelScroll <= state.panelWidth, 'panel has no horizontal scroll: ' + JSON.stringify({page, theme, width, state}));
       assert.ok(state.titlesFit, 'titles fit');
       assert.ok(state.titleRatio >= 4.5 && state.mutedRatio >= 4.5 && state.focusRatio >= 3, JSON.stringify(state));
       if (width < 860) assert.equal(state.sheet,'true');
