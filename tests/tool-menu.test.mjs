@@ -46,6 +46,17 @@ test('outside click and focus departure close panels, internal focus does not', 
   d.querySelector('.brand').focus();
   await Promise.resolve(); assert.equal(panel.hidden, true);
 });
+test('native focus transfer to a tool link does not hide it before click', async t => {
+  const { w, d, tools, panel } = app(t);
+  tools.click(); tools.focus();
+  // Native focusout can run while activeElement is body, before link focus.
+  const link = panel.querySelector('a');
+  tools.dispatchEvent(new w.FocusEvent('focusout', { bubbles: true, relatedTarget: link }));
+  await Promise.resolve();
+  assert.equal(panel.hidden, false);
+  link.focus();
+  assert.equal(d.activeElement, link);
+});
 test('route and link selection close navigation while tool routing remains intact', t => {
   const { w, d, tools, panel } = app(t);
   w.eval(read('assets/json-to-zod-ui.js'));
@@ -68,6 +79,24 @@ test('hover intent opens after 120ms and closes after 200ms; click remains avail
   region.dispatchEvent(new w.Event('pointerenter'));
   tools.click(); assert.equal(panel.hidden, false);
   await new Promise(resolve => setTimeout(resolve, 145)); assert.equal(panel.hidden, false);
+});
+test('click after hover-open keeps Tools available until a deliberate second click', async t => {
+  const { w, tools, panel } = app(t, { hover: true });
+  tools.parentElement.dispatchEvent(new w.Event('pointerenter'));
+  await new Promise(resolve => setTimeout(resolve, 145));
+  assert.equal(panel.hidden, false);
+  tools.click();
+  assert.equal(panel.hidden, false);
+  assert.equal(tools.getAttribute('aria-expanded'), 'true');
+  tools.click();
+  assert.equal(panel.hidden, true);
+});
+test('standalone header labels match their current destination', t => {
+  for (const [page, url] of [['json-to-go.html', '/json-to-go/'], ['json-to-pydantic.html', '/json-to-pydantic']]) {
+    const { d } = app(t, { page, url });
+    const link = d.querySelector('#tool-menu [aria-current="page"]');
+    assert.equal(d.getElementById('tool-current').textContent, link.querySelector('.nav-title').textContent);
+  }
 });
 test('single render flag exposes flat links without a Tools disclosure', t => {
   const { tools, panel, d } = app(t, { flat: true });

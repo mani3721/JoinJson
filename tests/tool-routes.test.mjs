@@ -46,6 +46,31 @@ test('every available menu link and SPA transition uses a clean route', t => {
     assert.equal(d.documentElement, page);
   }
 });
+test('selecting a tool repairs stale selection state instead of ignoring the link', t => {
+  const w = app(t, '/'), d = w.document;
+  d.body.dataset.tool = 'json-to-typescript';
+  d.querySelector('#tool-menu [data-tool="json-to-typescript"]').click();
+  assert.equal(w.location.pathname, '/json-to-typescript');
+  assert.equal(d.getElementById('typescript-tool').hidden, false);
+  d.getElementById('typescript-tool').hidden = true;
+  d.querySelector('#tool-menu [data-tool="json-to-typescript"]').click();
+  assert.equal(d.getElementById('typescript-tool').hidden, false);
+});
+test('missing workspaces and explicit new-tab links retain native navigation', t => {
+  const w = app(t, '/'), d = w.document;
+  d.getElementById('typescript-tool').remove();
+  const observe = link => {
+    let cancelled;
+    d.addEventListener('click', event => { cancelled = event.defaultPrevented; event.preventDefault(); }, { once: true });
+    link.click();
+    assert.equal(cancelled, false);
+  };
+  observe(d.querySelector('#tool-menu [data-tool="json-to-typescript"]'));
+  const link = d.querySelector('#tool-menu [data-tool="json-to-zod"]');
+  link.target = '_blank';
+  observe(link);
+  assert.equal(w.location.pathname, '/');
+});
 test('cross-tool transfers use clean paths and keep JSON out of the URL', t => {
   const w = app(t, '/'), text = '{"private":"sample"}';
   for (const tool of ['json-to-typescript', 'json-to-zod', 'json-to-python', 'json-to-yaml', 'json-diff']) {
@@ -96,6 +121,22 @@ test('build refreshes the JSON Diff static preview from the shared homepage', as
   } finally {
     await rm(root, { recursive: true, force: true });
   }
+});
+test('static preview generation provides every embedded tool destination', async () => {
+  const root = await mkdtemp(path.join(tmpdir(), 'joinjson-all-routes-'));
+  try {
+    await writeFile(path.join(root, 'index.html'), read('index.html'));
+    await syncStandaloneRoutes(root);
+    for (const [tool, route] of Object.entries(routes).filter(([tool]) => tool !== 'merge')) {
+      const html = await readFile(path.join(root, route.slice(1), 'index.html'), 'utf8');
+      const dom = new JSDOM(html, { url: 'https://www.joinjson.com' + route + '/', runScripts: 'outside-only' });
+      try {
+        dom.window.eval(read('assets/json-to-zod-ui.js'));
+        assert.equal(dom.window.document.body.dataset.tool, tool);
+        assert.equal(dom.window.document.querySelector('link[rel="canonical"]').href, 'https://www.joinjson.com' + route);
+      } finally { dom.window.close(); }
+    }
+  } finally { await rm(root, { recursive: true, force: true }); }
 });
 test('deployment rewrites every available converter route to the SPA', () => {
   const config = JSON.parse(read('vercel.json'));

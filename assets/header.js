@@ -9,7 +9,7 @@
   const mobile = matchMedia('(max-width: 859px)');
   const hover = matchMedia('(hover: hover) and (pointer: fine)');
   const triggers = [...header.querySelectorAll('.disclosure-trigger')].filter(button => !button.hidden);
-  let active, sheet = false, previousOverflow, scrollY, background = [];
+  let active, openedByHover = false, sheet = false, previousOverflow, scrollY, background = [];
   const timers = new Map();
   const panelFor = button => document.getElementById(button.getAttribute('aria-controls'));
   function cancel(button) { clearTimeout(timers.get(button)); timers.delete(button); }
@@ -20,6 +20,7 @@
     button.setAttribute('aria-expanded', 'false');
     panelFor(button).hidden = true;
     active = null;
+    openedByHover = false;
     if (restore) button.focus();
   }
   function position(button) {
@@ -30,19 +31,26 @@
     const shift = Math.max(16 - rect.left, Math.min(0, innerWidth - 16 - rect.right));
     panel.style.setProperty('--panel-shift', shift + 'px');
   }
-  function open(button) {
+  function open(button, fromHover = false) {
     close();
     active = button;
+    openedByHover = fromHover;
     button.setAttribute('aria-expanded', 'true');
     panelFor(button).hidden = false;
     position(button);
   }
   triggers.forEach(button => {
     const disclosure = button.parentElement;
-    button.addEventListener('click', () => active === button ? close() : open(button));
+    button.addEventListener('click', () => {
+      cancel(button);
+      // Hover may already have opened the panel before its click arrives.
+      if (active === button && openedByHover) openedByHover = false;
+      else if (active === button) close();
+      else open(button);
+    });
     disclosure.addEventListener('pointerenter', () => {
       cancel(button);
-      if (hover.matches && !mobile.matches && active !== button) timers.set(button, setTimeout(() => open(button), 120));
+      if (hover.matches && !mobile.matches && active !== button) timers.set(button, setTimeout(() => open(button, true), 120));
     });
     disclosure.addEventListener('pointerleave', () => {
       cancel(button);
@@ -50,9 +58,17 @@
         if (active === button && !disclosure.contains(document.activeElement)) close();
       }, 200));
     });
-    disclosure.addEventListener('focusout', () => queueMicrotask(() => {
-      if (active === button && !disclosure.contains(document.activeElement)) close();
-    }));
+    disclosure.addEventListener('focusout', event => {
+      // During native focus transfer activeElement can briefly be body. Hiding
+      // the panel at that point removes the clicked link before click fires.
+      if (event.relatedTarget) {
+        if (active === button && !disclosure.contains(event.relatedTarget)) close();
+      } else {
+        setTimeout(() => {
+          if (active === button && !disclosure.contains(document.activeElement)) close();
+        }, 0);
+      }
+    });
   });
   function setSheet(value, restore = true) {
     if (sheet === value) return;
@@ -108,6 +124,9 @@
       if (path === current && !link.classList.contains('brand')) link.setAttribute('aria-current', 'page');
       else link.removeAttribute('aria-current');
     });
+    const currentTool = header.querySelector('#tool-menu a[aria-current="page"] .nav-title');
+    const label = document.getElementById('tool-current');
+    if (label && currentTool) label.textContent = currentTool.textContent;
     close(); setSheet(false, false);
   }
   ['popstate', 'hashchange'].forEach(name => window.addEventListener(name, route));

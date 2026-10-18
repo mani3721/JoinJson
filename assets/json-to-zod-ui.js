@@ -71,12 +71,15 @@
   menu.addEventListener('click', event => {
     const link = event.target.closest('a[data-tool]');
     if (!link || !menu.contains(link) || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-    // Standalone tools must load their own document, not the SPA merger view.
-    if (!['merge', 'json-to-zod', 'json-to-typescript', 'json-to-python', 'json-to-yaml', 'json-diff'].includes(link.dataset.tool)) return;
+    // Intercept only destinations this document can actually display.
+    // Standalone tools and incomplete previews retain native link navigation.
+    const targets = { merge: 'first', 'json-to-zod': 'zod-tool', 'json-to-typescript': 'typescript-tool', 'json-to-python': 'python-converter-tool', 'json-to-yaml': 'yaml-converter-tool', 'json-diff': 'json-diff-tool' };
+    const url = new URL(link.href, window.location.href);
+    if (url.origin !== window.location.origin || link.hasAttribute('download') || (link.target && link.target !== '_self') || !Object.hasOwn(targets, link.dataset.tool) || !$(targets[link.dataset.tool])) return;
     event.preventDefault();
-    closeMenu(true);
-    if (link.dataset.tool === document.body.dataset.tool) return;
-    navigate(link.dataset.tool);
+    // Reconcile the view even when an old dataset says it is already selected.
+    if (url.pathname === window.location.pathname) route(true);
+    else navigate(link.dataset.tool);
   });
   function navigate(tool) {
     const url = new URL(window.location.href);

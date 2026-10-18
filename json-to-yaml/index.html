@@ -1,0 +1,2373 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google-site-verification" content="qMFGFaStXgAs2KAMK_W9EIARt2v16SJW6lTCyvHCAhE" />
+<meta name="msvalidate.01" content="3F8AA40E7B776E8B2E23D88CD887655A" />
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NXESFTN9W5"></script>
+<script id="google-analytics">
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-NXESFTN9W5');
+</script>
+<title>JSON to YAML and YAML to JSON Converter | JoinJson</title>
+<meta name="description" content="Convert JSON to YAML or YAML to JSON in your browser. Paste your input, review the converted output, then copy or download the result.">
+<link rel="canonical" href="https://www.joinjson.com/json-to-yaml">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="JSON to YAML and YAML to JSON Converter | JoinJson">
+<meta property="og:description" content="Convert JSON to YAML or YAML to JSON in your browser. Paste your input, review the converted output, then copy or download the result.">
+<meta property="og:url" content="https://www.joinjson.com/json-to-yaml">
+<meta property="og:type" content="website">
+
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="theme-color" content="#faf8f5">
+<meta property="og:site_name" content="JoinJson">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="JSON to YAML and YAML to JSON Converter | JoinJson">
+<meta name="twitter:description" content="Convert JSON to YAML or YAML to JSON in your browser. Paste your input, review the converted output, then copy or download the result.">
+<!-- Google CMP placeholder: install your Google-certified consent platform here.
+     No CMP is configured and no consent is assumed. Keep advertising disabled until reviewed. -->
+<!-- AdSense placeholder: do NOT paste an eager-loading vendor script here.
+     Configure the consent-gated lazy loader below only after approval. Auto ads stay off. -->
+<style>
+:root {
+  color-scheme: light;
+  --bg:#faf8f5;
+  --surface:#fff;
+  --soft:#f5f2ed;
+  --text:#242b35;
+  --muted:#586170;
+  --line:#d7d9dd;
+  --accent:#9b3c20;
+  --accent-soft:#fff0e8;
+  --focus:#175bc0;
+  --good:#17623d;
+  --good-bg:#e9f6ee;
+  --bad:#a3292f;
+  --bad-bg:#fff0f0;
+  --added:#e7f5ed;
+  --changed:#fff2cf;
+  --shadow:0 8px 30px #30291e08;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font:
+    16px/1.5 system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+button,
+select,
+input[type=url] {
+  min-height: 44px;
+}
+button {
+  cursor: pointer;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface);
+  padding: 9px 15px;
+  font-weight: 600;
+}
+button:hover:not(:disabled) {
+  background: var(--soft);
+}
+button:disabled {
+  cursor: not-allowed;
+  opacity: .55;
+}
+a {
+  color: var(--accent);
+  text-underline-offset: 3px;
+}
+button,
+input,
+textarea,
+select,
+summary,
+a {
+  touch-action: manipulation;
+}
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+[hidden] {
+  display: none !important;
+}
+.skip {
+  position: fixed;
+  left: 12px;
+  top: -80px;
+  z-index: 20;
+  background: var(--surface);
+  padding: 12px;
+}
+.skip:focus {
+  top: 12px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.site-header {
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+.header-inner {
+  max-width: 1180px;
+  margin: auto;
+  padding: 14px 24px;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  font-size: clamp(1.125rem, 2vw, 1.375rem);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  text-decoration: none;
+  color: var(--text);
+}
+.brand img {
+  flex-shrink: 0;
+}
+.header-links {
+  display: flex;
+  gap: 20px;
+  font-size: 14px;
+}
+.header-links a {
+  color: var(--muted);
+}
+main {
+  max-width: 1180px;
+  padding: 0 24px 48px;
+  margin: auto;
+}
+.hero {
+  text-align: center;
+  padding: 44px 0 26px;
+}
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: .12em;
+  font-weight: 750;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+h1 {
+  font-size: clamp(28px, 4.5vw, 46px);
+  line-height: 1.2;
+  letter-spacing: -.045em;
+  margin: 12px 0;
+}
+h1 span {
+  color: var(--accent);
+}
+.hero p {
+  color: var(--muted);
+  margin: 10px 0;
+}
+.steps {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 4px auto 28px;
+  max-width: 650px;
+  gap: 12px;
+}
+.steps li {
+  flex: 1;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 650;
+}
+.step-number {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  background: var(--surface);
+}
+.steps [aria-current=step] {
+  color: var(--accent);
+}
+.steps [aria-current=step] .step-number {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+.steps li:not(:last-child):after {
+  content: "";
+  height: 1px;
+  background: var(--line);
+  flex: 1;
+  margin-left: 5px;
+}
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+h2 {
+  font-size: 19px;
+  margin: 0;
+  letter-spacing: -.02em;
+}
+.section-heading h2 span,
+.result-title span {
+  color: var(--accent);
+  margin-right: 7px;
+}
+.workspace-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.link-button {
+  border: 0;
+  background: none;
+  color: var(--accent);
+  padding-left: 8px;
+  padding-right: 8px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.quiet-button {
+  font-size: 14px;
+  background: transparent;
+}
+.input-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.input-card {
+  min-width: 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+.input-card[data-state=error] {
+  border-color: var(--bad);
+  box-shadow: 0 0 0 1px var(--bad);
+}
+.card-heading {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.card-heading h3 {
+  margin: 2px 0;
+  font-size: 16px;
+  white-space: nowrap;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 7px;
+  padding: 4px 8px;
+  font-size: 13px;
+  line-height: 1.5;
+  background: var(--soft);
+  color: var(--muted);
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+.badge[data-state=valid] {
+  background: var(--good-bg);
+  color: var(--good);
+}
+.badge[data-state=error] {
+  background: var(--bad-bg);
+  color: var(--bad);
+}
+.segments {
+  display: flex;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 3px;
+  margin-bottom: 14px;
+  gap: 3px;
+}
+.segments button {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  padding: 7px 9px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.segments [aria-selected=true] {
+  background: var(--surface);
+  box-shadow: 0 1px 4px #00000014;
+  color: var(--accent);
+}
+.method-panel {
+  min-height: 302px;
+}
+.editor {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  isolation: isolate;
+}
+.editor-top {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5px 0 12px;
+  background: var(--soft);
+  border-bottom: 1px solid var(--line);
+  gap: 8px;
+}
+.editor-label {
+  font:
+    12px/1.5 ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
+  color: var(--muted);
+}
+.icon-tools {
+  display: flex;
+  gap: 0;
+}
+.icon-button {
+  display: inline-grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  border: 0;
+  padding: 6px;
+  background: transparent;
+  font-size: 19px;
+  font-weight: 500;
+}
+.icon-button[aria-pressed=true],
+.icon-button[aria-expanded=true] {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.icon-button svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.edit-body {
+  display: flex;
+  height: 250px;
+  overflow: hidden;
+  background: var(--surface);
+}
+.line-numbers {
+  margin: 0;
+  padding: 12px 8px;
+  flex: none;
+  width: 44px;
+  overflow: hidden;
+  text-align: right;
+  color: var(--muted);
+  background: var(--soft);
+  border-right: 1px solid var(--line);
+  font:
+    13px/22px ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
+  user-select: none;
+}
+.json-input {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  resize: none;
+  border: 0;
+  border-radius: 0;
+  padding: 12px;
+  font:
+    13px/22px ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
+  background: transparent;
+  tab-size: 2;
+  white-space: pre;
+  overflow: auto;
+}
+.json-input:focus {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+.json-input::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+.json-input.wrap {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.find-bar {
+  padding: 8px;
+  background: var(--soft);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--line);
+}
+.find-bar input {
+  flex: 1;
+  min-width: 90px;
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 6px 10px;
+  background: var(--surface);
+}
+.find-status {
+  font-size: 12px;
+  color: var(--muted);
+}
+.help-popover {
+  position: relative;
+}
+.help-popover summary {
+  list-style: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.help-popover summary::-webkit-details-marker {
+  display: none;
+}
+.help-popover p {
+  position: absolute;
+  right: 0;
+  top: 35px;
+  width: 245px;
+  padding: 12px;
+  z-index: 5;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  font-size: 13px;
+}
+.drop-zone {
+  width: 100%;
+  min-height: 230px;
+  border: 2px dashed var(--line);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 22px;
+  font-weight: 500;
+  background: var(--soft);
+}
+.drop-zone.dragging {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.drop-icon {
+  font-size: 30px;
+  color: var(--accent);
+}
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+.file-info {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  margin-top: 12px;
+  overflow-wrap: anywhere;
+}
+.file-description {
+  flex: 1;
+  min-width: 0;
+}
+.file-description strong {
+  display: block;
+}
+.import-status {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 10px 0;
+  overflow-wrap: anywhere;
+}
+.import-status.error {
+  color: var(--bad);
+}
+.url-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 650;
+  margin: 8px 0;
+}
+.url-controls {
+  display: flex;
+  gap: 8px;
+}
+.url-controls input {
+  min-width: 0;
+  flex: 1;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  padding: 10px;
+}
+.url-help {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 10px 0;
+}
+.merge-section {
+  text-align: center;
+  padding: 30px 0;
+}
+.merge-title {
+  margin-bottom: 16px;
+}
+.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+.primary:hover:not(:disabled) {
+  background: #7c2e17;
+}
+.merge-button {
+  min-width: 240px;
+  min-height: 52px;
+  font-size: 17px;
+  border-radius: 11px;
+}
+.rule {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 12px 0 4px;
+}
+.shortcut {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 8px 0 14px;
+}
+kbd {
+  font: inherit;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 1px 4px;
+}
+.advanced {
+  max-width: 490px;
+  margin: 18px auto 0;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+}
+.advanced summary {
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 650;
+  min-height: 44px;
+}
+.options {
+  padding: 0 16px 16px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.check-label {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  gap: 8px;
+  font-size: 14px;
+}
+.check-label input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+.array-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+.array-option select {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--surface);
+  padding: 6px 9px;
+}
+.advanced-note {
+  margin: 0;
+  padding: 0 16px 16px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.result-panel {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.result-heading {
+  padding: 18px;
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--line);
+}
+.result-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.result-actions button {
+  font-size: 14px;
+}
+.result-empty {
+  text-align: center;
+  padding: 45px 18px;
+  color: var(--muted);
+}
+.result-output {
+  max-height: 520px;
+  overflow: auto;
+  outline-offset: -3px;
+}
+.result-lines {
+  margin: 0;
+  padding: 12px 0;
+  list-style: none;
+  counter-reset: line;
+  min-width: 100%;
+  width: max-content;
+  font:
+    13px/23px ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
+}
+.result-lines li {
+  counter-increment: line;
+  display: flex;
+  min-height: 23px;
+  white-space: pre;
+}
+.result-lines li:before {
+  content: counter(line);
+  position: sticky;
+  left: 0;
+  display: inline-block;
+  flex: none;
+  width: 54px;
+  padding: 0 12px 0 4px;
+  text-align: right;
+  color: var(--muted);
+  border-right: 1px solid var(--line);
+  margin-right: 12px;
+  background: var(--soft);
+  user-select: none;
+}
+.result-lines code {
+  font: inherit;
+  padding-right: 18px;
+}
+.result-lines .added {
+  background: var(--added);
+}
+.result-lines .overridden {
+  background: var(--changed);
+}
+.result-legend {
+  padding: 12px 18px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--muted);
+}
+.conflict-panel,
+.diff-panel {
+  border-top: 1px solid var(--line);
+  padding: 16px 18px;
+}
+.conflict-panel h3,
+.diff-panel h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+.conflict-list {
+  display: grid;
+  gap: 12px;
+}
+.conflict-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+  background: var(--soft);
+}
+.conflict-card legend {
+  padding: 0 5px;
+  font-weight: 700;
+}
+.conflict-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.conflict-option {
+  display: grid;
+  gap: 7px;
+  align-content: start;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px;
+  background: var(--surface);
+}
+.conflict-option span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 650;
+}
+.conflict-option pre,
+.diff-value {
+  margin: 0;
+  overflow: auto;
+  max-height: 155px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: 12px/1.45 ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+.array-id-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+.array-id-option input {
+  width: 88px;
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--surface);
+  padding: 6px 9px;
+}
+.diff-list {
+  display: grid;
+  gap: 8px;
+}
+.diff-row {
+  display: grid;
+  grid-template-columns: minmax(110px, .65fr) minmax(70px, .35fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px;
+  background: var(--surface);
+  font-size: 13px;
+}
+.diff-path {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  overflow-wrap: anywhere;
+}
+.diff-kind {
+  font-weight: 750;
+  color: var(--accent);
+}
+.legend-key {
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+}
+.swatch {
+  width: 12px;
+  height: 12px;
+  border: 1px solid #788373;
+  border-radius: 3px;
+  background: var(--added);
+}
+.swatch.changed {
+  background: var(--changed);
+  border-color: #a78b48;
+}
+.result-notice {
+  font-size: 13px;
+  margin: 0;
+  padding: 12px 18px;
+  color: var(--muted);
+}
+.global-status {
+  min-height: 24px;
+  margin: 12px 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.privacy-note {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  margin: 26px 0;
+}
+.site-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.site-footer nav {
+  display: flex;
+  gap: 16px;
+}
+@media (max-width: 700px) {
+  .header-inner {
+    padding: 12px 16px;
+  }
+  .header-links a:first-child {
+    display: none;
+  }
+  main {
+    padding: 0 16px 28px;
+  }
+  .hero {
+    padding: 30px 0 20px;
+  }
+  .hero p {
+    font-size: 14px;
+  }
+  .steps {
+    gap: 8px;
+  }
+  .steps li {
+    font-size: 12px;
+    gap: 6px;
+  }
+  .step-number {
+    width: 26px;
+    height: 26px;
+  }
+  .steps li:not(:last-child):after {
+    display: none;
+  }
+  .input-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .input-card {
+    padding: 14px;
+  }
+  .section-heading {
+    gap: 8px;
+  }
+  .workspace-actions {
+    width: 100%;
+    justify-content: space-between;
+    gap: 2px;
+  }
+  .quiet-button {
+    padding: 9px 10px;
+  }
+  .result-heading {
+    padding: 14px;
+  }
+  .result-actions {
+    width: 100%;
+  }
+  .result-actions button {
+    flex: 1;
+    padding: 9px;
+  }
+  .rule {
+    max-width: 310px;
+    margin: 12px auto;
+  }
+  .card-heading {
+    flex-wrap: wrap;
+  }
+  .badge {
+    max-width: 100%;
+  }
+  .options {
+    gap: 5px 14px;
+  }
+  .merge-button {
+    width: 100%;
+  }
+  .site-footer nav {
+    flex-wrap: wrap;
+  }
+  .conflict-options,
+  .diff-row {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+<style id="editorial-styles" media="all">
+.ad-mount .adsbygoogle { display: block; }
+/* Keep guide text searchable and accessible; skip offscreen layout and paint. */
+.editorial {
+  content-visibility: auto;
+  contain-intrinsic-block-size: auto 1000px;
+  max-width: 860px;
+  margin: 48px auto;
+  line-height: 1.8;
+}
+.editorial h2 {
+  font-size: 26px;
+  margin: 0 0 20px;
+}
+.editorial h3 {
+  font-size: 19px;
+  margin: 28px 0 12px;
+}
+.editorial p {
+  margin: 16px 0;
+}
+.editorial pre {
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--soft);
+  padding: 18px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.editorial code {
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
+}
+.faq details {
+  border-bottom: 1px solid var(--line);
+  padding: 12px 0;
+}
+.faq summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding: 10px 0;
+  font-weight: 650;
+}
+.faq details p {
+  margin: 8px 0 18px;
+}
+.ad-slot {
+  min-height: 280px;
+  max-width: 970px;
+  margin: 128px auto;
+  padding: 12px;
+  border: 1px solid var(--line);
+  background: var(--soft);
+  text-align: center;
+}
+.ad-label {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+.ad-mount {
+  min-height: 240px;
+  width: 100%;
+}
+.ad-slot iframe,
+.ad-slot ins {
+  max-width: 100%;
+}
+@media (max-width: 700px) {
+  .editorial {
+    margin: 40px auto;
+  }
+  .editorial h2 {
+    font-size: 23px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+<link rel="stylesheet" href="/assets/site-layout.css">
+<link rel="stylesheet" href="/assets/home-theme.css">
+<script src="/assets/theme.js" defer></script>
+<link rel="stylesheet" href="/assets/codemirror.css">
+<link rel="stylesheet" href="/assets/json-to-zod.css">
+<script src="/assets/json-error-helper.js" defer></script>
+<script src="/assets/editor-find.js" defer></script>
+<script src="/assets/json-to-zod.js" defer></script>
+<script src="/assets/json-to-zod-ui.js" defer></script>
+<script src="/assets/json-to-typescript.js" defer></script>
+<script src="/assets/json-to-typescript-ui.js" defer></script>
+<script src="/assets/json-to-python.js" defer></script>
+<script src="/assets/json-to-python-ui.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/js-yaml@4.3.2/dist/js-yaml.min.js" integrity="sha384-uwLg6oO8ZhFG2SuQfgmkMtosjtrFYlkPspa/cXS+b3D8GLRTHMDl/mTwqImdlKQO" crossorigin="anonymous" defer></script>
+<script src="/assets/json-to-yaml.js" defer></script>
+<script src="/assets/json-to-yaml-ui.js" defer></script>
+<link rel="stylesheet" href="/assets/json-diff.css">
+<script src="/assets/json-diff.js" defer></script>
+<script src="/assets/json-diff-ui.js" defer></script>
+<script src="/assets/editor-loader.js" defer></script>
+<script src="/assets/curl-merger-import.js" defer></script>
+<link rel="stylesheet" href="/assets/header.css">
+<script src="/assets/header.js" defer></script>
+<meta property="og:image" content="https://www.joinjson.com/assets/social-card.svg">
+<meta name="twitter:image" content="https://www.joinjson.com/assets/social-card.svg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="JoinJson — JSON tools and guides in your browser">
+<meta name="twitter:image:alt" content="JoinJson — JSON tools and guides in your browser">
+<script src="/assets/seo.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header shared-header join-header" data-flat-tools="false">
+  <div class="header-inner">
+    <a class="brand" href="/" aria-label="JoinJson home"><img src="/favicon.svg" width="32" height="32" alt=""><span>JoinJson</span></a>
+    <button class="nav-control mobile-menu" id="site-menu-toggle" type="button" aria-expanded="false" aria-controls="site-navigation">Menu <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    <div class="nav-shell" id="site-navigation">
+      <div class="sheet-heading"><span id="sheet-title">Navigation</span><button class="nav-control" id="site-menu-close" type="button">Close <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+      <nav class="primary-nav" aria-label="Primary">
+        <div class="nav-disclosure" id="tool-menu">
+          <button class="nav-control disclosure-trigger" id="tools-trigger" type="button" aria-expanded="false" aria-controls="tool-panel">Tools <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m7 10 5 5 5-5"/></svg></button>
+          <span id="tool-current" class="layout-status">JSON Merger</span>
+          <div class="nav-panel tools-panel" id="tool-panel" hidden>
+<section class="nav-group"><h2>Merge and compare</h2><ul><li><a class="nav-tool" href="/" data-tool="merge"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 5h6v6H4zM14 13h6v6h-6zM14 5h6M17 2v6M4 16h6"/></svg><span class="nav-copy"><span class="nav-title">JSON Merger</span><span class="nav-description">Combine files, keep every record</span></span></a></li><li><a class="nav-tool" href="/json-diff" data-tool="json-diff"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4h6v16H4zM14 4h6v16h-6zM6 8h2M16 8h2M16 12h2"/></svg><span class="nav-copy"><span class="nav-title">JSON Diff and Compare</span><span class="nav-description">See every change side by side</span></span></a></li></ul></section>
+<section class="nav-group"><h2>Format and validate</h2><ul><li><a class="nav-tool" href="/jsonc-formatter" data-tool="jsonc-formatter"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 4H5v16h3M16 4h3v16h-3M10 9h4M10 15h4"/></svg><span class="nav-copy"><span class="nav-title">JSONC / JSON5 Formatter</span><span class="nav-description">Format comments or export clean JSON</span></span></a></li></ul></section>
+<section class="nav-group"><h2>Convert</h2><ul><li><a class="nav-tool" href="/json-to-toml" data-tool="json-to-toml"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 8h16M16 4l4 4-4 4M20 16H4M8 12l-4 4 4 4"/></svg><span class="nav-copy"><span class="nav-title">JSON to TOML</span><span class="nav-description">Convert, format, and validate TOML</span></span></a></li><li><a class="nav-tool" href="/json-to-yaml" data-tool="json-to-yaml"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 8h16M16 4l4 4-4 4M20 16H4M8 12l-4 4 4 4"/></svg><span class="nav-copy"><span class="nav-title">JSON to YAML</span><span class="nav-description">Convert YAML and JSON both ways</span></span></a></li></ul></section>
+<section class="nav-group"><h2>Generate code</h2><ul><li><a class="nav-tool" href="/json-to-pydantic" data-tool="json-to-pydantic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 4H5v16h3M16 4h3v16h-3M10 8h4v8h-4z"/></svg><span class="nav-copy"><span class="nav-title">Pydantic / Dataclasses</span><span class="nav-description">Generate Pydantic v2 models or Python dataclasses</span></span></a></li><li><a class="nav-tool" href="/json-to-go" data-tool="json-to-go"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m8 5-6 7 6 7M16 5l6 7-6 7M14 3l-4 18"/></svg><span class="nav-copy"><span class="nav-title">JSON to Go Struct</span><span class="nav-description">Generate typed Go structs with JSON tags</span></span></a></li><li><a class="nav-tool" href="/json-to-typescript" data-tool="json-to-typescript"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m8 5-6 7 6 7M16 5l6 7-6 7M14 3l-4 18"/></svg><span class="nav-copy"><span class="nav-title">JSON to TypeScript</span><span class="nav-description">Create typed interfaces from JSON</span></span></a></li><li><a class="nav-tool" href="/json-to-python" data-tool="json-to-python"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 4H5v16h3M16 4h3v16h-3M10 8h4v8h-4z"/></svg><span class="nav-copy"><span class="nav-title">JSON to Pydantic</span><span class="nav-description">Build validated Python models</span></span></a></li><li><a class="nav-tool" href="/json-to-zod" data-tool="json-to-zod"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 3 8 4v5c0 5-8 9-8 9s-8-4-8-9V7zM8 12l3 3 5-6"/></svg><span class="nav-copy"><span class="nav-title">JSON to Zod</span><span class="nav-description">Generate runtime validation schemas</span></span></a></li></ul></section>
+          </div>
+        </div>
+        <div class="nav-disclosure" id="guides-disclosure">
+          <button class="nav-control disclosure-trigger" id="guides-trigger" type="button" aria-expanded="false" aria-controls="guides-panel">Guides <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m7 10 5 5 5-5"/></svg></button>
+          <div class="nav-panel guides-panel" id="guides-panel" hidden><ul>
+            <li><a href="/merge-json-files-python/">Merge JSON files in Python</a></li>
+            <li><a href="/merge-json-arrays-by-id/">Merge JSON arrays by ID</a></li>
+            <li><a href="/deep-merge-vs-shallow-merge-json/">Deep vs shallow merge</a></li>
+          </ul></div>
+        </div>
+      </nav>
+      <div class="theme-control">
+        <button type="button" id="theme-toggle" class="nav-control theme-toggle" aria-label="System theme; switch to light mode" title="System theme; switch to light mode"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 3h8M12 3v2M5 6l2 2M19 6l-2 2M3 12h2M19 12h2M5 18l2-2M19 18l-2-2M12 19v2M8 21h8M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0"/></svg><span class="theme-toggle-label layout-status">System</span></button>
+        <span class="theme-tooltip" role="tooltip" id="theme-tooltip">System theme; switch to light mode</span>
+      </div>
+    </div>
+  </div>
+</header>
+<main id="main">
+
+<section class="hero" aria-labelledby="page-title"><div class="eyebrow">Simple inputs. One clean result.</div><h1 id="page-title">Merge JSON Files Online – Free &amp; Fast JSON Merger Tool</h1><p>Merge JSON files online. Review every highlighted change before you copy or download.</p></section>
+<section id="json-diff-tool" aria-labelledby="json-diff-title" hidden>
+  <div class="hero"><div class="eyebrow">Two documents. Every change.</div><div id="json-diff-title" role="heading" aria-level="1" tabindex="-1">JSON <span>Diff and Compare</span></div><p>Compare two JSON documents side by side. Your data stays in your browser.</p></div>
+  <div class="section-heading"><h2>Compare JSON documents</h2><div class="workspace-actions"><button id="diff-example" class="link-button" type="button">Try an example</button><button id="diff-clear" class="quiet-button" type="button">Clear</button></div></div>
+  <div class="input-grid">
+    <article id="diff-card-a" class="input-card" aria-labelledby="diff-heading-a">
+      <div class="card-heading"><h3 id="diff-heading-a">Original JSON</h3></div>
+      <div class="editor"><div class="editor-top"><label class="editor-label" for="diff-input-a">original.json</label></div><div class="edit-body"><textarea id="diff-input-a" class="json-input" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="Original JSON" aria-describedby="diff-status-a" placeholder="Paste original JSON here..."></textarea></div></div>
+      <p id="diff-status-a" class="badge" role="status" aria-live="polite" data-state="empty">Enter original JSON.</p>
+    </article>
+    <article id="diff-card-b" class="input-card" aria-labelledby="diff-heading-b">
+      <div class="card-heading"><h3 id="diff-heading-b">Modified JSON</h3></div>
+      <div class="editor"><div class="editor-top"><label class="editor-label" for="diff-input-b">modified.json</label></div><div class="edit-body"><textarea id="diff-input-b" class="json-input" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="Modified JSON" aria-describedby="diff-status-b" placeholder="Paste modified JSON here..."></textarea></div></div>
+      <p id="diff-status-b" class="badge" role="status" aria-live="polite" data-state="empty">Enter modified JSON.</p>
+    </article>
+  </div>
+  <div class="diff-controls"><button id="diff-compare" class="primary" type="button">Compare JSON</button><button id="diff-swap" type="button">Swap original and modified</button></div>
+  <p id="diff-action-status" class="global-status" role="status" aria-live="polite" aria-atomic="true"></p>
+  <section aria-labelledby="diff-results-title"><h2 id="diff-results-title">Comparison results</h2><p class="diff-legend">Changes are labeled Added, Deleted, or Modified, with their JSON pointer paths. Object key order is ignored.</p><div id="diff-output-container" class="diff-result-box"><p>Enter two JSON documents, then select Compare JSON.</p></div></section>
+  <p class="privacy-note">Comparison runs in this tab with no uploads or saved inputs. The comparison library loads from jsDelivr; your JSON is never sent there. Inputs are limited to 1 MB each.</p>
+</section>
+<section id="zod-tool" aria-labelledby="zod-title" hidden>
+  <div class="hero"><div class="eyebrow">Simple input. Type-safe output.</div><div id="zod-title" role="heading" aria-level="1" tabindex="-1">JSON to <span>Zod Schema</span></div><p>Generate a schema from your JSON sample. Everything stays in your browser.</p></div>
+  <div class="section-heading"><h2>JSON to Zod Schema Converter</h2><div class="workspace-actions"><button id="zod-example" class="link-button" type="button">Try an example</button><button id="zod-clear" class="quiet-button" type="button">Clear</button></div></div>
+  <div class="input-grid">
+    <article id="zod-input-card" class="input-card" aria-labelledby="zod-input-heading">
+      <div class="card-heading"><h3 id="zod-input-heading">Input JSON</h3></div>
+      <div class="editor"><div class="editor-top"><label class="editor-label" for="zod-input">input.json</label></div><div class="edit-body"><textarea id="zod-input" class="json-input" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="Input JSON for Zod schema" aria-describedby="zod-input-status" placeholder='{"name": "Ana", "active": true}'></textarea></div></div>
+      <p id="zod-input-status" class="badge" role="status" aria-live="polite" data-state="empty">Enter JSON to generate a schema.</p>
+    </article>
+    <article class="input-card" aria-labelledby="zod-output-heading">
+      <div class="card-heading"><h3 id="zod-output-heading">Generated Code Output</h3><span class="badge">TypeScript · Zod</span></div>
+      <div class="editor"><div class="editor-top"><label class="editor-label" for="zod-output">schema.ts</label></div><div class="edit-body"><textarea id="zod-output" class="json-input" readonly spellcheck="false" aria-label="Generated Zod schema" placeholder="Your Zod schema will appear here."></textarea></div></div>
+      <div class="result-actions zod-actions"><button id="zod-copy" type="button" disabled>Copy Code</button><button id="zod-download" type="button" disabled>Download .ts File</button><button id="zod-type" type="button" aria-pressed="false">Toggle TypeScript Type Export</button></div>
+      <p id="zod-action-status" class="global-status" role="status" aria-live="polite"></p>
+    </article>
+  </div>
+  <p class="privacy-note">No uploads, API calls, or saved inputs. Schemas infer types from the supplied sample, not your full data model. Empty arrays use z.unknown(); mixed arrays use a union.</p>
+</section>
+<section id="typescript-tool" aria-labelledby="typescript-title" hidden>
+  <div class="hero"><div class="eyebrow">Simple input. Type-safe output.</div><div id="typescript-title" role="heading" aria-level="1" tabindex="-1">JSON to <span>TypeScript</span></div><p>Generate interfaces or types from your JSON sample. Everything stays in your browser.</p></div>
+  <div class="section-heading"><h2>JSON to TypeScript Converter</h2><div class="workspace-actions"><button id="typescript-example" class="link-button" type="button">Try an example</button><button id="typescript-clear" class="quiet-button" type="button">Clear</button></div></div>
+  <div class="input-grid">
+    <article id="typescript-input-card" class="input-card" aria-labelledby="typescript-input-heading">
+      <div class="card-heading"><h3 id="typescript-input-heading">Input JSON</h3></div>
+      <div class="editor"><div class="editor-top"><label class="editor-label" for="typescript-input">input.json</label></div><div class="edit-body"><textarea id="typescript-input" class="json-input" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="Input JSON for TypeScript definitions" aria-describedby="typescript-input-status" placeholder='{"name": "Ana", "active": true}'></textarea></div></div>
+      <p id="typescript-input-status" class="badge" role="status" aria-live="polite" data-state="empty">Enter JSON to generate TypeScript.</p>
+    </article>
+    <article class="input-card" aria-labelledby="typescript-output-heading">
+      <div class="card-heading"><h3 id="typescript-output-heading">Generated Code Output</h3><span class="badge">TypeScript</span></div>
+      <div class="editor"><div class="editor-top"><label class="editor-label" for="typescript-output">types.ts</label></div><div class="edit-body"><textarea id="typescript-output" class="json-input" readonly spellcheck="false" aria-label="Generated TypeScript definitions" placeholder="Your TypeScript definitions will appear here."></textarea></div></div>
+      <div class="typescript-options" role="group" aria-label="TypeScript generation options">
+        <label class="array-option" for="typescript-mode">Mode<select id="typescript-mode"><option value="interface">Interface</option><option value="type">Type</option></select></label>
+        <label class="array-option" for="typescript-root">Root Type Name<input id="typescript-root" type="text" value="Root" autocomplete="off" spellcheck="false" aria-describedby="typescript-options-status"></label>
+        <label class="check-label"><input id="typescript-optional" type="checkbox">Make all properties optional</label>
+        <label class="check-label"><input id="typescript-export" type="checkbox" checked>Export Interfaces / Types</label>
+      </div>
+      <p id="typescript-options-status" class="global-status" role="status" aria-live="polite"></p>
+      <div class="result-actions zod-actions"><button id="typescript-copy" type="button" disabled>Copy TypeScript</button><button id="typescript-download" type="button" disabled>Download .ts File</button><button id="typescript-zod" type="button" disabled>Convert to Zod Schema</button></div>
+      <p id="typescript-action-status" class="global-status" role="status" aria-live="polite"></p>
+    </article>
+  </div>
+  <p class="privacy-note">No uploads, API calls, or saved inputs. Types are inferred from this sample, not your full data model. Empty arrays use unknown; mixed arrays use unions. Non-object roots use a type alias in either mode.</p>
+</section>
+<section id="python-converter-tool" class="tool-section" aria-labelledby="python-title" hidden>
+  <div class="hero"><div class="eyebrow">Simple input. Typed Python output.</div><div id="python-title" role="heading" aria-level="1" tabindex="-1">JSON to <span>Python</span></div><p>Generate Pydantic models or standard dataclasses. Everything stays in your browser.</p></div>
+  <div class="section-heading"><h2>JSON to Python Converter</h2><div class="workspace-actions"><button id="python-example" class="link-button" type="button">Try an example</button><button id="python-clear" class="quiet-button" type="button">Clear</button></div></div>
+  <div class="input-grid">
+    <article id="python-input-card" class="input-card" aria-labelledby="python-input-heading">
+      <div class="card-heading"><h3 id="python-input-heading">Input JSON</h3></div>
+      <div class="editor"><div class="editor-top"><label class="editor-label" for="python-json-input">input.json</label></div><div class="edit-body"><textarea id="python-json-input" class="json-input" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="Input JSON for Python models" aria-describedby="python-input-status" placeholder="Paste JSON here..."></textarea></div></div>
+      <p id="python-input-status" class="badge" role="status" aria-live="polite" data-state="empty">Enter JSON to generate Python models.</p>
+    </article>
+    <article class="input-card" aria-labelledby="python-output-heading">
+      <div class="card-heading"><h3 id="python-output-heading">Python Output</h3><span class="badge">Python</span></div>
+      <div class="editor"><div class="editor-top"><label class="editor-label" for="python-output">models.py</label></div><div class="edit-body"><textarea id="python-output" class="json-input" readonly spellcheck="false" aria-label="Generated Python models" placeholder="Generated Python code will appear here..."></textarea></div></div>
+      <div class="typescript-options" role="group" aria-label="Python generation options">
+        <label class="check-label"><input name="python-framework" id="python-pydantic" type="radio" value="pydantic" checked>Pydantic (BaseModel)</label>
+        <label class="check-label"><input name="python-framework" id="python-dataclass" type="radio" value="dataclass">Python Dataclasses</label>
+        <label class="check-label"><input id="python-optional" type="checkbox">Use Optional types (Optional[T])</label>
+      </div>
+      <div class="result-actions zod-actions"><button id="python-copy" type="button" disabled>Copy Python Code</button><button id="python-download" type="button" disabled>Download .py File</button></div>
+      <p id="python-action-status" class="global-status" role="status" aria-live="polite"></p>
+    </article>
+  </div>
+  <p class="privacy-note">No uploads, API calls, or saved inputs. Models infer types from this sample only. Requires Python 3.9+. Arrays and primitive roots use a Root model with a value field. Empty arrays use Any; mixed arrays use unions. Optional types allow None and default all fields to None. Pydantic preserves renamed keys with aliases; dataclasses record original keys in field metadata but do not parse or validate JSON automatically.</p>
+</section>
+<section id="yaml-converter-tool" class="tool-section" aria-labelledby="yaml-title" hidden>
+  <div class="hero"><div class="eyebrow">Simple input. Two-way conversion.</div><div id="yaml-title" role="heading" aria-level="1" tabindex="-1">JSON <span>⇄ YAML</span></div><p>Convert JSON to YAML or YAML to JSON. Everything stays in your browser.</p></div>
+  <div class="section-heading"><h2>JSON ⇄ YAML Converter</h2><div class="workspace-actions"><button id="yaml-example" class="link-button" type="button">Try an example</button><button id="yaml-clear" class="quiet-button" type="button">Clear</button></div></div>
+  <div class="input-grid">
+    <article id="yaml-input-card" class="input-card" aria-labelledby="yaml-input-heading">
+      <div class="card-heading"><h3 id="yaml-input-heading">Input JSON</h3></div>
+      <div class="editor"><div class="editor-top"><label id="yaml-input-label" class="editor-label" for="yaml-input">input.json</label></div><div class="edit-body"><textarea id="yaml-input" class="json-input" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="Input JSON for conversion" aria-describedby="yaml-input-status" placeholder="Paste JSON or YAML here..."></textarea></div></div>
+      <p id="yaml-input-status" class="badge" role="status" aria-live="polite" data-state="empty">Enter JSON to convert to YAML.</p>
+    </article>
+    <article class="input-card" aria-labelledby="yaml-output-heading">
+      <div class="card-heading"><h3 id="yaml-output-heading">YAML Output</h3><span id="yaml-output-format" class="badge">YAML</span></div>
+      <div class="editor"><div class="editor-top"><label id="yaml-output-label" class="editor-label" for="yaml-output">output.yaml</label></div><div class="edit-body"><textarea id="yaml-output" class="json-input" readonly spellcheck="false" aria-label="Converted YAML output" placeholder="Converted output will appear here..."></textarea></div></div>
+      <div class="typescript-options" role="group" aria-label="YAML conversion options">
+        <label class="check-label"><input name="yaml-direction" id="yaml-to-yaml" type="radio" value="json-to-yaml" checked>JSON ➔ YAML</label>
+        <label class="check-label"><input name="yaml-direction" id="yaml-to-json" type="radio" value="yaml-to-json">YAML ➔ JSON</label>
+        <label class="array-option" for="yaml-indent">Indentation<select id="yaml-indent"><option value="2">2 Spaces</option><option value="4">4 Spaces</option></select></label>
+      </div>
+      <div class="result-actions zod-actions"><button id="yaml-copy" type="button" disabled>Copy Output</button><button id="yaml-download" type="button" disabled>Download .yaml File</button></div>
+      <p id="yaml-action-status" class="global-status" role="status" aria-live="polite"></p>
+    </article>
+  </div>
+  <p class="privacy-note">Conversion stays in this tab: no uploads or saved inputs. The YAML library loads from jsDelivr; your data is never sent there. Supports one YAML document with JSON-compatible values. Comments and formatting are not preserved; dates remain strings. Circular aliases, non-finite numbers, inputs over 1 MB, and excessive nesting or alias expansion are rejected.</p>
+</section>
+<ol class="steps" aria-label="Merge progress"><li id="step-1" aria-current="step"><span class="step-number">1</span>Add JSON A + B</li><li id="step-2"><span class="step-number">2</span>Merge</li><li id="step-3"><span class="step-number">3</span>Result</li></ol>
+<section aria-labelledby="inputs-heading"><div class="section-heading"><h2 id="inputs-heading"><span aria-hidden="true">1</span>Add your JSON</h2><div class="workspace-actions"><button id="example" class="link-button" type="button">Try an example</button><button id="swap" class="quiet-button" type="button" aria-label="Swap first and second JSON">Swap A ↔ B</button><button id="clear" class="quiet-button" type="button">Clear all</button></div></div><div id="inputs" class="input-grid"><article class="input-card" data-state="empty" aria-labelledby="first-heading">
+      <div class="card-heading"><h3 id="first-heading">First JSON <span class="muted">A</span></h3><span id="first-status" class="badge" data-state="empty" role="status" aria-live="polite">Empty</span></div>
+      <div class="segments" role="tablist" aria-label="First JSON input method">
+        <button id="first-tab-paste" type="button" role="tab" aria-selected="true" aria-controls="first-paste" data-method="paste">Paste</button>
+        <button id="first-tab-upload" type="button" role="tab" aria-selected="false" aria-controls="first-upload" tabindex="-1" data-method="upload">Upload</button>
+        <button id="first-tab-url" type="button" role="tab" aria-selected="false" aria-controls="first-url-panel" tabindex="-1" data-method="url">From URL</button>
+      </div>
+      <div id="first-paste" class="method-panel" role="tabpanel" aria-labelledby="first-tab-paste">
+        <div class="editor"><div class="editor-top"><label class="editor-label" for="first">first.json</label><div class="icon-tools" role="group" aria-label="First JSON editor tools">
+          <button type="button" class="icon-button" data-action="find" title="Find" aria-label="Find in first JSON" aria-expanded="false" aria-controls="first-find-bar"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6"></circle><path d="m15 15 5 5"></path></svg></button>
+          <button type="button" class="icon-button" data-action="wrap" title="Wrap lines" aria-label="Wrap lines in first JSON" aria-pressed="false">↵</button>
+          <button type="button" class="icon-button" data-action="format" title="Format JSON" aria-label="Format first JSON">{ }</button>
+          <details class="help-popover"><summary aria-label="Editor keyboard help" title="Editor help">?</summary><p>Tab moves to the next control. Ctrl/Cmd+F opens Find in this editor. Escape closes Find. Ctrl/Cmd+Enter merges both inputs.</p></details>
+        </div></div>
+        <div id="first-find-bar" class="find-bar" hidden><label class="sr-only" for="first-find">Find text in first JSON</label><input id="first-find" type="search" placeholder="Find text…" autocomplete="off"><button type="button" data-action="next" class="icon-button" title="Next match" aria-label="Next match">↓</button><button type="button" data-action="close-find" class="icon-button" title="Close Find" aria-label="Close Find">×</button><span class="find-status" role="status"></span></div>
+        <div class="edit-body"><pre id="first-lines" class="line-numbers" aria-hidden="true">1</pre><textarea id="first" class="json-input" rows="10" wrap="off" placeholder='{"name": "Ana"}' spellcheck="false" autocomplete="off" autocapitalize="off" aria-describedby="first-status"></textarea></div></div>
+      </div>
+      <div id="first-upload" class="method-panel" role="tabpanel" aria-labelledby="first-tab-upload" hidden>
+        <input id="first-file" type="file" accept=".json,application/json" class="sr-only" tabindex="-1" aria-label="Upload first JSON file">
+        <button type="button" class="drop-zone" data-action="browse"><span class="drop-icon" aria-hidden="true">⇧</span><span>Drop a .json file here or click to browse</span><span class="muted">Up to 20 MB · stays in your browser</span></button>
+        <div id="first-file-info" class="file-info" hidden><div class="file-description"><strong></strong><span class="muted"></span></div><button type="button" class="icon-button" data-action="remove" aria-label="Remove first JSON file" title="Remove file">×</button></div>
+        <button type="button" class="link-button" data-action="edit-upload" hidden>Edit loaded JSON</button>
+      </div>
+      <div id="first-url-panel" class="method-panel" role="tabpanel" aria-labelledby="first-tab-url" hidden>
+        <label class="url-label" for="first-url">First JSON URL</label><div class="url-controls"><input id="first-url" type="url" placeholder="https://example.com/data.json" autocomplete="off" spellcheck="false" aria-describedby="first-url-help"><button type="button" data-action="load">Load</button><button type="button" data-action="cancel" hidden>Cancel</button></div>
+        <p id="first-url-help" class="url-help">Must be a public HTTPS link with CORS enabled, up to 20 MB</p><button type="button" class="link-button" data-action="edit-url" hidden>Edit loaded JSON</button>
+      </div><p id="first-import-status" class="import-status" role="status" aria-live="polite"></p></article><article class="input-card" data-state="empty" aria-labelledby="second-heading">
+      <div class="card-heading"><h3 id="second-heading">Second JSON <span class="muted">B</span></h3><span id="second-status" class="badge" data-state="empty" role="status" aria-live="polite">Empty</span></div>
+      <div class="segments" role="tablist" aria-label="Second JSON input method">
+        <button id="second-tab-paste" type="button" role="tab" aria-selected="true" aria-controls="second-paste" data-method="paste">Paste</button>
+        <button id="second-tab-upload" type="button" role="tab" aria-selected="false" aria-controls="second-upload" tabindex="-1" data-method="upload">Upload</button>
+        <button id="second-tab-url" type="button" role="tab" aria-selected="false" aria-controls="second-url-panel" tabindex="-1" data-method="url">From URL</button>
+      </div>
+      <div id="second-paste" class="method-panel" role="tabpanel" aria-labelledby="second-tab-paste">
+        <div class="editor"><div class="editor-top"><label class="editor-label" for="second">second.json</label><div class="icon-tools" role="group" aria-label="Second JSON editor tools">
+          <button type="button" class="icon-button" data-action="find" title="Find" aria-label="Find in second JSON" aria-expanded="false" aria-controls="second-find-bar"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6"></circle><path d="m15 15 5 5"></path></svg></button>
+          <button type="button" class="icon-button" data-action="wrap" title="Wrap lines" aria-label="Wrap lines in second JSON" aria-pressed="false">↵</button>
+          <button type="button" class="icon-button" data-action="format" title="Format JSON" aria-label="Format second JSON">{ }</button>
+          <details class="help-popover"><summary aria-label="Editor keyboard help" title="Editor help">?</summary><p>Tab moves to the next control. Ctrl/Cmd+F opens Find in this editor. Escape closes Find. Ctrl/Cmd+Enter merges both inputs.</p></details>
+        </div></div>
+        <div id="second-find-bar" class="find-bar" hidden><label class="sr-only" for="second-find">Find text in second JSON</label><input id="second-find" type="search" placeholder="Find text…" autocomplete="off"><button type="button" data-action="next" class="icon-button" title="Next match" aria-label="Next match">↓</button><button type="button" data-action="close-find" class="icon-button" title="Close Find" aria-label="Close Find">×</button><span class="find-status" role="status"></span></div>
+        <div class="edit-body"><pre id="second-lines" class="line-numbers" aria-hidden="true">1</pre><textarea id="second" class="json-input" rows="10" wrap="off" placeholder='{"name": "Ana"}' spellcheck="false" autocomplete="off" autocapitalize="off" aria-describedby="second-status"></textarea></div></div>
+      </div>
+      <div id="second-upload" class="method-panel" role="tabpanel" aria-labelledby="second-tab-upload" hidden>
+        <input id="second-file" type="file" accept=".json,application/json" class="sr-only" tabindex="-1" aria-label="Upload second JSON file">
+        <button type="button" class="drop-zone" data-action="browse"><span class="drop-icon" aria-hidden="true">⇧</span><span>Drop a .json file here or click to browse</span><span class="muted">Up to 20 MB · stays in your browser</span></button>
+        <div id="second-file-info" class="file-info" hidden><div class="file-description"><strong></strong><span class="muted"></span></div><button type="button" class="icon-button" data-action="remove" aria-label="Remove second JSON file" title="Remove file">×</button></div>
+        <button type="button" class="link-button" data-action="edit-upload" hidden>Edit loaded JSON</button>
+      </div>
+      <div id="second-url-panel" class="method-panel" role="tabpanel" aria-labelledby="second-tab-url" hidden>
+        <label class="url-label" for="second-url">Second JSON URL</label><div class="url-controls"><input id="second-url" type="url" placeholder="https://example.com/data.json" autocomplete="off" spellcheck="false" aria-describedby="second-url-help"><button type="button" data-action="load">Load</button><button type="button" data-action="cancel" hidden>Cancel</button></div>
+        <p id="second-url-help" class="url-help">Must be a public HTTPS link with CORS enabled, up to 20 MB</p><button type="button" class="link-button" data-action="edit-url" hidden>Edit loaded JSON</button>
+      </div><p id="second-import-status" class="import-status" role="status" aria-live="polite"></p></article></div></section>
+<section class="merge-section" aria-labelledby="merge-heading"><h2 id="merge-heading" class="merge-title"><span aria-hidden="true">2 · </span>Merge</h2><button id="merge" class="primary merge-button" type="button" disabled aria-describedby="merge-rule merge-reason">Merge JSON</button><p id="merge-rule" class="rule">If both have the same key, review conflicts below or keep the second JSON as the default winner.</p><p id="merge-reason" class="muted">Add valid JSON to both inputs to continue.</p><p class="shortcut"><kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>Enter</kbd> to merge</p><details class="advanced"><summary>Advanced options</summary><div class="options"><label class="check-label"><input id="deep" type="checkbox" checked>Deep merge nested objects</label><label class="array-option" for="arrays">Arrays<select id="arrays"><option value="replace">Replace with second</option><option value="concat">Concatenate both</option><option value="merge-id">Merge by ID</option></select></label><label id="array-id-wrap" class="array-id-option" for="array-key" hidden>ID field<input id="array-key" type="text" value="id" autocomplete="off" spellcheck="false"></label></div><p class="advanced-note">Objects combine their keys. Other value types use the selected conflict choice. Arrays can be replaced, concatenated, or joined by a shared identifier.</p></details></section>
+<section id="result" class="result-panel" aria-labelledby="result-heading"><div class="result-heading"><h2 id="result-heading" class="result-title" tabindex="-1"><span aria-hidden="true">3</span>Result</h2><div class="result-actions"><button id="copy" type="button" disabled>Copy</button><button id="download" type="button" disabled>Download .json</button><button id="format-result" type="button" disabled>Format</button></div></div><div id="result-empty" class="result-empty">Your merged JSON will appear here.</div><div id="result-output" class="result-output" role="region" aria-label="Merged JSON with line numbers" tabindex="0" hidden><ol id="result-lines" class="result-lines"></ol></div><p id="preview-notice" class="result-notice" hidden></p><div id="result-legend" class="result-legend" hidden><span class="legend-key"><span class="swatch" aria-hidden="true"></span>Added key</span><span class="legend-key"><span class="swatch changed" aria-hidden="true"></span>Overridden value</span><span id="change-count"></span></div><section id="conflict-panel" class="conflict-panel" aria-labelledby="conflict-heading" hidden><h3 id="conflict-heading">Conflict resolution</h3><p class="muted">Choose which value wins for each conflicting path. The result updates automatically.</p><div id="conflict-list" class="conflict-list"></div></section><section id="diff-panel" class="diff-panel" aria-labelledby="diff-heading" hidden><h3 id="diff-heading">Live visual diff</h3><p id="diff-summary" class="muted"></p><div id="diff-list" class="diff-list" role="list"></div></section></section>
+<div class="result-actions merger-converter-actions"><button id="merge-typescript" type="button" disabled>Convert Output to TypeScript</button><button id="merge-python" type="button" disabled>Convert Output to Python</button><button id="merge-toml" type="button" disabled>Convert Output to TOML</button><button id="merge-go" type="button" disabled>Convert Output to Go</button><button id="merge-pydantic" type="button" disabled>Convert Output to Pydantic</button><button id="merge-yaml" type="button" disabled>Convert Output to YAML</button><button id="merge-diff" type="button" disabled>Compare merged JSON</button></div>
+<p id="status" class="global-status" role="status" aria-live="polite" aria-atomic="true"></p><p class="privacy-note">Your JSON stays in this tab. Loading a URL contacts that source directly; no inputs are saved.</p>
+<noscript><p>This tool needs JavaScript. You can also use the <a href="/merge-json-files-python/">Python merge guide</a>.</p></noscript>
+<!-- Manual placements only; hidden until a successful merge with no input/import errors. -->
+<div id="ad-after-result" class="ad-slot" role="region" aria-label="Advertisement" hidden><span class="ad-label">Advertisement</span><div class="ad-mount" data-placement="after-result"></div></div>
+<article id="merge-guide" class="editorial" aria-labelledby="guide-heading">
+<h2 id="guide-heading">How to merge JSON</h2>
+<p>Use this JSON file merger to combine JSON files with explicit rules for conflicts. To merge multiple JSON files, combine two at a time and use each result as the next base. It is useful when you have a base configuration and an environment override, two exports containing related information, or a small update that needs to be applied to an existing document. JoinJson gives you a place to inspect both inputs and the result before you copy anything back into your project. Start by keeping untouched copies of your source files: a merge can be valid JSON without being the right data for your application.</p>
+<h3>1. Choose the order of your inputs</h3>
+<p>Put your base document in First JSON and your update in Second JSON. Order matters because the second input wins when values conflict. For example, if the first document sets a user’s role to “Designer” and the second sets it to “Developer”, the result uses “Developer”. Keys that exist only in the first object are retained when the containing objects are combined, and new keys from the second object are added. Use Swap A ↔ B if you need to reverse that priority, then merge again to see the new result.</p>
+<h3>2. Add each document using one input method</h3>
+<p>The Paste tab is the simplest choice for a short snippet. Paste a complete JSON value into the editor, rather than a JavaScript variable declaration or a Markdown code fence. JSON object keys and string values need double quotes, and trailing commas are not allowed. The Upload tab reads a local .json file when you drop it onto the zone or browse for it. File contents are read in your browser; selecting a file does not upload it to a JoinJson processing server. The filename and size help you confirm you selected the intended document.</p>
+<p>The From URL tab fetches a document from a public HTTPS address. The source must allow browser access through Cross-Origin Resource Sharing, usually called CORS. Loading a URL contacts that source host, which may receive your IP address and the requested address. Avoid links containing passwords, access tokens, or confidential query parameters. Imports are limited to 20 MB. If loading fails, check the source URL and its access settings; downloading the file yourself and using Upload is an alternative when the host does not permit browser requests.</p>
+<h3>3. Resolve validation errors before merging</h3>
+<p>Each input has a live status badge. Empty means no document has been supplied, Valid JSON means the text can be parsed, and an error identifies a line to inspect. An error may originate just before the reported line, such as a missing comma or an unclosed string. The Format icon helps make a valid document easier to read, while Find locates a key or value and Wrap reduces horizontal scrolling. Validation checks JSON syntax, not your business rules: it cannot tell whether a product price or account identifier is correct.</p>
+<h3>4. Pick the right merge rules</h3>
+<p>Open Advanced options if you need to change how nested objects or arrays behave. To deep merge JSON, leave Deep merge enabled so matching nested objects are combined recursively. With deep merge disabled, a nested value supplied by the second object replaces the first value as a whole unless you choose a different conflict winner. Arrays are replaced by the second array by default. Concatenate appends the second array to the first, while Merge by ID lets you merge JSON by ID using the selected identifier field.</p>
+<h3>5. Merge, inspect, and export</h3>
+<p>Select Merge JSON once both badges are valid, or press Ctrl/Cmd+Enter. Review the full-width Result panel rather than assuming a successful parse guarantees a suitable output. Subtle colors identify added keys and overridden values compared with the first document. Check important nested fields, list lengths, and any deliberately changed values. Very large documents have a bounded preview to keep the page responsive, but Copy and Download include the complete serialized result. Download .json saves a new file; it does not edit either original source.</p>
+<p>After exporting, validate the result with any schema or application checks your project normally uses. JavaScript numbers can lose precision for very large integer identifiers, so keep such identifiers as strings where appropriate. Changing an input or a merge option clears the previous result so it cannot be mistaken for a current merge. Clear all removes the working inputs from the interface. The homepage does not save your JSON in app storage, but clipboard history, downloaded files, and browser extensions remain outside the tool’s control.</p>
+</article>
+<section class="editorial" aria-labelledby="deep-heading">
+<h2 id="deep-heading">How deep merge works</h2>
+<p>A deep merge combines matching objects one level at a time. A second value replaces a conflicting first value unless both are objects being combined or both are arrays handled by the selected array rule. Missing keys are preserved; <code>null</code> is a value, not an instruction to delete a key.</p>
+<h3>Before: base and update</h3>
+<pre><code>First JSON:
+{"profile": {"name": "Ana", "theme": "light"}, "active": true}
+
+Second JSON:
+{"profile": {"theme": "dark"}, "city": "Chennai"}</code></pre>
+<h3>After: deep merge enabled</h3>
+<pre><code>{
+  "profile": {"name": "Ana", "theme": "dark"},
+  "active": true,
+  "city": "Chennai"
+}</code></pre>
+<p>The name survives because it has no conflicting update. The theme changes because the second value wins. With deep merge disabled, the entire <code>profile</code> becomes <code>{"theme": "dark"}</code>, so the nested name is no longer present. Read the <a href="/deep-merge-vs-shallow-merge-json/">deep versus shallow merge guide</a> for more context.</p>
+</section>
+<div id="ad-before-faq" class="ad-slot" role="region" aria-label="Advertisement" hidden><span class="ad-label">Advertisement</span><div class="ad-mount" data-placement="before-faq"></div></div>
+<section id="faq" class="editorial faq" aria-labelledby="faq-heading">
+<h2 id="faq-heading">Frequently asked questions</h2>
+<details><summary>Are pasted or uploaded JSON files sent to a server?</summary><p>No. Parsing, validation, merging, and result rendering run in your browser. Load from URL contacts the source host to obtain the document. Copy and Download export data only when you request them. See the <a href="/privacy/">Privacy Policy</a> for hosting and advertising disclosures.</p></details>
+<details><summary>What happens when both documents contain the same key?</summary><p>The second JSON wins a conflicting value. With deep merge enabled, matching objects are combined recursively first. Keys unique to the first object remain, and keys unique to the second are added. Swap the inputs to reverse priority.</p></details>
+<details><summary>Can I combine arrays without losing their existing items?</summary><p>Yes. Select Concatenate both to append items, or Merge by ID to join array objects that share a field such as id. Replace with second keeps the updated array only. In shallow object mode, a conflicting nested array is handled with the selected array rule.</p></details>
+<details><summary>Why does a JSON URL fail even when it opens in another tab?</summary><p>A browser can display a page while still blocking another website from reading it. The source needs to permit CORS access, use HTTPS, return valid JSON, and stay within the 20 MB limit. Private endpoints requiring cookies are not supported. You can upload a downloaded .json file instead.</p></details>
+<details><summary>Does a highlighted change mean the result is incorrect?</summary><p>No. Colors explain differences from the first input: added keys and overridden values. They are not schema validation or an assessment of correctness. Review the changes against your intended update and run your project’s normal checks before using the output.</p></details>
+</section>
+</main>
+<footer class="site-footer shared-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a class="footer-brand-name" href="/" aria-label="JoinJson home">JoinJson</a>
+      <p>Built for your browser. Simple, fast, and privacy-conscious JSON tools.</p>
+    </div>
+    <div class="footer-navigation">
+      <nav aria-labelledby="footer-convert-heading">
+        <h2 id="footer-convert-heading">Convert Tools</h2>
+        <ul>
+          <li><a href="/json-to-pydantic">JSON to Pydantic / Python Dataclasses</a></li>
+          <li><a href="/json-to-go">JSON to Go Struct</a></li>
+          <li><a href="/json-to-toml">JSON to TOML / TOML Formatter</a></li>
+          <li><a href="/json-to-yaml">JSON to YAML / YAML to JSON</a></li>
+          <li><a href="/json-to-typescript">JSON to TypeScript</a></li>
+          <li><a href="/json-to-python">JSON to Python (Pydantic)</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="footer-format-heading">
+        <h2 id="footer-format-heading">Formatters &amp; Validators</h2>
+        <ul>
+          <li><a href="/jsonc-formatter">JSONC / JSON5 Formatter</a></li>
+          <li><a href="/json-diff">JSON Diff Checker</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="footer-developer-heading">
+        <h2 id="footer-developer-heading">Developer Tools</h2>
+        <ul>
+          <li><a href="/json-to-zod">JSON to Zod Schema</a></li>
+          <li><a href="/curl-to-js">cURL to JavaScript</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="footer-information-heading">
+        <h2 id="footer-information-heading">Legal &amp; Information</h2>
+        <ul>
+          <li><a href="/about/">About Us</a></li>
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/privacy/">Privacy Policy</a></li>
+          <li><a href="/terms/">Terms of Use</a></li>
+          <li><a href="/disclaimer/">Disclaimer</a></li>
+        </ul>
+      </nav>
+    </div>
+    <p class="footer-copyright">© <span data-copyright-year></span> JoinJson. All rights reserved.</p>
+  </div>
+</footer>
+<script>
+"use strict";
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const MAX_BYTES = 20 * 1024 * 1024;
+  const MAX_PREVIEW_LINES = 5e3;
+  const MAX_PREVIEW_CHARS = 25e4;
+  const MAX_DEPTH = 120;
+  const own = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key);
+  const object = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
+  const states = [];
+  let resultText = "", lastResult = null, resultReady = false;
+  let changes = /* @__PURE__ */ new Map(), totalAdded = 0, totalOverridden = 0;
+  let currentConflicts = [], conflictChoices = /* @__PURE__ */ new Map(), liveTimer = null, activeArrayKey = "id", suppressAuto = false;
+  let mergeWorker = null, mergeJob = 0, merging = false;
+  const WORKER_THRESHOLD = 256 * 1024;
+  const pointer = (path, key) => path + "/" + String(key).replace(/~/g, "~0").replace(/\//g, "~1");
+  const canonical = (value) => {
+    if (Array.isArray(value)) return "[" + value.map(canonical).join(",") + "]";
+    if (object(value)) return "{" + Object.keys(value).sort().map((key) => JSON.stringify(key) + ":" + canonical(value[key])).join(",") + "}";
+    return JSON.stringify(value);
+  };
+  const clone = (value) => {
+    if (Array.isArray(value)) return value.map(clone);
+    if (!object(value)) return value;
+    const output = Object.create(null);
+    for (const key of Object.keys(value)) output[key] = clone(value[key]);
+    return output;
+  };
+  const atPath = (value, path) => path.split(".").filter(Boolean).reduce((current, key) => current != null && own(Object(current), key) ? current[key] : void 0, value);
+  const scalar = (value) => ["string", "number", "boolean"].includes(typeof value);
+  const shortValue = (value) => {
+    const text = JSON.stringify(value, null, 2);
+    return text.length > 900 ? text.slice(0, 900) + "\n…" : text;
+  };
+  const announce = (message) => {
+    $("status").textContent = message;
+  };
+  const sizeLabel = (bytes) => bytes < 1024 ? bytes + " B" : bytes < 1048576 ? (bytes / 1024).toFixed(1) + " KB" : (bytes / 1048576).toFixed(1) + " MB";
+  const searchIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6"></circle><path d="m15 15 5 5"></path></svg>';
+  ["First", "Second"].forEach((name, index) => {
+    const id = index === 0 ? "first" : "second";
+    const card = $(id + "-heading")?.closest(".input-card") || document.createElement("article");
+    card.className = "input-card";
+    card.dataset.state = "empty";
+    card.setAttribute("aria-labelledby", id + "-heading");
+    if (!card.hasChildNodes()) card.innerHTML = `
+      <div class="card-heading"><h3 id="${id}-heading">${name} JSON <span class="muted">${index ? "B" : "A"}</span></h3><span id="${id}-status" class="badge" data-state="empty" role="status" aria-live="polite">Empty</span></div>
+      <div class="segments" role="tablist" aria-label="${name} JSON input method">
+        <button id="${id}-tab-paste" type="button" role="tab" aria-selected="true" aria-controls="${id}-paste" data-method="paste">Paste</button>
+        <button id="${id}-tab-upload" type="button" role="tab" aria-selected="false" aria-controls="${id}-upload" tabindex="-1" data-method="upload">Upload</button>
+        <button id="${id}-tab-url" type="button" role="tab" aria-selected="false" aria-controls="${id}-url-panel" tabindex="-1" data-method="url">From URL</button>
+      </div>
+      <div id="${id}-paste" class="method-panel" role="tabpanel" aria-labelledby="${id}-tab-paste">
+        <div class="editor"><div class="editor-top"><label class="editor-label" for="${id}">${index ? "second" : "first"}.json</label><div class="icon-tools" role="group" aria-label="${name} JSON editor tools">
+          <button type="button" class="icon-button" data-action="find" title="Find" aria-label="Find in ${name.toLowerCase()} JSON" aria-expanded="false" aria-controls="${id}-find-bar">${searchIcon}</button>
+          <button type="button" class="icon-button" data-action="wrap" title="Wrap lines" aria-label="Wrap lines in ${name.toLowerCase()} JSON" aria-pressed="false">\u21B5</button>
+          <button type="button" class="icon-button" data-action="format" title="Format JSON" aria-label="Format ${name.toLowerCase()} JSON">{ }</button>
+          <details class="help-popover"><summary aria-label="Editor keyboard help" title="Editor help">?</summary><p>Tab moves to the next control. Ctrl/Cmd+F opens Find in this editor. Escape closes Find. Ctrl/Cmd+Enter merges both inputs.</p></details>
+        </div></div>
+        <div id="${id}-find-bar" class="find-bar" hidden><label class="sr-only" for="${id}-find">Find text in ${name.toLowerCase()} JSON</label><input id="${id}-find" type="search" placeholder="Find text\u2026" autocomplete="off"><button type="button" data-action="next" class="icon-button" title="Next match" aria-label="Next match">\u2193</button><button type="button" data-action="close-find" class="icon-button" title="Close Find" aria-label="Close Find">\xD7</button><span class="find-status" role="status"></span></div>
+        <div class="edit-body"><pre id="${id}-lines" class="line-numbers" aria-hidden="true">1</pre><textarea id="${id}" class="json-input" rows="10" wrap="off" placeholder='{"name": "Ana"}' spellcheck="false" autocomplete="off" autocapitalize="off" aria-describedby="${id}-status"></textarea></div></div>
+      </div>
+      <div id="${id}-upload" class="method-panel" role="tabpanel" aria-labelledby="${id}-tab-upload" hidden>
+        <input id="${id}-file" type="file" accept=".json,application/json" class="sr-only" tabindex="-1" aria-label="Upload ${name.toLowerCase()} JSON file">
+        <button type="button" class="drop-zone" data-action="browse"><span class="drop-icon" aria-hidden="true">\u21E7</span><span>Drop a .json file here or click to browse</span><span class="muted">Up to 20 MB \xB7 stays in your browser</span></button>
+        <div id="${id}-file-info" class="file-info" hidden><div class="file-description"><strong></strong><span class="muted"></span></div><button type="button" class="icon-button" data-action="remove" aria-label="Remove ${name.toLowerCase()} JSON file" title="Remove file">\xD7</button></div>
+        <button type="button" class="link-button" data-action="edit-upload" hidden>Edit loaded JSON</button>
+      </div>
+      <div id="${id}-url-panel" class="method-panel" role="tabpanel" aria-labelledby="${id}-tab-url" hidden>
+        <label class="url-label" for="${id}-url">${name} JSON URL</label><div class="url-controls"><input id="${id}-url" type="url" placeholder="https://example.com/data.json" autocomplete="off" spellcheck="false" aria-describedby="${id}-url-help"><button type="button" data-action="load">Load</button><button type="button" data-action="cancel" hidden>Cancel</button></div>
+        <p id="${id}-url-help" class="url-help">Must be a public HTTPS link with CORS enabled, up to 20 MB</p><button type="button" class="link-button" data-action="edit-url" hidden>Edit loaded JSON</button>
+      </div><p id="${id}-import-status" class="import-status" role="status" aria-live="polite"></p>`;
+    if (!card.isConnected) $("inputs").append(card);
+    const state = { id, card, editor: $(id), value: void 0, valid: false, method: "paste", revision: 0, controller: null, timer: null, file: null };
+    states.push(state);
+    const action = (name2) => card.querySelector('[data-action="' + name2 + '"]');
+    state.action = action;
+    state.editor.addEventListener("input", () => {
+      cancelImport(state);
+      state.file = null;
+      updateFile(state);
+      state.revision++;
+      invalidateResult();
+      clearTimeout(state.timer);
+      state.valid = false;
+      updateReady();
+      state.timer = setTimeout(() => validate(state), 180);
+      updateLines(state);
+    });
+    state.editor.addEventListener("scroll", () => {
+      $(id + "-lines").scrollTop = state.editor.scrollTop;
+    });
+    state.editor.addEventListener("keydown", (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "f") {
+        event.preventDefault();
+        setFind(state, true);
+      }
+      if (event.key === "Escape") setFind(state, false);
+    });
+    card.querySelectorAll("[role=tab]").forEach((tab) => {
+      tab.addEventListener("click", () => setMethod(state, tab.dataset.method));
+      tab.addEventListener("keydown", (event) => {
+        const tabs = [...card.querySelectorAll("[role=tab]")];
+        let next;
+        if (event.key === "ArrowRight") next = (tabs.indexOf(tab) + 1) % 3;
+        if (event.key === "ArrowLeft") next = (tabs.indexOf(tab) + 2) % 3;
+        if (event.key === "Home") next = 0;
+        if (event.key === "End") next = 2;
+        if (next !== void 0) {
+          event.preventDefault();
+          tabs[next].click();
+          tabs[next].focus();
+        }
+      });
+    });
+    action("find").onclick = () => setFind(state, $(id + "-find-bar").hidden);
+    action("close-find").onclick = () => setFind(state, false);
+    action("next").onclick = () => findNext(state);
+    $(id + "-find").addEventListener("input", () => {
+      state.editor.setSelectionRange(0, 0);
+      findNext(state);
+    });
+    $(id + "-find").addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        findNext(state);
+      }
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setFind(state, false);
+      }
+    });
+    action("wrap").onclick = () => {
+      const wrap = !state.editor.classList.contains("wrap");
+      state.editor.classList.toggle("wrap", wrap);
+      state.editor.wrap = wrap ? "soft" : "off";
+      action("wrap").setAttribute("aria-pressed", String(wrap));
+      $(id + "-lines").hidden = wrap;
+    };
+    action("format").onclick = () => {
+      if (validate(state)) {
+        setText(state, JSON.stringify(state.value, null, 2));
+        announce(name + " JSON formatted.");
+      } else announce("Fix " + name.toLowerCase() + " JSON before formatting.");
+    };
+    action("browse").onclick = () => $(id + "-file").click();
+    $(id + "-file").onchange = (event) => {
+      if (event.target.files[0]) importFile(state, event.target.files[0]);
+    };
+    const zone = action("browse");
+    ["dragenter", "dragover"].forEach((type) => zone.addEventListener(type, (event) => {
+      event.preventDefault();
+      zone.classList.add("dragging");
+    }));
+    ["dragleave", "drop"].forEach((type) => zone.addEventListener(type, (event) => {
+      event.preventDefault();
+      zone.classList.remove("dragging");
+    }));
+    zone.addEventListener("drop", (event) => {
+      if (event.dataTransfer.files.length !== 1) {
+        importStatus(state, "Choose one .json file for this input.", true);
+        return;
+      }
+      importFile(state, event.dataTransfer.files[0]);
+    });
+    action("remove").onclick = () => {
+      cancelImport(state);
+      state.file = null;
+      $(id + "-file").value = "";
+      setText(state, "");
+      updateFile(state);
+      importStatus(state, "File removed.");
+      action("browse").focus();
+    };
+    action("edit-upload").onclick = action("edit-url").onclick = () => {
+      setMethod(state, "paste");
+      state.editor.focus();
+    };
+    action("load").onclick = () => loadUrl(state);
+    action("cancel").onclick = () => {
+      cancelImport(state);
+      importStatus(state, "Loading cancelled. Existing JSON unchanged.");
+      action("load").focus();
+    };
+    $(id + "-url").addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !event.ctrlKey && !event.metaKey) {
+        event.preventDefault();
+        loadUrl(state);
+      }
+    });
+    $(id + "-url").addEventListener("input", () => cancelImport(state));
+  });
+  function setMethod(state, method) {
+    if (state.method !== method) cancelImport(state);
+    state.method = method;
+    state.card.querySelectorAll("[role=tab]").forEach((tab) => {
+      const active = tab.dataset.method === method;
+      tab.setAttribute("aria-selected", String(active));
+      tab.tabIndex = active ? 0 : -1;
+      $(tab.getAttribute("aria-controls")).hidden = !active;
+    });
+    importStatus(state, "");
+  }
+  function setFind(state, open) {
+    $(state.id + "-find-bar").hidden = !open;
+    state.action("find").setAttribute("aria-expanded", String(open));
+    (open ? $(state.id + "-find") : state.editor).focus();
+  }
+  function findNext(state) {
+    const query = $(state.id + "-find").value;
+    const status = state.card.querySelector(".find-status");
+    if (!query) {
+      status.textContent = "";
+      return;
+    }
+    const text = state.editor.value.toLowerCase(), needle = query.toLowerCase();
+    let index = text.indexOf(needle, state.editor.selectionEnd);
+    if (index < 0) index = text.indexOf(needle);
+    if (index < 0) {
+      status.textContent = "No matches";
+      return;
+    }
+    state.editor.focus();
+    state.editor.setSelectionRange(index, index + query.length);
+    state.editor.scrollTop = Math.max(0, (state.editor.value.slice(0, index).split("\n").length - 3) * 22);
+    $(state.id + "-lines").scrollTop = state.editor.scrollTop;
+    status.textContent = "Match selected";
+  }
+  function updateLines(state) {
+    const text = state.editor.value;
+    let count = 1, position = -1;
+    while (count < 5e4 && (position = text.indexOf("\n", position + 1)) !== -1) count++;
+    $(state.id + "-lines").textContent = Array.from({ length: count }, (_, i) => i + 1).join("\n");
+  }
+  function parse(text) {
+    if (!text.trim()) throw new Error("Enter a JSON value first.");
+    let depth = 0, quoted = false, escaped = false;
+    for (const char of text) {
+      if (quoted) {
+        if (escaped) escaped = false;
+        else if (char === "\\") escaped = true;
+        else if (char === '"') quoted = false;
+      } else if (char === '"') quoted = true;
+      else if (char === "{" || char === "[") {
+        if (++depth > MAX_DEPTH) throw new Error("Use fewer than " + MAX_DEPTH + " nested levels.");
+      } else if (char === "}" || char === "]") depth--;
+    }
+    return JSON.parse(text);
+  }
+  function errorMessage(text, error) {
+    const position = /position\s+(\d+)/i.exec(error.message);
+    const location = /line\s+(\d+)/i.exec(error.message);
+    const line = location ? Number(location[1]) : position ? text.slice(0, Number(position[1])).split("\n").length : text.split("\n").length;
+    let reason = "Check double quotes, commas, and matching brackets.";
+    if (/nested levels/.test(error.message)) reason = error.message;
+    else if (/unexpected end|unterminated|end of json/i.test(error.message)) reason = "The JSON is incomplete. Close any open quotes or brackets.";
+    else if (/property name|double.quoted/i.test(error.message)) reason = "Use double-quoted keys and remove any trailing comma.";
+    else if (/after json|non-whitespace/i.test(error.message)) reason = "Use one JSON value only; remove extra text after it.";
+    return "Error on line " + Math.max(1, line) + ": " + reason;
+  }
+  function validate(state) {
+    clearTimeout(state.timer);
+    const text = state.editor.value, badge = $(state.id + "-status");
+    state.valid = false;
+    state.value = void 0;
+    let status = "empty", message = "Empty";
+    if (text.trim()) {
+      try {
+        state.value = parse(text);
+        state.valid = true;
+        status = "valid";
+        message = "Valid JSON \u2713";
+      } catch (error) {
+        status = "error";
+        message = errorMessage(text, error);
+      }
+    }
+    state.card.dataset.state = badge.dataset.state = status;
+    badge.textContent = message;
+    state.editor.setAttribute("aria-invalid", String(status === "error"));
+    updateReady();
+    if (!suppressAuto && states.length === 2 && states.every((item) => item.valid)) scheduleLiveMerge();
+    return state.valid;
+  }
+  function updateAds() {
+    const eligible = resultReady && states.length === 2 && states.every((state) => state.valid && !state.importError && !state.controller);
+    document.querySelectorAll(".ad-slot").forEach((slot) => {
+      slot.hidden = !eligible;
+    });
+  }
+  function updateReady() {
+    updateAds();
+    const ready = !merging && states.length === 2 && states.every((state) => state.valid);
+    $("merge").disabled = !ready;
+    $("merge-reason").textContent = ready ? "Both inputs are ready." : "Add valid JSON to both inputs to continue.";
+    const step = resultReady ? 3 : ready ? 2 : 1;
+    [1, 2, 3].forEach((n) => {
+      if (n === step) $("step-" + n).setAttribute("aria-current", "step");
+      else $("step-" + n).removeAttribute("aria-current");
+    });
+  }
+  function invalidateResult() {
+    mergeJob++;
+    merging = false;
+    clearTimeout(liveTimer);
+    if (mergeWorker) {
+      mergeWorker.terminate();
+      mergeWorker = null;
+    }
+    $("merge").removeAttribute("aria-busy");
+    resultText = "";
+    lastResult = null;
+    resultReady = false;
+    ["copy", "download", "format-result", "merge-pydantic", "merge-typescript", "merge-python", "merge-yaml", "merge-toml", "merge-diff", "merge-go"].forEach((id) => {
+      $(id).disabled = true;
+    });
+    $("result-output").hidden = $("result-legend").hidden = $("preview-notice").hidden = true;
+    $("conflict-panel").hidden = $("diff-panel").hidden = true;
+    $("result-empty").hidden = false;
+    $("result-lines").replaceChildren();
+    $("conflict-list").replaceChildren();
+    $("diff-list").replaceChildren();
+    $("result-empty").textContent = "Your merged JSON will appear here.";
+    updateReady();
+  }
+  function setText(state, text) {
+    clearTimeout(state.timer);
+    state.editor.value = text;
+    state.revision++;
+    invalidateResult();
+    updateLines(state);
+    validate(state);
+  }
+  function importStatus(state, message, error = false) {
+    const node = $(state.id + "-import-status");
+    node.textContent = message;
+    node.classList.toggle("error", error);
+    state.importError = error;
+    updateAds();
+  }
+  function updateFile(state) {
+    const info = $(state.id + "-file-info");
+    info.hidden = !state.file;
+    state.action("edit-upload").hidden = !state.file;
+    if (state.file) {
+      info.querySelector("strong").textContent = state.file.name;
+      info.querySelector(".muted").textContent = sizeLabel(state.file.size);
+    }
+  }
+  function busy(state, loading) {
+    state.action("load").disabled = loading;
+    state.action("cancel").hidden = !loading;
+    state.action("browse").disabled = loading;
+    state.card.setAttribute("aria-busy", String(loading));
+    updateAds();
+  }
+  function cancelImport(state) {
+    if (state.controller) {
+      state.controller.abort();
+      state.controller = null;
+    }
+    busy(state, false);
+  }
+  async function importFile(state, file) {
+    cancelImport(state);
+    if (!/\.json$/i.test(file.name)) {
+      importStatus(state, "Choose a file ending in .json.", true);
+      return;
+    }
+    if (file.size > MAX_BYTES) {
+      importStatus(state, "File is larger than 20 MB.", true);
+      return;
+    }
+    const controller = new AbortController(), revision = state.revision;
+    state.controller = controller;
+    busy(state, true);
+    importStatus(state, "Reading file\u2026");
+    try {
+      const text = (await file.text()).replace(/^\uFEFF/, "");
+      if (controller.signal.aborted || state.revision !== revision) return;
+      parse(text);
+      setText(state, text);
+      state.file = { name: file.name, size: file.size };
+      updateFile(state);
+      state.action("edit-url").hidden = true;
+      importStatus(state, "Loaded " + file.name + ".");
+    } catch (error) {
+      if (!controller.signal.aborted) importStatus(state, "Could not load file. " + errorMessage("", error) + " Existing JSON unchanged.", true);
+    } finally {
+      if (state.controller === controller) {
+        state.controller = null;
+        busy(state, false);
+      }
+      $(state.id + "-file").value = "";
+    }
+  }
+  async function loadUrl(state) {
+    cancelImport(state);
+    let url;
+    try {
+      url = new URL($(state.id + "-url").value.trim());
+      if (url.protocol !== "https:" || url.username || url.password) throw new Error();
+    } catch {
+      importStatus(state, "Enter a public HTTPS URL without embedded credentials.", true);
+      return;
+    }
+    const controller = new AbortController(), revision = state.revision;
+    state.controller = controller;
+    busy(state, true);
+    importStatus(state, "Loading JSON\u2026");
+    let timedOut = false;
+    const timeout = setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+    }, 3e4);
+    try {
+      const response = await fetch(url.href, { signal: controller.signal, mode: "cors", credentials: "omit", referrerPolicy: "no-referrer", cache: "no-store" });
+      if (!response.ok) throw new Error("The source returned HTTP " + response.status + ".");
+      if (Number(response.headers.get("content-length")) > MAX_BYTES) throw new Error("The response is larger than 20 MB.");
+      if (response.url && new URL(response.url).protocol !== "https:") throw new Error("The source must stay on HTTPS.");
+      let text = "";
+      if (response.body && response.body.getReader) {
+        const reader = response.body.getReader(), decoder = new TextDecoder();
+        let bytes = 0;
+        try {
+          while (true) {
+            const part = await reader.read();
+            if (part.done) break;
+            bytes += part.value.byteLength;
+            if (bytes > MAX_BYTES) {
+              controller.abort();
+              throw new Error("The response is larger than 20 MB.");
+            }
+            text += decoder.decode(part.value, { stream: true });
+          }
+          text += decoder.decode();
+        } finally {
+          reader.releaseLock();
+        }
+      } else {
+        text = await response.text();
+        if (new TextEncoder().encode(text).byteLength > MAX_BYTES) throw new Error("The response is larger than 20 MB.");
+      }
+      if (controller.signal.aborted || state.revision !== revision) return;
+      text = text.replace(/^\uFEFF/, "");
+      try {
+        parse(text);
+      } catch (error) {
+        throw new Error("The source did not return valid JSON. " + errorMessage(text, error));
+      }
+      setText(state, text);
+      state.file = null;
+      updateFile(state);
+      state.action("edit-url").hidden = false;
+      importStatus(state, "JSON loaded. Select \u201CEdit loaded JSON\u201D to review it.");
+    } catch (error) {
+      if (state.controller !== controller) return;
+      const message = timedOut ? "Request timed out after 30 seconds." : error.name === "TypeError" ? "Unable to load this URL. Check the link, your connection, and the source\u2019s CORS settings." : error.message;
+      importStatus(state, message + " Existing JSON unchanged.", true);
+    } finally {
+      clearTimeout(timeout);
+      if (state.controller === controller) {
+        state.controller = null;
+        busy(state, false);
+      }
+    }
+  }
+  function recordConflict(path, first, second) {
+    if (canonical(first) === canonical(second)) return;
+    if (!currentConflicts.some((item) => item.path === path)) currentConflicts.push({ path: path || "/", first: clone(first), second: clone(second), selected: conflictChoices.get(path || "/") || "second" });
+  }
+  function chooseValue(first, second, path) {
+    const key = path || "/";
+    recordConflict(key, first, second);
+    return clone(conflictChoices.get(key) === "first" ? first : second);
+  }
+  function mergeArraysById(first, second, deep, arrays, depth, path) {
+    const idPath = activeArrayKey.trim() || "id";
+    const output = first.map(clone);
+    const indexes = /* @__PURE__ */ new Map();
+    first.forEach((item, index) => {
+      const id = object(item) ? atPath(item, idPath) : void 0;
+      if (scalar(id)) indexes.set(typeof id + ":" + id, index);
+    });
+    second.forEach((item) => {
+      const id = object(item) ? atPath(item, idPath) : void 0;
+      const token = scalar(id) ? typeof id + ":" + id : "";
+      if (token && indexes.has(token) && object(output[indexes.get(token)]) && object(item)) {
+        const index = indexes.get(token);
+        output[index] = mergeValues(output[index], item, deep, arrays, depth + 1, pointer(path, index));
+      } else {
+        if (token && !indexes.has(token)) indexes.set(token, output.length);
+        output.push(clone(item));
+      }
+    });
+    return output;
+  }
+  function mergeValues(first, second, deep, arrays, depth = 0, path = "") {
+    if (depth > MAX_DEPTH) throw new Error("The merged JSON is too deeply nested.");
+    if (Array.isArray(first) && Array.isArray(second)) {
+      if (arrays === "concat") return first.concat(second).map(clone);
+      if (arrays === "merge-id") return mergeArraysById(first, second, deep, arrays, depth, path);
+      return chooseValue(first, second, path);
+    }
+    if (object(first) && object(second)) {
+      if (!deep) return chooseValue(first, second, path);
+      const output = /* @__PURE__ */ Object.create(null);
+      for (const key of Object.keys(first)) output[key] = clone(first[key]);
+      for (const key of Object.keys(second)) output[key] = own(first, key) ? mergeValues(first[key], second[key], deep, arrays, depth + 1, pointer(path, key)) : clone(second[key]);
+      return output;
+    }
+    return chooseValue(first, second, path);
+  }
+  function collectChanges(first, merged, path = "", exists = true) {
+    if (!exists) {
+      changes.set(path, "added");
+      totalAdded++;
+      return;
+    }
+    if (object(first) && object(merged)) {
+      for (const key of Object.keys(merged)) collectChanges(first[key], merged[key], pointer(path, key), own(first, key));
+      if (Object.keys(first).some((key) => !own(merged, key))) {
+        changes.set(path, "overridden");
+        totalOverridden++;
+      }
+    } else if (JSON.stringify(first) !== JSON.stringify(merged)) {
+      changes.set(path, "overridden");
+      totalOverridden++;
+    }
+  }
+  function collectDiffRows(first, merged) {
+    const rows = [];
+    function walk(before, after, path, existsBefore = true, existsAfter = true) {
+      if (rows.length >= 80) return;
+      const label = path || "/";
+      if (!existsBefore) { rows.push({ path: label, type: "added", before: void 0, after: clone(after) }); return; }
+      if (!existsAfter) { rows.push({ path: label, type: "removed", before: clone(before), after: void 0 }); return; }
+      if (object(before) && object(after)) {
+        const keys = new Set(Object.keys(before).concat(Object.keys(after)));
+        for (const key of keys) walk(before[key], after[key], pointer(path, key), own(before, key), own(after, key));
+      } else if (canonical(before) !== canonical(after)) rows.push({ path: label, type: "changed", before: clone(before), after: clone(after) });
+    }
+    walk(first, merged, "");
+    return rows;
+  }
+  function workerSource() {
+    return [
+      "'use strict'; const MAX_DEPTH = " + MAX_DEPTH + "; const MAX_PREVIEW_LINES = " + MAX_PREVIEW_LINES + "; const MAX_PREVIEW_CHARS = " + MAX_PREVIEW_CHARS + ";",
+      "const own = " + own + "; const object = " + object + "; const pointer = " + pointer + "; const canonical = " + canonical + "; const clone = " + clone + "; const atPath = " + atPath + "; const scalar = " + scalar + ";",
+      "let changes = new Map(), totalAdded = 0, totalOverridden = 0, currentConflicts = [], conflictChoices = new Map(), activeArrayKey = 'id';",
+      parse.toString(),
+      recordConflict.toString(),
+      chooseValue.toString(),
+      mergeArraysById.toString(),
+      mergeValues.toString(),
+      collectChanges.toString(),
+      collectDiffRows.toString(),
+      previewLines.toString(),
+      "onmessage = function(event) { try { const { id, first, second, deep, arrays, choices, arrayKey } = event.data; conflictChoices = new Map(choices || []); activeArrayKey = arrayKey || 'id'; currentConflicts = []; const base = parse(first); const result = mergeValues(base, parse(second), deep, arrays); collectChanges(base, result); const preview = previewLines(result); const diffRows = collectDiffRows(base, result); postMessage({ id, text: JSON.stringify(result, null, 2), preview, added: totalAdded, overridden: totalOverridden, conflicts: currentConflicts, diffRows }); } catch(error) { postMessage({ id: event.data.id, error: error.message }); } };"
+    ].join("\n");
+  }
+  function finishMerge(text, preview, added, overridden, conflicts, diffRows, manual = true) {
+    resultText = text;
+    resultReady = true;
+    merging = false;
+    totalAdded = added;
+    totalOverridden = overridden;
+    currentConflicts = conflicts || currentConflicts;
+    const activePaths = new Set(currentConflicts.map((item) => item.path));
+    for (const key of conflictChoices.keys()) if (!activePaths.has(key)) conflictChoices.delete(key);
+    $("merge").removeAttribute("aria-busy");
+    renderResult(preview);
+    renderConflicts();
+    renderDiff(diffRows || (lastResult === null ? [] : collectDiffRows(states[0].value, lastResult)));
+    ["copy", "download", "format-result", "merge-pydantic", "merge-typescript", "merge-python", "merge-yaml", "merge-toml", "merge-diff", "merge-go"].forEach((id) => {
+      $(id).disabled = false;
+    });
+    updateReady();
+    if (manual) {
+      announce("Merged successfully. " + totalAdded + " added and " + totalOverridden + " overridden keys or values.");
+      $("result-heading").focus();
+    }
+  }
+  function scheduleLiveMerge() {
+    clearTimeout(liveTimer);
+    liveTimer = setTimeout(() => merge(false), 160);
+  }
+  function merge(manual = true) {
+    if (merging) return;
+    const first = states[0].editor.value, second = states[1].editor.value;
+    const large = first.length + second.length >= WORKER_THRESHOLD;
+    activeArrayKey = $("array-key").value.trim() || "id";
+    suppressAuto = true;
+    if (!large || typeof Worker === "undefined") states.forEach(validate);
+    suppressAuto = false;
+    if (!states.every((state) => state.valid)) {
+      announce("Both inputs must contain valid JSON before merging.");
+      return;
+    }
+    const deep = $("deep").checked, arrays = $("arrays").value;
+    if (large && typeof Worker !== "undefined") {
+      invalidateResult();
+      const id = ++mergeJob;
+      merging = true;
+      updateReady();
+      $("merge").setAttribute("aria-busy", "true");
+      announce("Merging JSON\u2026");
+      let url;
+      try {
+        url = URL.createObjectURL(new Blob([workerSource()], { type: "text/javascript" }));
+        mergeWorker = new Worker(url);
+        mergeWorker.onmessage = (event) => {
+          if (event.data.id !== mergeJob) return;
+          const data = event.data;
+          mergeWorker.terminate();
+          mergeWorker = null;
+          if (data.error) {
+            invalidateResult();
+            announce("Unable to merge: " + data.error);
+            return;
+          }
+          lastResult = null;
+          finishMerge(data.text, data.preview, data.added, data.overridden, data.conflicts, data.diffRows, manual);
+        };
+        mergeWorker.onerror = () => {
+          invalidateResult();
+          announce("Unable to merge in a background worker. Check browser security settings.");
+        };
+        mergeWorker.postMessage({ id, first, second, deep, arrays, choices: [...conflictChoices], arrayKey: activeArrayKey });
+      } catch (error) {
+        invalidateResult();
+        announce("Unable to merge: " + error.message);
+      } finally {
+        if (url) URL.revokeObjectURL(url);
+      }
+      return;
+    }
+    try {
+      currentConflicts = [];
+      lastResult = mergeValues(states[0].value, states[1].value, deep, arrays);
+      changes = /* @__PURE__ */ new Map();
+      totalAdded = totalOverridden = 0;
+      collectChanges(states[0].value, lastResult);
+      finishMerge(JSON.stringify(lastResult, null, 2), previewLines(lastResult), totalAdded, totalOverridden, currentConflicts, collectDiffRows(states[0].value, lastResult), manual);
+    } catch (error) {
+      invalidateResult();
+      announce("Unable to merge: " + error.message);
+    }
+  }
+  function previewLines(value) {
+    const lines = [];
+    let lineCount = 0, charCount = 0, truncated = false;
+    function line(text, kind) {
+      if (lineCount >= MAX_PREVIEW_LINES || charCount + text.length > MAX_PREVIEW_CHARS) {
+        truncated = true;
+        return false;
+      }
+      lines.push({ text, kind });
+      lineCount++;
+      charCount += text.length;
+      return true;
+    }
+    function walk(value2, path, indent, prefix = "", suffix = "", inherited = "") {
+      if (truncated) return;
+      const kind = changes.get(path) || inherited, pad = "  ".repeat(indent);
+      if (value2 !== null && typeof value2 === "object") {
+        const array = Array.isArray(value2), keys = Object.keys(value2), open = array ? "[" : "{", close = array ? "]" : "}";
+        if (!keys.length) {
+          line(pad + prefix + open + close + suffix, kind);
+          return;
+        }
+        if (!line(pad + prefix + open, kind)) return;
+        for (let i = 0; i < keys.length && !truncated; i++) {
+          const key = keys[i];
+          walk(value2[key], pointer(path, key), indent + 1, array ? "" : JSON.stringify(key) + ": ", i < keys.length - 1 ? "," : "", kind);
+        }
+        line(pad + close + suffix, kind);
+      } else line(pad + prefix + JSON.stringify(value2) + suffix, kind);
+    }
+    walk(value, "", 0);
+    return { lines, truncated, lineCount };
+  }
+  function renderConflicts() {
+    const panel = $("conflict-panel"), list = $("conflict-list");
+    list.replaceChildren();
+    panel.hidden = currentConflicts.length === 0;
+    currentConflicts.forEach((conflict, index) => {
+      const field = document.createElement("fieldset");
+      field.className = "conflict-card";
+      const legend = document.createElement("legend");
+      legend.textContent = conflict.path;
+      const options = document.createElement("div");
+      options.className = "conflict-options";
+      [["first", "Use first JSON", conflict.first], ["second", "Use second JSON", conflict.second]].forEach(([value, label, data]) => {
+        const item = document.createElement("label");
+        item.className = "conflict-option";
+        const title = document.createElement("span");
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = "conflict-" + index;
+        input.value = value;
+        input.checked = (conflictChoices.get(conflict.path) || "second") === value;
+        input.addEventListener("change", () => {
+          conflictChoices.set(conflict.path, value);
+          scheduleLiveMerge();
+        });
+        title.append(input, label);
+        const pre = document.createElement("pre");
+        pre.textContent = shortValue(data);
+        item.append(title, pre);
+        options.append(item);
+      });
+      field.append(legend, options);
+      list.append(field);
+    });
+  }
+  function renderDiff(rows) {
+    const panel = $("diff-panel"), list = $("diff-list");
+    list.replaceChildren();
+    panel.hidden = !resultReady;
+    $("diff-summary").textContent = rows.length ? rows.length + " changed path" + (rows.length === 1 ? "" : "s") + " shown compared with the first JSON." : "No changes from the first JSON with the current choices.";
+    rows.forEach((row) => {
+      const item = document.createElement("div");
+      item.className = "diff-row";
+      item.setAttribute("role", "listitem");
+      const path = document.createElement("span");
+      path.className = "diff-path";
+      path.textContent = row.path;
+      const kind = document.createElement("span");
+      kind.className = "diff-kind";
+      kind.textContent = row.type;
+      const before = document.createElement("pre");
+      before.className = "diff-value";
+      before.textContent = row.before === void 0 ? "—" : shortValue(row.before);
+      const after = document.createElement("pre");
+      after.className = "diff-value";
+      after.textContent = row.after === void 0 ? "—" : shortValue(row.after);
+      item.append(path, kind, before, after);
+      list.append(item);
+    });
+  }
+  function renderResult(preview) {
+    const { lines, truncated, lineCount } = preview;
+    const fragment = document.createDocumentFragment();
+    for (const { text, kind } of lines) {
+      const item = document.createElement("li"), code = document.createElement("code");
+      if (kind) {
+        item.className = kind;
+        item.setAttribute("aria-label", kind === "added" ? "Added key" : "Overridden value");
+      }
+      code.textContent = text;
+      item.append(code);
+      fragment.append(item);
+    }
+    $("result-lines").replaceChildren(fragment);
+    $("result-empty").hidden = true;
+    $("result-output").hidden = $("result-legend").hidden = false;
+    $("preview-notice").hidden = !truncated;
+    $("preview-notice").textContent = truncated ? "Preview limited to " + lineCount.toLocaleString() + " lines / 250,000 characters. Copy and Download include the complete result." : "";
+    $("change-count").textContent = totalAdded + " added \xB7 " + totalOverridden + " overridden \xB7 compared with first JSON";
+  }
+  $("merge").onclick = () => merge(true);
+  document.addEventListener("keydown", (event) => {
+    if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+      event.preventDefault();
+      merge(true);
+    }
+  });
+  function updateArrayIdVisibility() {
+    $("array-id-wrap").hidden = $("arrays").value !== "merge-id";
+  }
+  ["deep", "arrays"].forEach((id) => $(id).addEventListener("change", () => {
+    updateArrayIdVisibility();
+    invalidateResult();
+    if (states.every((state) => state.valid)) scheduleLiveMerge();
+    announce("Merge options changed. The live result will update when both inputs are valid.");
+  }));
+  $("array-key").addEventListener("input", () => {
+    invalidateResult();
+    if (states.every((state) => state.valid)) scheduleLiveMerge();
+  });
+  updateArrayIdVisibility();
+  $("example").onclick = () => {
+    const examples = [{ name: "Ana", role: "Designer", settings: { theme: "light", notifications: true }, tags: ["design"] }, { role: "Developer", city: "Chennai", settings: { theme: "dark" }, tags: ["code"] }];
+    states.forEach((state, i) => {
+      cancelImport(state);
+      state.file = null;
+      updateFile(state);
+      setMethod(state, "paste");
+      state.action("edit-url").hidden = true;
+      setText(state, JSON.stringify(examples[i], null, 2));
+    });
+    announce("Example loaded. Select Merge JSON to see what changes.");
+  };
+  $("clear").onclick = () => {
+    states.forEach((state) => {
+      cancelImport(state);
+      state.file = null;
+      updateFile(state);
+      setMethod(state, "paste");
+      setText(state, "");
+      $(state.id + "-url").value = "";
+      $(state.id + "-file").value = "";
+      state.action("edit-url").hidden = true;
+    });
+    announce("All JSON inputs and the result cleared.");
+    states[0].editor.focus();
+  };
+  $("swap").onclick = () => {
+    const values = states.map((state) => state.editor.value);
+    states.forEach((state, i) => {
+      cancelImport(state);
+      state.file = null;
+      updateFile(state);
+      setMethod(state, "paste");
+      state.action("edit-url").hidden = true;
+      setText(state, values[1 - i]);
+    });
+    announce("First and second JSON swapped. The second JSON now wins conflicts.");
+  };
+  $("copy").onclick = async () => {
+    if (!resultReady) return;
+    try {
+      if (!navigator.clipboard || !navigator.clipboard.writeText) throw new Error("Clipboard unavailable");
+      await navigator.clipboard.writeText(resultText);
+      announce("Merged JSON copied.");
+    } catch {
+      announce("Clipboard access is unavailable. Select the result and copy it, or use Download .json.");
+    }
+  };
+  $("download").onclick = () => {
+    if (!resultReady) return;
+    const url = URL.createObjectURL(new Blob([resultText + "\n"], { type: "application/json" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "merged.json";
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1e3);
+    announce("Merged JSON downloaded.");
+  };
+  $("merge-diff").onclick = () => {
+    if (resultReady) document.dispatchEvent(new CustomEvent('jm:tool-open', { detail: { tool: 'json-diff', text: resultText } }));
+  };
+  $("merge-pydantic").onclick = () => {
+    if (!resultReady) return;
+    try {
+      sessionStorage.setItem('joinjson:pydantic-input', resultText);
+      window.location.assign('/json-to-pydantic');
+    } catch (_) {
+      announce('Browser storage is unavailable or full. Copy the merged JSON and paste it into the Pydantic tool.');
+    }
+  };
+  $("merge-go").onclick = () => {
+    if (!resultReady) return;
+    try {
+      sessionStorage.setItem('joinjson:go-input', resultText);
+      window.location.assign('/json-to-go');
+    } catch (_) {
+      announce('Browser storage is unavailable or full. Copy the merged JSON and paste it into the JSON to Go tool.');
+    }
+  };
+  $("merge-toml").onclick = () => {
+    if (!resultReady) return;
+    try {
+      sessionStorage.setItem('joinjson:toml-input', resultText);
+      window.location.assign('/json-to-toml');
+    } catch (_) {
+      announce('Browser storage is unavailable or full. Copy the merged JSON and paste it into the JSON to TOML tool.');
+    }
+  };
+  $("merge-yaml").onclick = () => {
+    if (resultReady) document.dispatchEvent(new CustomEvent('jm:tool-open', { detail: { tool: 'json-to-yaml', text: resultText } }));
+  };
+  $("merge-python").onclick = () => {
+    if (resultReady) document.dispatchEvent(new CustomEvent('jm:tool-open', { detail: { tool: 'json-to-python', text: resultText } }));
+  };
+  $("merge-typescript").onclick = () => {
+    if (resultReady) document.dispatchEvent(new CustomEvent('jm:tool-open', { detail: { tool: 'json-to-typescript', text: resultText } }));
+  };
+  $("format-result").onclick = () => {
+    if (resultReady) {
+      announce("Result formatted with two-space indentation.");
+    }
+  };
+  updateReady();
+})();
+(() => {
+  const config = Object.freeze({
+    enabled: false,
+    publisher: "",
+    // Verified ca-pub-… value, never an invented ID.
+    slots: { "after-result": "", "before-faq": "" },
+    consentAllowed: null
+    // Implement using the actual certified CMP, not a checkbox.
+  });
+  if (!config.enabled || !/^ca-pub-\d{16}$/.test(config.publisher) || typeof config.consentAllowed !== "function" || !("IntersectionObserver" in window)) return;
+  const allowed = () => {
+    try {
+      return config.consentAllowed() === true;
+    } catch {
+      return false;
+    }
+  };
+  let library = null;
+  function loadLibrary() {
+    if (!library) library = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.async = true;
+      script.crossOrigin = "anonymous";
+      script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=" + config.publisher;
+      script.onload = resolve;
+      script.onerror = () => {
+        script.remove();
+        library = null;
+        reject(new Error("Ad script unavailable"));
+      };
+      document.head.append(script);
+    });
+    return library;
+  }
+  const nearby = /* @__PURE__ */ new Set(), pending = /* @__PURE__ */ new Set(), rendered = /* @__PURE__ */ new Set();
+  async function render(slot) {
+    const mount = slot.querySelector(".ad-mount"), placement = mount.dataset.placement;
+    if (slot.hidden || !nearby.has(slot) || !allowed() || pending.has(slot) || rendered.has(slot) || !/^\d+$/.test(config.slots[placement])) return;
+    pending.add(slot);
+    try {
+      await loadLibrary();
+      if (slot.hidden || !nearby.has(slot) || !allowed()) return;
+      const ad = document.createElement("ins");
+      ad.className = "adsbygoogle";
+      ad.dataset.adClient = config.publisher;
+      ad.dataset.adSlot = config.slots[placement];
+      ad.dataset.adFormat = "auto";
+      ad.dataset.fullWidthResponsive = "true";
+      mount.append(ad);
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+      rendered.add(slot);
+    } catch {
+    } finally {
+      pending.delete(slot);
+    }
+  }
+  const slots = [...document.querySelectorAll(".ad-slot")];
+  const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      nearby.add(entry.target);
+      render(entry.target);
+    } else nearby.delete(entry.target);
+  }), { rootMargin: "200px" });
+  slots.forEach((slot) => {
+    observer.observe(slot);
+    new MutationObserver(() => render(slot)).observe(slot, { attributes: true, attributeFilter: ["hidden"] });
+  });
+  window.addEventListener("joinjson:consent-change", () => {
+    if (!allowed()) {
+      slots.forEach((slot) => {
+        slot.querySelector(".ad-mount").replaceChildren();
+        rendered.delete(slot);
+      });
+    } else slots.forEach(render);
+  });
+})();
+</script>
+</body>
+</html>
