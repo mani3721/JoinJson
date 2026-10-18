@@ -74,7 +74,7 @@ async function ui() {
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
   const dom = new JSDOM(html, { runScripts: 'outside-only', url: 'http://localhost' });
   const w = dom.window, $ = id => w.document.getElementById(id);
-  w.prompt = () => 'test-personal-key';
+  w.prompt = () => { assert.fail('AI must not prompt for an API key'); };
   w.TextEncoder = TextEncoder; w.AbortController = AbortController;
   w.JMAIStream = { read }; w.JMFlow = { snapshot: () => ({ files: [{ name: 'secret-name', text: '{"private":1}' }], options: { method: 'join' } }), resultText: () => '[1]' };
   w.eval(await readFile(new URL('../assets/ai-assistant.js', import.meta.url), 'utf8'));
@@ -130,10 +130,10 @@ test('closing popup preserves an in-flight response and reopening focuses an ena
 test('clean chat has no checkboxes, keeps conversation and never attaches workspace JSON', async () => {
   const f = await ui(); const bodies = [];
   f.w.fetch = async (url, options) => {
-    assert.equal(url, COHERE_API_URL);
-    assert.equal(options.headers.Authorization, 'Bearer test-personal-key');
-    assert.equal(options.credentials, 'omit');
-    assert.equal(options.mode, 'cors');
+    assert.equal(url, '/api/ai/chat');
+    assert.equal(options.headers.Authorization, undefined);
+    assert.equal(options.credentials, 'same-origin');
+    assert.equal(options.mode, 'same-origin');
     assert.equal(options.redirect, 'error');
     bodies.push(JSON.parse(options.body));
     return new Response(stream('data: {"choices":[{"delta":{"content":"<img src=x onerror=alert(1)>"}}]}\n\ndata: [DONE]\n\n'), { headers: { 'Content-Type': 'text/event-stream' } });
@@ -169,19 +169,19 @@ test('UI handles unavailable backend, stop and stale response after clear', asyn
   } finally { f.dom.window.close(); }
 });
 
-test('browser calls Cohere directly and explains connection and CORS failures', async () => {
+test('browser uses the backend without credentials and explains connection failures', async () => {
   const f = await ui(); let calls = 0;
   try {
     f.$('ai-prompt').value = 'Help';
     f.w.fetch = async (url, options) => {
       calls++;
-      assert.equal(url, COHERE_API_URL);
-      assert.equal(options.headers.Authorization, 'Bearer test-personal-key');
-      assert.deepEqual(JSON.parse(options.body), { model: 'north-mini-code-1-0', temperature: 0.3, stream: true, max_tokens: 2048, messages: [{ role: 'user', content: 'Help' }] });
+      assert.equal(url, '/api/ai/chat');
+      assert.equal(options.headers.Authorization, undefined);
+      assert.deepEqual(JSON.parse(options.body), { messages: [{ role: 'user', content: 'Help' }] });
       throw new TypeError('Failed to fetch');
     };
     f.submit(); await f.settle();
-    assert.equal(calls, 1); assert(f.$('ai-status').textContent.includes('CORS'));
+    assert.equal(calls, 1); assert(f.$('ai-status').textContent.includes('Cannot reach the AI backend'));
     assert.equal(f.w.localStorage.length, 0);
   } finally { f.dom.window.close(); }
 });
@@ -287,58 +287,47 @@ test('composer shows only Send when idle and only Stop while a response is pendi
   } finally { f.dom.window.close(); }
 });
 
-test('Cohere errors explain endpoint, authentication and availability failures', async () => {
+test('backend errors explain endpoint, authentication and availability failures', async () => {
   const f = await ui(); let calls = 0;
   try {
-    for (const [status, message] of [[404, 'not found'], [401, 'replacement'], [503, 'temporarily unavailable']]) {
+    for (const [status, message] of [[404, 'not found'], [401, 'signing in'], [502, 'server API key'], [503, 'temporarily unavailable']]) {
       f.w.fetch = async () => { calls++; return new Response('{}', { status }); };
       f.$('ai-prompt').value = 'Help'; f.submit(); await f.settle();
       assert(f.$('ai-status').textContent.includes(message));
     }
-    assert.equal(calls, 3);
+    assert.equal(calls, 4);
   } finally { f.dom.window.close(); }
 });
 
-test('direct assistant never embeds server credentials or persists a personal key', async () => {
+test('assistant never prompts for, embeds or stores API credentials', async () => {
   const source = await readFile(new URL('../assets/ai-assistant.js', import.meta.url), 'utf8');
   assert(!source.includes('COHERE_API_KEY'));
-  assert(source.includes('Bearer '));
-  assert(source.includes(COHERE_API_URL));
-  assert(!source.includes('/api/ai/chat'));
-  assert(source.includes('window.prompt'));
+  assert(!source.includes('Bearer '));
+  assert(!source.includes(COHERE_API_URL));
+  assert(source.includes('/api/ai/chat'));
+  assert(!source.includes('window.prompt'));
   assert(!source.includes('localStorage'));
   assert(!source.includes('sessionStorage'));
 });
 
-
-test('cancelled or invalid keys send nothing and preserve the draft', async () => {
-  const f = await ui(); let calls = 0;
-  f.w.fetch = async () => { calls++; throw new Error('Unexpected request'); };
+test('UI sends through the backend using the environment key without prompting', async () => {
+  let upstreamCall;
+  const backend = await fixture({}, async (url, options) => {
+    upstreamCall = { url, options };
+    return new Response(stream(wire), { headers: { 'Content-Type': 'text/event-stream' } });
+  });
+  const f = await ui();
+  f.w.fetch = (url, options) => fetch(backend.base + url, {
+    ...options, headers: { ...options.headers, Origin: backend.base }
+  });
   try {
-    for (const key of [null, '', '   ', 'invalid key']) {
-      f.w.prompt = () => key;
-      f.$('ai-prompt').value = 'Keep draft'; f.submit(); await f.settle();
-      assert.equal(f.$('ai-prompt').value, 'Keep draft');
-      assert.equal(f.$('ai-response'), null);
-    }
-    assert.equal(calls, 0);
-  } finally { f.dom.window.close(); }
-});
-
-test('personal key is reused, then forgotten on 401, New chat and Clear data', async () => {
-  const f = await ui(); let prompts = 0, status = 200;
-  f.w.prompt = () => 'personal-key-' + (++prompts);
-  f.w.fetch = async (url, options) => {
-    assert.equal(options.headers.Authorization, 'Bearer personal-key-' + prompts);
-    return status === 200 ? new Response(stream(wire), { headers: { 'Content-Type': 'text/event-stream' } }) : new Response('{}', { status });
-  };
-  const send = async () => { f.$('ai-prompt').value = 'Help'; f.submit(); await f.settle(); };
-  try {
-    await send(); await send(); assert.equal(prompts, 1);
-    status = 401; await send(); assert.equal(prompts, 1);
-    status = 200; await send(); assert.equal(prompts, 2);
-    f.$('ai-clear').click(); await send(); assert.equal(prompts, 3);
-    f.$('clear').click(); await send(); assert.equal(prompts, 4);
-    assert.equal(f.w.localStorage.length, 0); assert.equal(f.w.sessionStorage.length, 0);
-  } finally { f.dom.window.close(); }
+    f.$('ai-prompt').value = 'Help'; f.submit(); await f.settle();
+    assert.equal(f.$('ai-status').textContent, '');
+    assert.equal(f.$('ai-response').textContent, 'Hello 🌍');
+    assert.equal(upstreamCall.url, COHERE_API_URL);
+    assert.equal(upstreamCall.options.headers.Authorization, 'Bearer test-only-key');
+    assert(!f.w.document.body.textContent.includes('test-only-key'));
+    assert.equal(f.w.localStorage.length, 0);
+    assert.equal(f.w.sessionStorage.length, 0);
+  } finally { f.dom.window.close(); await backend.close(); }
 });
