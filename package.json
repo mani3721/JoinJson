@@ -17,7 +17,7 @@
     "audit:headers": "node scripts/sync-security.mjs",
     "test:audit": "node --test tests/home-audit.test.mjs tests/home-performance.test.mjs tests/startup-performance.test.mjs tests/security.test.mjs",
     "test:performance": "node tests/home-performance-browser.mjs",
-    "test": "npm run test:editors && npm run test:ai && npm run test:urls && npm run test:flow && npm run test:ads && npm run test:audit && npm run test:zod && npm run test:typescript && npm run test:python && npm run test:yaml && npm run test:diff",
+    "test": "node --test tests/*.test.mjs tests/*.test.js",
     "test:yaml": "node --test tests/json-to-yaml.test.mjs tests/json-to-yaml-editors.test.mjs tests/tool-menu.test.mjs tests/tool-routes.test.mjs",
     "test:diff": "node --test tests/json-diff.test.mjs tests/json-diff-editors.test.mjs tests/tool-routes.test.mjs tests/tool-menu.test.mjs",
     "test:curl": "node --test tests/curl-to-js.test.mjs"

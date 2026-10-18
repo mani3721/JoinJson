@@ -6,6 +6,7 @@ __pycache__/
 node_modules/
 public/
 .audit-baseline/
+*-browser-report.json
 .env
 .env.*
 !.env.example

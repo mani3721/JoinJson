@@ -102,7 +102,7 @@ test('one-time merger import validates age, clears storage and dispatches input'
 });
 test('standalone SEO, shared layout, clean route and build inclusion', () => {
   const dom = new JSDOM(read('curl-to-js.html')), d = dom.window.document;
-  assert.equal(d.title, 'cURL to Fetch & Axios Converter Online | JoinJSON');
+  assert.equal(d.title, 'cURL to Fetch and Axios Converter | JoinJson');
   assert.equal(d.querySelector('link[rel=canonical]').href, 'https://www.joinjson.com/curl-to-js');
   assert.ok(d.querySelector('header a[href="/curl-to-js"]'));
   assert.ok(d.querySelector('footer a[href="/privacy/"]'));

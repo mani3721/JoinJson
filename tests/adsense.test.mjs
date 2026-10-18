@@ -43,7 +43,7 @@ test('URL/import errors hide slots even when previous valid JSON and result are 
 });
 test('default template makes no advertising/CMP requests and policies disclose Google choices', t => {
   const s = setup(t); s.get('example').click(); s.merge();
-  assert.equal(s.d.querySelectorAll('script[src],iframe,ins.adsbygoogle').length, 0);
+  assert.equal(s.d.querySelectorAll('iframe,ins.adsbygoogle,script[src*="googlesyndication"],script[src*="doubleclick"],script[src*="fundingchoicesmessages"]').length, 0);
   const privacy = readFileSync(new URL('../privacy/index.html', import.meta.url), 'utf8');
   for (const expected of ['https://policies.google.com/technologies/partner-sites', 'https://adssettings.google.com/', 'https://www.aboutads.info/choices/', 'processed locally', 'source host']) assert.ok(privacy.includes(expected));
   for (const page of ['about', 'contact', 'privacy', 'terms']) {

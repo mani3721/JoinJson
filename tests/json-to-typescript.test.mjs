@@ -160,5 +160,5 @@ test('merger transfers complete current output and disables action on invalidati
 test('converter scripts contain no network or persistent-storage calls; deployment rewrites direct links', () => {
   for (const file of ['assets/json-to-typescript.js', 'assets/json-to-typescript-ui.js']) assert.doesNotMatch(read(file), /\b(?:fetch|XMLHttpRequest|localStorage|sessionStorage)\b/);
   const config = JSON.parse(read('vercel.json'));
-  assert.ok(config.rewrites.some(rule => rule.source === '/json-to-typescript' && rule.destination === '/index.html'));
+  assert.ok(config.rewrites.some(rule => rule.source === '/json-to-typescript' && rule.destination === '/json-to-typescript/index.html'));
 });

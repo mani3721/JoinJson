@@ -11,7 +11,7 @@
      position: fixed;
      right: max(1.25rem, env(safe-area-inset-right));
      bottom: max(1.25rem, env(safe-area-inset-bottom));
-     z-index: 40;
+     z-index: 120; /* Above the sticky site header (100). */
      display: inline-flex;
      align-items: center;
      gap: .5rem;
@@ -31,11 +31,11 @@
      position: fixed;
      right: max(1.25rem, env(safe-area-inset-right));
      bottom: calc(max(1.25rem, env(safe-area-inset-bottom)) + 60px);
-     z-index: 40;
+     z-index: 120; /* Above the sticky site header (100). */
      width: min(380px, calc(100vw - 2.5rem));
-     height: 560px;
-     max-height: calc(100vh - 110px);
-     max-height: calc(100dvh - 110px - env(safe-area-inset-bottom));
+     top: env(safe-area-inset-top, 0px);
+     height: auto;
+     max-height: none;
      display: flex;
      flex-direction: column;
      margin: 0;
@@ -292,11 +292,11 @@
 }
  .ai-assistant #ai-send, .ai-assistant #ai-stop {
      flex-shrink: 0;
-     width: 44px;
-     min-height: 44px;
+     width: 36px;
+     min-height: 36px;
      padding: 0;
-     border-radius: 12px;
-     font-size: 1.3rem;
+     border-radius: 10px;
+     font-size: 1.1rem;
 }
 /* Keep exactly one composer action visible, even if generic button styles change. */
  .ai-assistant #ai-form[data-busy="true"] #ai-send, .ai-assistant #ai-form:not([data-busy="true"]) #ai-stop, .ai-assistant #ai-send[hidden], .ai-assistant #ai-stop[hidden] {

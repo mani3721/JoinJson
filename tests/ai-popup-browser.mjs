@@ -47,10 +47,15 @@ try {
       const panel = document.getElementById('ai-assistant'), rect = panel.getBoundingClientRect();
       const launcher = document.getElementById('ai-toggle').getBoundingClientRect();
       const body = panel.querySelector('.ai-body');
-      return { hidden: panel.hidden, left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom, width: rect.width, launcherTop: launcher.top, viewportWidth: innerWidth, viewportHeight: innerHeight, focus: document.activeElement.id, scrollable: getComputedStyle(body).overflowY, pageWidth: document.documentElement.scrollWidth };
+      const close = document.getElementById('ai-close'), closeRect = close.getBoundingClientRect();
+      const closeOnTop = close.contains(document.elementFromPoint(closeRect.left + closeRect.width / 2, closeRect.top + closeRect.height / 2));
+      return { hidden: panel.hidden, left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom, width: rect.width, launcherTop: launcher.top, viewportWidth: innerWidth, viewportHeight: innerHeight, focus: document.activeElement.id, scrollable: getComputedStyle(body).overflowY, pageWidth: document.documentElement.scrollWidth, closeOnTop };
     })()`);
     assert.equal(state.hidden, false); assert.equal(state.focus, 'ai-prompt');
     assert(state.left >= 0 && state.top >= 0 && state.right <= state.viewportWidth && state.bottom <= state.viewportHeight, `${theme} popup outside ${width}x${height}`);
+    assert.equal(state.top, 0, 'Assistant extends to the top of the viewport');
+    assert.equal(state.closeOnTop, true, 'Assistant close button stays above the sticky header');
+    assert(state.viewportHeight - state.bottom < 100, 'Assistant fills the height above the launcher');
     assert(state.width <= 380); assert(state.bottom <= state.launcherTop); assert.equal(state.scrollable, 'auto');
     assert(state.pageWidth <= state.viewportWidth, 'No horizontal page overflow');
     await evaluate('document.getElementById("ai-close").click()');

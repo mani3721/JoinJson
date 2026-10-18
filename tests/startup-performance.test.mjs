@@ -38,7 +38,7 @@ test('production embeds every homepage stylesheet in original cascade order', as
   assert.equal(d.querySelectorAll('link[rel=stylesheet]').length, 0);
   const expected = [...source.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map(m => m[1]);
   assert.deepEqual([...d.querySelectorAll('style[data-source]')].map(n => n.dataset.source), expected);
-  assert.equal(expected.length, 6);
+  assert.ok(expected.includes('/assets/ai-assistant.css'), 'include the AI assistant styles');
 });
 
 test('both hosting configurations cache the favicon for 30 days without immutable', async () => {

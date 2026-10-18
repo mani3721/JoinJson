@@ -38,9 +38,9 @@ async function until(predicate) { for (let i = 0; i < 150; i++) { if (predicate(
 test('homepage SEO, heading hierarchy, accessible controls, and matching FAQ schema', t => {
   const { dom } = setup(t), d = dom.window.document;
   assert.equal(d.querySelectorAll('title').length, 1);
-  assert.ok(d.title.length >= 50 && d.title.length <= 60, d.title.length);
+  assert.ok(d.title.length >= 50 && d.title.length <= 60, `Title length: ${d.title.length}`);
   const description = d.querySelector('meta[name=description]').content;
-  assert.ok(description.length >= 140 && description.length <= 160, description.length);
+  assert.ok(description.length >= 140 && description.length <= 160, `Description length: ${description.length} (expected 140–160)`);
   assert.match(d.title.toLowerCase(), /merge json/); assert.match(description.toLowerCase(), /merge json/);
   assert.equal(d.querySelectorAll('h1').length, 1);
   let level = 0; for (const h of d.querySelectorAll('main h1,main h2,main h3,main h4')) { const next = +h.tagName[1]; assert.ok(next <= level + 1); level = next; }

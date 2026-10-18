@@ -30,7 +30,7 @@ test('TypeScript uses shared CodeMirror input, read-only output, lazy switching 
   assert.match(output.text(), /Array<boolean \| null>/);
   assert.equal(output.view.dom.querySelector('.cm-lintRange-error'), null);
   win.document.getElementById('typescript-zod').click(); enhance();
-  assert.match(win.JMEditors.get('zod-output').text(), /z.union/);
+  assert.match(win.JMEditors.get('zod-output').text(), /z\.array\(z\.boolean\(\)\.nullable\(\)\)/);
   win.document.querySelector('[data-tool="json-to-typescript"]').click();
   win.document.getElementById('typescript-clear').click();
   assert.equal(input.text(), ''); assert.equal(output.text(), '');
