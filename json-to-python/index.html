@@ -1078,6 +1078,9 @@ kbd {
 <link rel="stylesheet" href="/assets/site-layout.css">
 <link rel="stylesheet" href="/assets/home-theme.css">
 <script src="/assets/theme.js" defer></script>
+<link rel="stylesheet" href="/assets/ai-assistant.css">
+<script src="/assets/ai-stream.js" defer></script>
+<script src="/assets/ai-assistant.js" defer></script>
 <link rel="stylesheet" href="/assets/codemirror.css">
 <link rel="stylesheet" href="/assets/json-to-zod.css">
 <script src="/assets/json-error-helper.js" defer></script>
@@ -2369,5 +2372,15 @@ Second JSON:
   });
 })();
 </script>
+<button id="ai-toggle" class="ai-launcher" type="button" aria-controls="ai-assistant" aria-expanded="false" hidden>AI Help</button>
+<section id="ai-assistant" class="panel ai-assistant" role="dialog" aria-labelledby="ai-heading" aria-describedby="ai-privacy" hidden>
+  <div class="ai-header"><h2 id="ai-heading">AI assistant</h2><div class="ai-header-actions"><button id="ai-clear" type="button" aria-label="New chat" title="New chat">+</button><button id="ai-close" type="button" aria-label="Close AI Help" title="Close">×</button></div></div>
+  <div id="ai-messages" class="ai-body"><div id="ai-empty" class="ai-empty"><p>What are you building?</p>Ask for help with JSON or code.</div></div>
+  <div class="ai-composer">
+    <div class="ai-chat-tools"><p id="ai-status" role="status" aria-live="polite"></p><button id="ai-copy" type="button" disabled>Copy reply</button></div>
+    <form id="ai-form"><textarea id="ai-prompt" aria-label="Message the AI assistant" placeholder="Ask about JSON or code…" maxlength="8000" rows="2" required></textarea><button id="ai-send" type="submit" aria-label="Send message" title="Send">↑</button><button id="ai-stop" type="button" aria-label="Stop reply" title="Stop" hidden disabled>■</button></form>
+    <p id="ai-privacy">Messages go to Cohere using your API key. Workspace JSON is never attached automatically. Your key stays in page memory until New chat, Clear all or reload.</p>
+  </div>
+</section>
 </body>
 </html>
