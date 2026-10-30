@@ -55,6 +55,19 @@ test('every supported type preserves Unicode, whitespace, and even invalid JSON'
   assert.equal(s.revoked.length, s.downloads.length);
 });
 
+test('Jupyter notebooks download as unchanged .ipynb files', async t => {
+  const s = setup(t);
+  const notebook = '{\n "cells": [],\n "metadata": {},\n "nbformat": 4,\n "nbformat_minor": 5\n}\n';
+  assert.ok(s.d.querySelector('#paste-download-type option[value="ipynb"]'));
+  s.set('content', notebook);
+  s.set('name', 'analysis');
+  s.set('type', 'ipynb', 'change');
+  assert.equal(s.get('save').textContent, 'Download .ipynb');
+  s.get('save').click();
+  assert.equal(s.downloads[0].name, 'analysis.ipynb');
+  assert.equal(await s.blobs[0].text(), notebook);
+});
+
 test('custom extensions validate, update the button, and cannot inject paths', t => {
   const s = setup(t);
   s.set('content', 'type Item = string;');
