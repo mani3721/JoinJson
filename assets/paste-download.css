@@ -1,0 +1,32 @@
+/* Local text-file downloader; reuse the existing light/dark theme palette. */
+.paste-download {
+  margin: 28px 0;
+  padding: clamp(16px, 3vw, 24px);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+.paste-download label { display: grid; gap: 6px; font-weight: 600; }
+.paste-download textarea {
+  display: block;
+  width: 100%;
+  min-height: 180px;
+  margin: 8px 0 16px;
+  padding: 12px;
+  resize: vertical;
+  font: 14px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.paste-download textarea,
+.paste-download input,
+.paste-download select {
+  min-width: 0;
+  max-width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+}
+.paste-download input, .paste-download select { min-height: 44px; padding: 8px 10px; }
+.paste-download-controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+.paste-download-controls label { flex: 1 1 180px; }
+.paste-download [aria-invalid=true] { border-color: var(--bad); }

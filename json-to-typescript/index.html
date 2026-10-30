@@ -1077,6 +1077,8 @@ kbd {
 </style>
 <link rel="stylesheet" href="/assets/site-layout.css">
 <link rel="stylesheet" href="/assets/home-theme.css">
+<link rel="stylesheet" href="/assets/paste-download.css">
+<script src="/assets/paste-download.js" defer></script>
 <script src="/assets/theme.js" defer></script>
 <link rel="stylesheet" href="/assets/ai-assistant.css">
 <script src="/assets/ai-stream.js" defer></script>
@@ -1315,6 +1317,47 @@ kbd {
 <div class="result-actions merger-converter-actions"><button id="merge-typescript" type="button" disabled>Convert Output to TypeScript</button><button id="merge-python" type="button" disabled>Convert Output to Python</button><button id="merge-toml" type="button" disabled>Convert Output to TOML</button><button id="merge-go" type="button" disabled>Convert Output to Go</button><button id="merge-pydantic" type="button" disabled>Convert Output to Pydantic</button><button id="merge-yaml" type="button" disabled>Convert Output to YAML</button><button id="merge-diff" type="button" disabled>Compare merged JSON</button></div>
 <p id="status" class="global-status" role="status" aria-live="polite" aria-atomic="true"></p><p class="privacy-note">Your JSON stays in this tab. Loading a URL contacts that source directly; no inputs are saved.</p>
 <noscript><p>This tool needs JavaScript. You can also use the <a href="/merge-json-files-python/">Python merge guide</a>.</p></noscript>
+<section id="paste-download" class="paste-download" aria-labelledby="paste-download-heading">
+  <h2 id="paste-download-heading">Paste &amp; Download</h2>
+  <p id="paste-download-help" class="muted">Paste JSON, code, or any text and save it as a file. The file type sets the extension; your content is not converted, validated, or executed. Downloads are created locally in your browser.</p>
+  <label for="paste-download-content">Your JSON, code, or text</label>
+  <textarea id="paste-download-content" rows="8" spellcheck="false" autocomplete="off" autocapitalize="off" wrap="off" placeholder="Paste your content here…" aria-describedby="paste-download-help"></textarea>
+  <div class="paste-download-controls">
+    <label for="paste-download-type">File type
+      <select id="paste-download-type">
+        <option value="json">JSON (.json)</option>
+        <option value="txt">Plain text (.txt)</option>
+        <option value="js">JavaScript (.js)</option>
+        <option value="ts">TypeScript (.ts)</option>
+        <option value="jsx">React JSX (.jsx)</option>
+        <option value="tsx">React TSX (.tsx)</option>
+        <option value="html">HTML (.html)</option>
+        <option value="css">CSS (.css)</option>
+        <option value="py">Python (.py)</option>
+        <option value="yaml">YAML (.yaml)</option>
+        <option value="toml">TOML (.toml)</option>
+        <option value="xml">XML (.xml)</option>
+        <option value="csv">CSV (.csv)</option>
+        <option value="md">Markdown (.md)</option>
+        <option value="sql">SQL (.sql)</option>
+        <option value="sh">Shell (.sh)</option>
+        <option value="go">Go (.go)</option>
+        <option value="java">Java (.java)</option>
+        <option value="custom">Other extension…</option>
+      </select>
+    </label>
+    <label id="paste-download-extension-label" for="paste-download-extension" hidden>Custom extension
+      <input id="paste-download-extension" type="text" placeholder="e.g. rs or d.ts" maxlength="32" autocomplete="off" spellcheck="false" aria-describedby="paste-download-status">
+    </label>
+    <label for="paste-download-name">Filename (without extension)
+      <input id="paste-download-name" type="text" value="snippet" maxlength="120" autocomplete="off" spellcheck="false">
+    </label>
+    <button id="paste-download-save" type="button" class="primary" disabled aria-describedby="paste-download-status">Download .json</button>
+    <button id="paste-download-clear" type="button">Clear content</button>
+  </div>
+  <p id="paste-download-status" class="muted" role="status" aria-live="polite" aria-atomic="true">Paste content to enable downloading.</p>
+  <noscript><p>Enable JavaScript to download pasted content.</p></noscript>
+</section>
 <!-- Manual placements only; hidden until a successful merge with no input/import errors. -->
 <div id="ad-after-result" class="ad-slot" role="region" aria-label="Advertisement" hidden><span class="ad-label">Advertisement</span><div class="ad-mount" data-placement="after-result"></div></div>
 <article id="merge-guide" class="editorial" aria-labelledby="guide-heading">
